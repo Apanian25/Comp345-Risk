@@ -9,7 +9,7 @@ int main() {
 	//Part 1
 	Map::main();
 	//Part 2
-	MapLoader::main();
+	//MapLoader::main();
 	//Part 3
 	Player::main();
 	//Part 4
