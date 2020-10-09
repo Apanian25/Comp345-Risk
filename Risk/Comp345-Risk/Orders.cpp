@@ -1,6 +1,6 @@
 #include<iostream>
 #include <string>
-#include "OrdersList.h"
+#include "Orders.h"
 
 using namespace std;
 
@@ -146,27 +146,27 @@ Blockade& Blockade::operator=(const Blockade& d) {
 	return *this;
 }
 
-string Negotiate::getName() const {
+string Diplomacy::getName() const {
 	if (*ex) {
-		return "The Negotiate order has been executed, both players cannot attack each other";
+		return "The Diplomacy order has been executed, both players cannot attack each other";
 	}
 	else {
-		return "This is a Negotiate order";
+		return "This is a Diplomacy order";
 	}
 }
 
-bool Negotiate::validate() {
+bool Diplomacy::validate() {
 	if (1)
 		return true;
 };
-void Negotiate::execute() {
+void Diplomacy::execute() {
 	*ex = validate();
 };
-Negotiate::Negotiate() {};
+Diplomacy::Diplomacy() {};
 
-Negotiate::Negotiate(const Negotiate& d) : Order(d) {}
+Diplomacy::Diplomacy(const Diplomacy& d) : Order(d) {}
 
-Negotiate& Negotiate::operator=(const Negotiate& d) {
+Diplomacy& Diplomacy::operator=(const Diplomacy& d) {
 	Order::operator=(d);
 	return *this;
 }

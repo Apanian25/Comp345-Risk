@@ -65,14 +65,14 @@ public:
 	Blockade(const Blockade& d);
 	Blockade& operator = (const Blockade& a);
 };
-class Negotiate : public Order {
+class Diplomacy : public Order {
 public:
 	virtual string getName() const;
 	bool validate();
 	void execute();
-	Negotiate();
-	Negotiate(const Negotiate& d);
-	Negotiate& operator = (const Negotiate& a);
+	Diplomacy();
+	Diplomacy(const Diplomacy& d);
+	Diplomacy& operator = (const Diplomacy& a);
 };
 
 class OrderList {
@@ -88,6 +88,6 @@ public:
 	void move(int ind, int final);
 
 };
-namespace OrdersListDriver {
+namespace OrdersDriver {
 	int main();
 }

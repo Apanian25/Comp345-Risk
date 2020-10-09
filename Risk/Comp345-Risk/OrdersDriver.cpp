@@ -1,7 +1,7 @@
-#include "OrdersList.h"
+#include "Orders.h"
 #include <iostream>
 
-namespace OrdersListDriver {
+namespace OrdersDriver {
 
 	int main() {
 		OrderList listoforders;
@@ -11,7 +11,7 @@ namespace OrdersListDriver {
 		Deploy* a3 = new Deploy();
 		Advance* a4 = new Advance();
 		Bomb* a5 = new Bomb();
-		Negotiate* a6 = new Negotiate();
+		Diplomacy* a6 = new Diplomacy();
 		Blockade* a7 = new Blockade();
 		cout << "Creating different Orders and placing them in the OrderList Object" << endl << endl;
 		listoforders.list.push_back(a2);
