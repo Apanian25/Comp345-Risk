@@ -57,6 +57,32 @@ Deck& Deck::operator= (const Deck& deck)
 	return *this;
 }
 
+ostream& operator << (ostream& output, const Cards& card)
+{
+	if (card.type == 0)
+		output << "Card type = bomb" << endl;
+	else if (card.type == 1)
+		output << "Card type = reinforcement" << endl;
+	else if (card.type == 2)
+		output << "Card type = blockade" << endl;
+	else if (card.type == 3)
+		output << "Card type = airlift" << endl;
+	else if (card.type == 4)
+		output << "Card type = diplomacy" << endl;
+
+	return output;
+}
+
+ostream& operator << (ostream& output, const Deck& deck)
+{
+	for (Cards* c : deck.cards_list)
+	{
+
+		output << *c;
+	}
+	return output;
+}
+
 
 Hand::Hand() // hand default constuructor 
 {
@@ -84,21 +110,33 @@ Hand& Hand::operator= (const Hand& h)
 	return *this;
 }
 
-
-
-void Cards::Print_Card() // prints Every card, matches enum index to card type
+ostream& operator << (ostream& output, const Hand& hand)
 {
-	if (type == 0)
-		std::cout << "Card type = bomb" << std::endl;
-	else if (type == 1)
-		std::cout << "Card type = reinforcement" << std::endl;
-	else if (type == 2)
-		std::cout << "Card type = blockade" << std::endl;
-	else if (type == 3)
-		std::cout << "Card type = airlift" << std::endl;
-	else if (type == 4)
-		std::cout << "Card type = diplomacy" << std::endl;
+	for (Cards* c : hand.hand)
+	{
+		output << *c;
+	}
+	return output;
 }
+
+
+
+
+//void Cards::Print_Card() // prints Every card, matches enum index to card type
+//{
+//	if (type == 0)
+//		std::cout << "Card type = bomb" << std::endl;
+//	else if (type == 1)
+//		std::cout << "Card type = reinforcement" << std::endl;
+//	else if (type == 2)
+//		std::cout << "Card type = blockade" << std::endl;
+//	else if (type == 3)
+//		std::cout << "Card type = airlift" << std::endl;
+//	else if (type == 4)
+//		std::cout << "Card type = diplomacy" << std::endl;
+//}
+
+
 
 void Deck::Initialize(Deck& deck, Cards& card) // initizialtes the deck, inserts pointer to Card objects into Vector Cards_list of object Deck
 {
@@ -116,14 +154,14 @@ void Deck::Initialize(Deck& deck, Cards& card) // initizialtes the deck, inserts
 }
 
 
-void Deck::Print_Deck(const Deck& deck)  // calls print_card method to print the whole deck 
-{
-	for (Cards* c : deck.cards_list)
-	{
-
-		c->Cards::Print_Card();
-	}
-}
+//void Deck::Print_Deck(const Deck& deck)  // calls print_card method to print the whole deck 
+//{
+//	for (Cards* c : deck.cards_list)
+//	{
+//
+//		c->Cards::Print_Card();
+//	}
+//}
 
 
 void Deck::shuffle(Deck& deck)  // shuffles the deck so it is randomly generated 
@@ -156,13 +194,13 @@ void Hand::Draw(Deck& deck, Hand& h) // draws from a shuffled deck and places in
 }
 
 
-void Hand::Print_Hand(const Hand& hand) // print the hand vector by calling print_card
-{
-	for (Cards* c : hand.hand)
-	{
-		c->Cards::Print_Card();
-	}
-}
+//void Hand::Print_Hand(const Hand& hand) // print the hand vector by calling print_card
+//{
+//	for (Cards* c : hand.hand)
+//	{
+//		c->Cards::Print_Card();
+//	}
+//}
 
 
 
