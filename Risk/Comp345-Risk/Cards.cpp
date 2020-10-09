@@ -1,9 +1,13 @@
 #include "Cards.h"
+#include "Orders.h"
 #include <iostream>
 #include <cstdlib>
 #include <iterator>
+#include <algorithm>
 
-
+/// <summary>
+/// 
+/// </summary>
 Cards::Cards()
 {
 
@@ -120,29 +124,10 @@ ostream& operator << (ostream& output, const Hand& hand)
 }
 
 
-
-
-//void Cards::Print_Card() // prints Every card, matches enum index to card type
-//{
-//	if (type == 0)
-//		std::cout << "Card type = bomb" << std::endl;
-//	else if (type == 1)
-//		std::cout << "Card type = reinforcement" << std::endl;
-//	else if (type == 2)
-//		std::cout << "Card type = blockade" << std::endl;
-//	else if (type == 3)
-//		std::cout << "Card type = airlift" << std::endl;
-//	else if (type == 4)
-//		std::cout << "Card type = diplomacy" << std::endl;
-//}
-
-
-
 void Deck::Initialize(Deck& deck, Cards& card) // initizialtes the deck, inserts pointer to Card objects into Vector Cards_list of object Deck
 {
 	for (int j = 0; j < deck.deck_multiplier; ++j) // deck_multipler used to create size of deck 
 	{
-		//int num_of_types = 6;
 		for (int i = 0; i < card.num_of_types; ++i) // loops through all card types, creates a Card and places into the vector
 		{
 			Cards* card = new Cards();
@@ -152,16 +137,6 @@ void Deck::Initialize(Deck& deck, Cards& card) // initizialtes the deck, inserts
 	}
 
 }
-
-
-//void Deck::Print_Deck(const Deck& deck)  // calls print_card method to print the whole deck 
-//{
-//	for (Cards* c : deck.cards_list)
-//	{
-//
-//		c->Cards::Print_Card();
-//	}
-//}
 
 
 void Deck::shuffle(Deck& deck)  // shuffles the deck so it is randomly generated 
@@ -194,18 +169,100 @@ void Hand::Draw(Deck& deck, Hand& h) // draws from a shuffled deck and places in
 }
 
 
-//void Hand::Print_Hand(const Hand& hand) // print the hand vector by calling print_card
-//{
-//	for (Cards* c : hand.hand)
-//	{
-//		c->Cards::Print_Card();
-//	}
-//}
-
-
-
-void Hand::Play()// need order list to do 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="h"></param>
+/// <param name="ol"></param>
+/// <param name="d"></param>
+void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 {
+	
+	std::cout << h << "/n" << " which card would you like to play" << std::endl;
+	std::string name;
+	std::cin >> name;
+	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+	if (name == "bomb")
+	{
+		for (Cards* c : h.hand)
+		{
+			if (c->type == Type(0))
+			{
+				d.cards_list.push_back(c);
+				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+				break;
+			}			
+		}
+
+		Bomb* b = new Bomb();
+		ol.list.push_back(b);
+		std::cout << "Bomb has been played" << std::endl;
+	}
+
+	else if (name == "reinforcement")
+	{
+		for (Cards* c : h.hand)
+		{
+			if (c->type == Type(1))
+			{
+				d.cards_list.push_back(c);
+				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+				break;
+			}
+		}
+		std::cout << "Reinforcement has been played, this card is not a special order" << std::endl;
+	}
+
+	else if (name == "blockade")
+	{
+		for (Cards* c : h.hand)
+		{
+			if (c->type == Type(2))
+			{
+				d.cards_list.push_back(c);
+				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+				break;
+			}
+		}
+
+		Blockade* bl = new Blockade();
+		ol.list.push_back(bl);
+		std::cout << "Blockade has been played" << std::endl;
+	}
+
+	else if (name == "airlift")
+	{
+		for (Cards* c : h.hand)
+		{
+			if (c->type == Type(3))
+			{
+				d.cards_list.push_back(c);
+				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+				break;
+			}
+		}
+
+		Airlift* a = new Airlift();
+		ol.list.push_back(a);
+		std::cout << "Airlift has been played" << std::endl;
+	}
+	else if (name == "diplomacy")
+	{
+		for (Cards* c : h.hand)
+		{
+			if (c->type == Type(4))
+			{
+				d.cards_list.push_back(c);
+				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+				break;
+			}
+		}
+
+		Diplomacy* dp = new Diplomacy();
+		ol.list.push_back(dp);
+		std::cout << "Diplomacy has been played" << std::endl;
+	}
+	
 
 }
 
