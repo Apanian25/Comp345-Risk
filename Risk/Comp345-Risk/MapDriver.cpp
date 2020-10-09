@@ -19,11 +19,11 @@ namespace MapDriver {
 
 std::string test1() {
 	Map* map = new Map();
-	Territory* t1 = map->addTerritory(1, 0, "test1", "Canada");
-	Territory* t2 = map->addTerritory(2, 0, "test2", "Canada");
-	Territory* t3 = map->addTerritory(3, 0, "test3", "Canada");
-	Territory* t4 = map->addTerritory(4, 0, "test4", "Canada");
-	Territory* t5 = map->addTerritory(5, 0, "test5", "Canada");
+	Territory* t1 = map->addTerritory("test1", 1, 2);
+	Territory* t2 = map->addTerritory("test2", 2, 2);
+	Territory* t3 = map->addTerritory("test3", 3, 2);
+	Territory* t4 = map->addTerritory("test4", 4, 2);
+	Territory* t5 = map->addTerritory("test5", 5, 2);
 	//Territory* t6 = map->addTerritory(6, 0, "test6", "Canada");
 
 	std::vector<int> connections = { 4, 5 };
@@ -35,18 +35,19 @@ std::string test1() {
 
 	bool valid =  map->validate();
 
+	std::cout << *t3;
 	delete map;
 	return valid ? "Map is valid" : "Map is invalid";
 }
 
 std::string test2() {
 	Map* map = new Map();
-	Territory* t1 = map->addTerritory(1, 0, "test1", "Canada");
-	Territory* t2 = map->addTerritory(2, 0, "test2", "Canada");
-	Territory* t3 = map->addTerritory(3, 0, "test3", "Canada");
-	Territory* t4 = map->addTerritory(4, 0, "test4", "Canada");
-	Territory* t5 = map->addTerritory(5, 0, "test5", "Canada");
-	Territory* t6 = map->addTerritory(6, 0, "test6", "Canada");
+	Territory* t1 = map->addTerritory("test1", 1, 2);
+	Territory* t2 = map->addTerritory("test2", 2, 2);
+	Territory* t3 = map->addTerritory("test3", 3, 2);
+	Territory* t4 = map->addTerritory("test4", 4, 2);
+	Territory* t5 = map->addTerritory("test5", 5, 2);
+	Territory* t6 = map->addTerritory("test6", 6, 2);
 
 	std::vector<int> connections = { 4, 5 };
 

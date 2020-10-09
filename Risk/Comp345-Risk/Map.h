@@ -8,12 +8,28 @@ namespace MapDriver {
 	int main();
 }
 
+struct Continent {
+	Continent();
+	~Continent();
+	Continent(std::string name, int id, int numberOfArmies);
+	Continent(const Continent& continent);
+	Continent& operator= (const Continent& continent);
+	friend std::ostream& operator << (std::ostream& output, const Continent& continent);
+
+
+	int id;
+	int numberOfArmies;
+	std::string name;
+};
+
 struct Territory {
 	Territory();
 	~Territory();
 	Territory(std::string country, int id, int continent_id);
 	Territory(const Territory& territory);
 	Territory& operator= (const Territory& territory);
+	friend std::ostream & operator << (std::ostream& output, const Territory& territory);
+
 
 	std::string country;
 	int continentId;
@@ -22,19 +38,6 @@ struct Territory {
 	std::vector<Territory*> adjacentTerritoriesTo;
 	std::vector<Territory*> adjacentTerritoriesFrom;
 };
-
-struct Continent {
-	Continent();
-	~Continent();
-	Continent(std::string name, int id, int numberOfArmies);
-	Continent(const Continent& continent);
-	Continent& operator= (const Continent& continent);
-
-	int id;
-	int numberOfArmies;
-	std::string name;
-};
-
 
 class Map {
 	private:
@@ -47,6 +50,7 @@ class Map {
 		~Map();
 		Map(const Map& map);
 		Map& operator= (const Map& map);
+		friend std::ostream& operator << (std::ostream& output, const Map& map);
 
 		Continent* addContinent(std::string continent, int continentId, int numberOfArmies);
 		Territory* addTerritory(std::string country, int id, int continentId);

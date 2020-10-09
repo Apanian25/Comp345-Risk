@@ -15,7 +15,21 @@ Continent::~Continent() { }
 
 Continent::Continent(const Continent& continent): id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
 
+Continent& Continent::operator= (const Continent& continent) {
+	id = continent.id;
+	numberOfArmies = continent.numberOfArmies;
+	name = continent.name;
 
+	return *this;
+}
+
+std::ostream & operator << (std::ostream & output, const Continent& continent) {
+	output << "ID: " << continent.id << std::endl
+		<< "NAME: " << continent.name << std::endl
+		<< "NUMBER OF ARMIES(BONUS): " << continent.numberOfArmies << std::endl;
+
+	return output;
+}
 
 
 //TERRITORY
@@ -28,6 +42,36 @@ Territory::~Territory() {};
 Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), country(territory.country) {
 	this->adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
 	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
+}
+
+Territory& Territory::operator= (const Territory& territory) {
+	id = territory.id;
+	country = territory.country;
+	continentId = territory.continentId;
+	ownedBy = territory.ownedBy;
+	adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
+	adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
+
+	return *this;
+}
+
+std::ostream& operator << (std::ostream& output, const Territory& territory) {
+	output << "ID: " << territory.id << std::endl
+		<< "Country: " << territory.country << std::endl
+		<< "OWNED BY: " << territory.ownedBy << std::endl
+		<< "CONTINENT ID: " << territory.continentId << std::endl
+		<< "CAN ATTACK:" << std::endl;
+
+	for (Territory* to : territory.adjacentTerritoriesTo) {
+		output << "\t" << to->country <<std::endl;
+	}
+
+	output << "CAN BE ATTACKED BY:" << std::endl;
+	for (Territory* from : territory.adjacentTerritoriesFrom) {
+		output << "\t" << from->country << std::endl;
+	}
+
+	return output;
 }
 
 
@@ -67,6 +111,20 @@ Map::~Map() {
 	}
 }
 
+Map& Map::operator= (const Map& map) {
+	this->territories = map.territories;
+	this->continents = map.continents;
+	this->continentTerritories = map.continentTerritories;
+}
+
+std::ostream& operator << (std::ostream& output, const Map& map) {
+
+	for (std::pair<int, std::vector<Territory*>> continent : map.continentTerritories) {
+			output << "Continent: " << map.continents.find(continent.first)->second->name << std::endl;
+		for (Territory* territory : continent.second) {
+		}
+	}
+}
 
 Territory* Map::getTerritory(int id) {
 	return territories[id];
@@ -85,7 +143,10 @@ Territory* Map::addTerritory(std::string country, int id, int continentId) {
 }
 
 Continent* Map::addContinent(std::string continent, int continentId, int numberOfArmies) {
-	continents[continentId] = new Continent(continent, continentId, numberOfArmies);
+	Continent *newContinent = new Continent(continent, continentId, numberOfArmies);
+	continents[continentId] = newContinent;
+
+	return newContinent;
 }
 
 /// <summary>
