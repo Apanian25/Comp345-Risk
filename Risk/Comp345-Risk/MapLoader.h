@@ -14,13 +14,20 @@ class MapLoader {
 public:
 	//default constructor
 	MapLoader();
+	//sets the mapName
+	MapLoader(std::string mapName);
 	//destructor
 	~MapLoader();
 	//copy constructor
-	MapLoader(const MapLoader& map);
+	MapLoader(const MapLoader &map);
+	//Overloading assignment operator
+	MapLoader& operator= (const MapLoader& mapLoader);
 
 	//method to be called by other classes to load a parsed map
 	Map* LoadMap(std::string mapFilePath);
+
+	std::string mapName;
+	friend istream& operator >> (istream& in, MapLoader &m);
 
 private:
 	static const int NUM_ENTRIES_CONTINENT = 3;

@@ -1,58 +1,109 @@
 #include "MapLoader.h"
 
-//empty constructor
+/// <summary>
+/// Default Constructor
+/// </summary>
 MapLoader::MapLoader() {
+	mapName = "";
 }
 
-//destructor
+/// <summary>
+/// Sets the mapName
+/// </summary>
+/// <param name="mapName">MapName</param>
+MapLoader::MapLoader(std::string mapName) {
+	mapName = mapName;
+}
+
+/// <summary>
+/// Destructor
+/// </summary>
 MapLoader::~MapLoader() {
 	//call delete on map pointer created
 	delete parsedMap;
 	parsedMap = NULL;
 }
 
-//load parsed map
-
-Map* MapLoader::LoadMap(std::string mapFilePath) {
-
-	Map parsedMap;
-
-	cout << "Verifying map before loading..." << endl; 
-
-	parsedMap = ReadMap(mapFilePath);
-
-	cout << "Map successfully generated, returning parsed map..." << endl;
-
-	return parsedMap;
+/// <summary>
+/// Overloading the stream insertion operator
+/// </summary>
+/// <param name="in"></param>
+/// <param name="m"></param>
+/// <returns></returns>
+istream& operator>>(istream& in, MapLoader& m)
+{
+	out << "The map name is ..." << m.mapName << endl;
+	return out;
 }
 
-//copy constructor
-MapLoader::MapLoader(const MapLoader& map) {
 
+/// <summary>
+/// Copy Constructor
+/// </summary>
+/// <param name="map">Map pointer</param>
+MapLoader::MapLoader(const MapLoader &map){
+
+	cout << "Copy constructor is being called...\n" << endl;
+	ptr = new int;
+	*ptr = *map.ptr;
 }
 
-//stream insertion operator << cout (override "<<")
-//overload assignment operator 
+/// <summary>
+/// Overloading Assignment Operator
+/// </summary>
+/// <param name="mapLoader"></param>
+/// <returns></returns>
+MapLoader& MapLoader::operator=(const MapLoader& mapLoader)
+{
+	//check for self-assignment
+	if (this == &mapLoader)
+		return *this;
+
+	//copying
+	mapName = mapLoader.mapName;
+
+	return *this;
+}
+
 //copy constructor for maploader class
 
 
 
 
-//read map file
-Map* MapLoader::ReadMap(std::string mapFilePath) {
+/// <summary>
+/// Loads parsed map
+/// </summary>
+/// <param name="mapFilePath">path to the map file.</param>
+/// <returns></returns>
+Map* MapLoader::LoadMap(std::string mapFilePath) {
 
-	Map parsedMap;
+	cout << "Verifying map before loading...\n" << endl; 
+
+	parsedMap = ReadMap(mapFilePath);
+
+	cout << "Map successfully generated, returning parsed map...\n" << endl;
+
+	return parsedMap;
+}
+
+
+/// <summary>
+/// Reads and verifies map file while parsing it bit by bit.
+/// </summary>
+/// <param name="mapFilePath">Path to the map file.</param>
+/// <returns></returns>
+Map* MapLoader::ReadMap(std::string mapFilePath) {
 
 	std::string line{ "" };
 	std::ifstream openFile(mapFilePath);
 
 	if (!openFile.is_open()) {
-		cout << "Unable to open the file selected. Please choose a valid text file." << endl;
+		cout << "Unable to open the file selected. Please choose a valid text file.\n" << endl;
 		exit(1);
 	}
 
 	if (openFile.peek() == std::ifstream::traits_type::eof()) {
-		cout << "The file selected is empty. Please choose a different file." << endl;
+		cout << "The file selected is empty. Please choose a different file.\n" << endl;
 		exit(1);
 	}
 
@@ -60,7 +111,7 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 		while (getline(openFile, line)) {
 			if (line.find("[continents]" == 0)) {
 
-				cout << "Found the continent section..." << endl;
+				cout << "Found the continent section...\n" << endl;
 				int continentId = 0;
 				while (getline(openFile, line)) {
 					if (line.length() != 0) {
@@ -68,7 +119,7 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 						std::vector<string> words = MapLoader::split(line, ' ');
 
 						if (words.size() != NUM_ENTRIES_CONTINENT) {
-							cout << "The file has invalid continent information." << endl;
+							cout << "The file has invalid continent information.\n" << endl;
 							exit(1);
 						}
 
@@ -77,24 +128,24 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 						//Adding continent to map object, 0 is the string
 						parsedMap.AddContinent(words[0], ++continentId, numberOfArmies);
 
-						cout << "Adding continent number " << continentId << endl;
-						cout << "Continent name: " << words[0] << endl;
-						cout << "Number of bonus armies: " << numberOfArmies << endl;
+						cout << "Adding continent number " << continentId << "\n" << endl;
+						cout << "Continent name: " << words[0] << "\n" << endl;
+						cout << "Number of bonus armies: " << numberOfArmies << "\n" << endl;
 					}
 				}
 			}
 
-			cout << "Finished adding continents." << endl;
+			cout << "Finished adding continents.\n" << endl;
 
 			if (line.find("[countries]" == 0)) {
-				cout << "Found the countries section..." << endl;
+				cout << "Found the countries section...\n" << endl;
 				while (getline(openFile, line)) {
 					if (line.length() != 0) {
 						std::string info = line;
 						std::vector<string> words = MapLoader::split(line, ' ');
 
 						if (words.size() < NUM_ENTRIES_TERRITORIES) {
-							cout << "The file has invalid territory information." << endl;
+							cout << "The file has invalid territory information.\n" << endl;
 							exit(1);
 						}
 
@@ -107,17 +158,17 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 						//2 is the country it belongs to (must match country id generated by map)
 						parsedMap.AddTerritory(words[1], territoryId, continentId);
 
-						cout << "Adding country number " << territoryId << endl;
-						cout << "Country name: " << words[1] << endl;
-						cout << "Country belongs to continent number " << continentId << endl;
+						cout << "Adding country number " << territoryId << "\n" << endl;
+						cout << "Country name: " << words[1] << "\n" << endl;
+						cout << "Country belongs to continent number " << continentId << "\n" << endl;
 					}
 				}
 			}
 
-			cout << "Finished adding countries." << endl;
+			cout << "Finished adding countries.\n" << endl;
 
 			if (line.find("[borders]" == 0)) {
-				cout << "Found the borders section..." << endl;
+				cout << "Found the borders section...\n" << endl;
 				while (getline(openFile, line)) {
 					if (line.length() != 0) {
 						std::string info = line;
@@ -134,7 +185,7 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 						//Adding borders to map object, 
 						parsedMap.AddBorders(countryId, borders);
 
-						cout << "Adding borders to country number " << countryId << endl;
+						cout << "Adding borders to country number " << countryId << "\n" << endl;
 					}
 				}
 			}
@@ -142,14 +193,20 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 		}
 	}
 
-	cout << "Finished adding borders." << endl;
-	cout << "Parsing map file..." << endl;
+	cout << "Finished adding borders.\n" << endl;
+	cout << "Parsing map file...\n" << endl;
 
 	openFile.close;
 
 	return parsedMap;
 }
 
+/// <summary>
+/// Method to split the string line and returns it as vector of words
+/// </summary>
+/// <param name="s">the string need to be split</param>
+/// <param name="delim">the delimeter between the words</param>
+/// <returns>returns a vector of string words.</returns>
 std::vector<string> MapLoader::split(string s, string delim) {
 
 	vector<string> words;
@@ -166,6 +223,3 @@ std::vector<string> MapLoader::split(string s, string delim) {
 
 	return words;
 }
-
-
-
