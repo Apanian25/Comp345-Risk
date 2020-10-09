@@ -6,14 +6,70 @@
 #include <queue>
 
 
-Map::Map() {
-	size = 0;
+//CONTINENT
+Continent::Continent() : id(-1), numberOfArmies(-1), name("") {}
+
+Continent::Continent(std::string name, int id, int numberOfArmies): name(name), id(id), numberOfArmies(numberOfArmies) {}
+
+Continent::~Continent() { }
+
+Continent::Continent(const Continent& continent): id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
+
+
+
+
+//TERRITORY
+Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), country(""){ }
+
+Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), ownedBy(-1) { }
+
+Territory::~Territory() {};
+
+Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), country(territory.country) {
+	this->adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
+	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
+}
+
+
+//MAP
+Map::Map() { }
+
+Map::Map(const Map& map) {
+	for (std::pair<int, Territory*> territory : map.territories) {
+		this->territories[territory.first] = new Territory(*(territory.second));
+	}
+
+	for (std::pair<int, Continent*> continent : continents) {
+		this->continents[continent.first] = new Continent(*(continent.second));
+	}
+
+	for (std::pair<int, std::vector<Territory*>> continent : map.continentTerritories) {
+		for (Territory* territory : continent.second) {
+			this->continentTerritories[continent.first].push_back(territory);
+		}
+	}
 }
 
 Map::~Map() {
 	for (std::pair<int, Territory*> territory : territories) {
 		delete territory.second;
+		territory.second = NULL;
 	}
+	for (std::pair<int, Continent*> continent : continents) {
+		delete continent.second;
+		continent.second = NULL;
+	}
+
+	for (std::pair<int, std::vector<Territory*>> continent : continentTerritories) {
+		for (Territory* territory : continent.second) {
+			territory = NULL;
+		}
+	}
+}
+
+
+Territory* Map::getTerritory(int id) {
+	return territories[id];
 }
 
 /// <summary>
@@ -21,11 +77,15 @@ Map::~Map() {
 /// </summary>
 /// <param name="id">The name of the territory</param>
 /// <param name="name">The name of the territory</param>
-Territory* Map::addTerritory(int id, int numberOfArmies, std::string name, std::string continent) {
-	size++;
-	Territory* territory = new Territory{ name, continent, id, numberOfArmies };
+Territory* Map::addTerritory(std::string country, int id, int continentId) {
+	Territory* territory = new Territory(country, id, continentId);
 	territories[id] = territory;
+	continentTerritories[continentId].push_back(territory);
 	return territory;
+}
+
+Continent* Map::addContinent(std::string continent, int continentId, int numberOfArmies) {
+	continents[continentId] = new Continent(continent, continentId, numberOfArmies);
 }
 
 /// <summary>
@@ -33,11 +93,11 @@ Territory* Map::addTerritory(int id, int numberOfArmies, std::string name, std::
 /// </summary>
 /// <param name="src">source, the initial vertex</param>
 /// <param name="dest">destinations, an array of the arrival vertices</param>
-void Map::addEdges(int src, int dest[]) {
+void Map::addEdges(int src, std::vector<int> dest) {
 	Territory* srcTerritory, * destTerritory;
 	srcTerritory = territories[src];
-	for (int i = 0; i < (sizeof(dest)/sizeof(int)); i++) {
-		destTerritory = territories[dest[i]];
+	for (int index : dest) {
+		destTerritory = territories[index];
 		srcTerritory->adjacentTerritoriesTo.push_back(destTerritory);
 		destTerritory->adjacentTerritoriesFrom.push_back(srcTerritory);
 	}
@@ -55,10 +115,6 @@ void Map::addEdge(int src, int dest) {
 
 	srcTerritory->adjacentTerritoriesTo.push_back(destTerritory);
 	destTerritory->adjacentTerritoriesFrom.push_back(srcTerritory);
-}
-
-Territory* Map::getTerritory(int id) {
-	return territories[id];
 }
 
 /// <summary>
