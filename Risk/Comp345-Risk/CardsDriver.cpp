@@ -19,6 +19,7 @@ namespace CardsDriver {
 		
 		std::cout << "------------------shuffled Deck-------------------------" << std::endl;
 		My_Deck->shuffle(*My_Deck);
+		My_Deck->shuffle(*My_Deck);
 		cout << *My_Deck;
 		
 		
@@ -40,14 +41,17 @@ namespace CardsDriver {
 		cout << *My_Deck;
 		
 
+		std::cout << " -----------------------Play Method Called-------------------------------" << std::endl;
 		for (int i = 0; i < 3; i++)
 		{
 			H1->Play(*H1, *ol, *My_Deck);
+			
 		}
 
 		std::cout << "----------------------------- order list after all cards are played-----------------------------" << std::endl;
 		for (int i = 0; i < ol->list.size(); i++)
 		{
+			
 			std::cout << *(ol->list[i]) << std::endl;
 		}
 		
