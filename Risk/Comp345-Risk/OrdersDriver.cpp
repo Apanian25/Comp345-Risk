@@ -48,6 +48,8 @@ namespace OrdersDriver {
 		for (int i = 0; i < (int)listoforders.list.size(); i++) {
 			cout << *listoforders.list.at(i) << endl;
 		}
+		delete listoforders.list.at(0);
+		cout << *a2 << endl;
 
 
 		return 0;
