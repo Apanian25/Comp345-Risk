@@ -27,6 +27,8 @@ struct Territory {
 	~Territory();
 	Territory(std::string country, int id, int continent_id);
 	Territory(const Territory& territory);
+	void addArmies(int armies);
+	void removeArmies(int armies);
 	Territory& operator= (const Territory& territory);
 	friend std::ostream & operator << (std::ostream& output, const Territory& territory);
 
@@ -34,6 +36,7 @@ struct Territory {
 	std::string country;
 	int continentId;
 	int id;
+	int numberOfArmies;
 	int ownedBy;
 	std::vector<Territory*> adjacentTerritoriesTo;
 	std::vector<Territory*> adjacentTerritoriesFrom;

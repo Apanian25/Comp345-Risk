@@ -6,15 +6,37 @@
 #include <queue>
 
 
-//CONTINENT
+// *********************************************************** CONTINENT ***********************************************************
+
+/// <summary>
+/// Continent no-param constructor
+/// </summary>
 Continent::Continent() : id(-1), numberOfArmies(-1), name("") {}
 
+/// <summary>
+/// Constructor that sets name, id and number of armies
+/// </summary>
+/// <param name="name">the name of the continent</param>
+/// <param name="id">the id of the continent</param>
+/// <param name="numberOfArmies">The bonus number of armies that you get for conquering a continent</param>
 Continent::Continent(std::string name, int id, int numberOfArmies): name(name), id(id), numberOfArmies(numberOfArmies) {}
 
+/// <summary>
+/// Destructor
+/// </summary>
 Continent::~Continent() { }
 
+/// <summary>
+/// Copy constructor 
+/// </summary>
+/// <param name="continent"></param>
 Continent::Continent(const Continent& continent): id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
 
+/// <summary>
+/// Overload of the assignment operator
+/// </summary>
+/// <param name="continent"></param>
+/// <returns></returns>
 Continent& Continent::operator= (const Continent& continent) {
 	id = continent.id;
 	numberOfArmies = continent.numberOfArmies;
@@ -23,6 +45,12 @@ Continent& Continent::operator= (const Continent& continent) {
 	return *this;
 }
 
+/// <summary>
+/// This formats how the continent will be outputted when using cout << continent
+/// </summary>
+/// <param name="output"></param>
+/// <param name="continent"></param>
+/// <returns></returns>
 std::ostream & operator << (std::ostream & output, const Continent& continent) {
 	output << "ID: " << continent.id << std::endl
 		<< "NAME: " << continent.name << std::endl
@@ -32,22 +60,64 @@ std::ostream & operator << (std::ostream & output, const Continent& continent) {
 }
 
 
-//TERRITORY
-Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), country(""){ }
+// *********************************************************** TERRITORY ***********************************************************
 
-Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), ownedBy(-1) { }
+/// <summary>
+/// Territory no-param constructor
+/// </summary>
+Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0), country(""){ }
 
+/// <summary>
+/// Constructor that sets the territory name, id, continent id
+/// </summary>
+/// <param name="country">the name of the country/territory</param>
+/// <param name="id">the territory's id</param>
+/// <param name="continentId">the id of the continent the territory belongs to</param>
+Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), numberOfArmies(0), ownedBy(-1) { }
+
+/// <summary>
+/// Destructor 
+/// </summary>
 Territory::~Territory() {};
 
-Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), country(territory.country) {
+/// <summary>
+/// Copy Contructor 
+/// </summary>
+/// <param name="territory"></param>
+Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), numberOfArmies(0), country(territory.country) {
 	this->adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
 	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
 }
 
+/// <summary>
+/// Adds armies to the territory
+/// </summary>
+/// <param name="armies"></param>
+void Territory::addArmies(int armies) {
+	numberOfArmies += armies;
+}
+
+/// <summary>
+/// Removes armies from the territory
+/// In the case that there are too many armies removed and the number of armies left 
+/// on the territory is negative, then we set the armies to 0
+/// </summary>
+/// <param name="armies"></param>
+void Territory::removeArmies(int armies) {
+	numberOfArmies -= armies;
+	numberOfArmies = numberOfArmies > 0 ? numberOfArmies : 0;
+}
+
+/// <summary>
+/// Overload of the assignment operator
+/// /// </summary>
+/// <param name="territory"></param>
+/// <returns></returns>
 Territory& Territory::operator= (const Territory& territory) {
 	id = territory.id;
 	country = territory.country;
 	continentId = territory.continentId;
+	numberOfArmies = territory.numberOfArmies;
 	ownedBy = territory.ownedBy;
 	adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
 	adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
@@ -55,6 +125,12 @@ Territory& Territory::operator= (const Territory& territory) {
 	return *this;
 }
 
+/// <summary>
+/// This formats how the territory will be outputted when using cout << territory
+/// </summary>
+/// <param name="output"></param>
+/// <param name="territory"></param>
+/// <returns></returns>
 std::ostream& operator << (std::ostream& output, const Territory& territory) {
 	output << "ID: " << territory.id << std::endl
 		<< "Country: " << territory.country << std::endl
@@ -75,9 +151,17 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 }
 
 
-//MAP
+// *********************************************************** MAP ***********************************************************
+
+/// <summary>
+/// Map no-param constructor
+/// </summary>
 Map::Map() { }
 
+/// <summary>
+/// The maps copy constructor
+/// </summary>
+/// <param name="map"></param>
 Map::Map(const Map& map) {
 	for (std::pair<int, Territory*> territory : map.territories) {
 		this->territories[territory.first] = new Territory(*(territory.second));
@@ -94,6 +178,9 @@ Map::Map(const Map& map) {
 	}
 }
 
+/// <summary>
+/// The maps destructor, deletes all the pointers and sets the pointer to point to NULL
+/// </summary>
 Map::~Map() {
 	for (std::pair<int, Territory*> territory : territories) {
 		delete territory.second;
@@ -111,21 +198,41 @@ Map::~Map() {
 	}
 }
 
+/// <summary>
+/// Overload of the assignment operator
+/// </summary>
+/// <param name="map"></param>
+/// <returns></returns>
 Map& Map::operator= (const Map& map) {
 	this->territories = map.territories;
 	this->continents = map.continents;
 	this->continentTerritories = map.continentTerritories;
+	return *this;
 }
 
+/// <summary>
+/// This formats how the map will be outputted when using cout << map
+/// </summary>
+/// <param name="output">the output stream</param>
+/// <param name="map">The mapo we are outputting</param>
+/// <returns></returns>
 std::ostream& operator << (std::ostream& output, const Map& map) {
 
 	for (std::pair<int, std::vector<Territory*>> continent : map.continentTerritories) {
-			output << "Continent: " << map.continents.find(continent.first)->second->name << std::endl;
+			output << "Continent: " << map.continents.at(continent.first)->name << std::endl;
 		for (Territory* territory : continent.second) {
+			output << *territory;
 		}
 	}
+
+	return output;
 }
 
+/// <summary>
+/// Returns the territory with the given id
+/// </summary>
+/// <param name="id">the id of the territory</param>
+/// <returns></returns>
 Territory* Map::getTerritory(int id) {
 	return territories[id];
 }
@@ -142,6 +249,13 @@ Territory* Map::addTerritory(std::string country, int id, int continentId) {
 	return territory;
 }
 
+/// <summary>
+/// Creates a new continent and stores the continent information in the Map
+/// </summary>
+/// <param name="continent">the name of the continent</param>
+/// <param name="continentId">the continent's id</param>
+/// <param name="numberOfArmies">the bonus number of armies you get for conquering the entire continent</param>
+/// <returns></returns>
 Continent* Map::addContinent(std::string continent, int continentId, int numberOfArmies) {
 	Continent *newContinent = new Continent(continent, continentId, numberOfArmies);
 	continents[continentId] = newContinent;

@@ -19,11 +19,13 @@ namespace MapDriver {
 
 std::string test1() {
 	Map* map = new Map();
-	Territory* t1 = map->addTerritory("test1", 1, 2);
-	Territory* t2 = map->addTerritory("test2", 2, 2);
-	Territory* t3 = map->addTerritory("test3", 3, 2);
-	Territory* t4 = map->addTerritory("test4", 4, 2);
-	Territory* t5 = map->addTerritory("test5", 5, 2);
+	map->addContinent("Canada", 2, 20);
+
+	Territory* t1 = map->addTerritory("Quebec", 1, 2);
+	Territory* t2 = map->addTerritory("Ontario", 2, 2);
+	Territory* t3 = map->addTerritory("British Columbia", 3, 2);
+	Territory* t4 = map->addTerritory("Nova Scotia", 4, 2);
+	Territory* t5 = map->addTerritory("Alberta", 5, 2);
 	//Territory* t6 = map->addTerritory(6, 0, "test6", "Canada");
 
 	std::vector<int> connections = { 4, 5 };
@@ -35,7 +37,7 @@ std::string test1() {
 
 	bool valid =  map->validate();
 
-	std::cout << *t3;
+	std::cout << *map;
 	delete map;
 	return valid ? "Map is valid" : "Map is invalid";
 }
