@@ -9,17 +9,41 @@
 using namespace std;
 
 
-//Default constructor
+
+// *********************************************************** PLAYER ***********************************************************
+
+
+/// <summary>
+/// Default constructor
+/// </summary>
+
 Player::Player() {
 
-	this->nb_Of_Players = ++count; //increases total number of players once they created 
-	this->hand = vector<Cards*>;
-	this->orders = vector<OrdersList*>;
-	this->territories = vector<Territory*>;
+	this->player_name = "";
+	this->hand = vector<Cards*>(0);
+	this->orders = vector<Order*>(0);
+	this->territories = vector<Territory*>(0);
+
 
 }
 
-//Method which allows the player to attack adjacent countries
+/// <summary>
+/// Parametrised constructor where we create a player with his own hand, territory, and order
+/// </summary>
+
+Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> o)
+{
+	this->player_name = n;
+	this->hand = h;
+	this->territories = t;
+	this->orders = o;
+
+}
+
+
+///<summary>
+///Method which allows the player to attack adjacent countries
+/// </summary>
 vector<Territory*> Player::toAttack()
 {
 	vector<Territory*> attackList;
@@ -31,8 +55,9 @@ vector<Territory*> Player::toAttack()
 	return attackList;
 
 }
-
-//Method which allows the player to attack adjacent countries
+///<summary>
+///Method which allows the player to defend themselves from adjacent countries adjacent countries
+///</summary>
 vector<Territory*> Player::toDefend()
 {
 	vector<Territory*> defendList;
@@ -45,18 +70,43 @@ vector<Territory*> Player::toDefend()
 }
 
 
-//Method which will add an issued order to the orders list
-void Player::issueOrder(OrdersList* order)
+///<summary>
+///Method which will add an issued order to the orders list
+/// </summary>
+void Player::issueOrder(Order* order)
 {
 	this->orders.push_back(order);
 }
 
-//Copy Constructor
-//Creates a shallow copy
 
+/// <summary>
+/// Assignment operator; allows us to perform deep copy
+/// </summary>
+Player& Player::operator=(const Player& p)
+{
+	// copy orders
+	this->orders = p.orders; 
+
+	// copy territories
+	for (int i = 0; i < p.territories.size(); i++)
+	{
+		this->territories.push_back(p.territories.at(i));
+	}
+
+	//copies hand
+	this->hand = p.hand; // assumes Hand assignment operator is correctly implemented
+
+	return *this;
+
+}
+
+///<summary>
+///Copy Constructor
+///Creates a shallow copy
+///</summary>
 Player::Player(const Player& play) {
 
-	Player::Player();
+	
 	for (int i = 0; i < play.hand.size(); i++) {
 
 		Cards* c = play.hand.at(i);
@@ -65,8 +115,8 @@ Player::Player(const Player& play) {
 
 		for (int i = 0; i < play.orders.size(); i++) {
 
-			OrdersList* order = play.orders.at(i);
-			this->orders.push_back(new OrdersList(*order));
+			Order* order = play.orders.at(i);
+			this->orders.push_back(new Order(*order));
 
 		}
 
@@ -81,46 +131,23 @@ Player::Player(const Player& play) {
 	}
 
 }
-
-//Destructor for the player
+///<summary>
+///Destructor for the player
+/// </summary>
 Player::~Player() {
 
 	delete this;
 }
 
 
-
-//Assignment operator 
-//Performs a deep copy
-Player& Player::operator=(const Player& player)
-{
-
-	//Copies order
-	for (int i = 0; i < player.orders.size(); i++)
-	{
-		this->orders.push_back(player.orders.at(i));
-	}
-	//Copies hand 
-	for (int i = 0; i < player.hand.size(); i++)
-	{
-		this->hand.push_back(player.hand.at(i));
-	}
-	//Copies territories
-	for (int i = 0; i < player.territories.size(); i++)
-	{
-		this->territories.push_back(player.territories.at(i));
-	}
-
-	return *this;
-
-}
-
-
-//Method to print what territories the player owns, what his hands contains, and what are the orders he can issue
+///<summary>
+///Method to print what territories the player owns, what his hands contains, and what are the orders he can issue
+/// </summary>
 ostream& operator<<(ostream& strm, Player& player)
 {
-	cout << "Player has " << player.territories.size() << " territories at his disposal.\n" << "He has "
+	strm << "Player has " << player.territories.size() << " territories at his disposal.\n" << "He has "
 		<< player.hand.size() << " number of cards.\n" << "And, he has " << player.orders.size() << " orders that he can use.";
 
 
+	return strm;
 }
