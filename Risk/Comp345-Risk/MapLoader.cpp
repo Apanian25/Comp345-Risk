@@ -30,7 +30,7 @@ MapLoader::~MapLoader() {
 /// <param name="in"></param>
 /// <param name="m"></param>
 /// <returns></returns>
-istream& operator>>(istream& in, MapLoader& m)
+istream& operator << (istream& in, MapLoader& m)
 {
 	out << "The map name is ..." << m.mapName << endl;
 	return out;
@@ -44,8 +44,7 @@ istream& operator>>(istream& in, MapLoader& m)
 MapLoader::MapLoader(const MapLoader &map){
 
 	cout << "Copy constructor is being called...\n" << endl;
-	ptr = new int;
-	*ptr = *map.ptr;
+	this->map = map;
 }
 
 /// <summary>
@@ -64,11 +63,6 @@ MapLoader& MapLoader::operator=(const MapLoader& mapLoader)
 
 	return *this;
 }
-
-//copy constructor for maploader class
-
-
-
 
 /// <summary>
 /// Loads parsed map
@@ -182,7 +176,7 @@ Map* MapLoader::ReadMap(std::string mapFilePath) {
 							borders.push_back(std::stoi(words[i]));
 						}
 
-						//Adding borders to map object, 
+						//Adding borders to map object
 						parsedMap.AddBorders(countryId, borders);
 
 						cout << "Adding borders to country number " << countryId << "\n" << endl;

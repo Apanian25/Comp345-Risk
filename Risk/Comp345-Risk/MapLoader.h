@@ -14,7 +14,7 @@ class MapLoader {
 public:
 	//default constructor
 	MapLoader();
-	//sets the mapName
+	//constructor
 	MapLoader(std::string mapName);
 	//destructor
 	~MapLoader();
@@ -27,7 +27,7 @@ public:
 	Map* LoadMap(std::string mapFilePath);
 
 	std::string mapName;
-	friend istream& operator >> (istream& in, MapLoader &m);
+	friend istream& operator << (istream& in, MapLoader &m);
 
 private:
 	static const int NUM_ENTRIES_CONTINENT = 3;
