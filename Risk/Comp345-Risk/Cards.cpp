@@ -47,10 +47,11 @@ Cards& Cards :: operator= (const Cards& card)
 /// <summary>
 /// Deck class constructor
 /// </summary>
-Deck::Deck() // deck default constructor 
+Deck::Deck() // deck Class constructor 
 {
 
 }
+
 /// <summary>
 /// Deck class deep copy constructor:
 ///  iterates through the card_list vector and creates a pointer to a new Card in the paramter's deck
@@ -58,7 +59,7 @@ Deck::Deck() // deck default constructor
 /// <param name="orig"> takes a constant Deck object by reference</param>
 Deck::Deck(const Deck& orig) : cards_list(orig.cards_list.size()) 
 {
-	for (std::size_t i = 0; i < orig.cards_list.size(); ++i)
+	for (int i = 0; i < orig.cards_list.size(); ++i)
 		cards_list[i] = new Cards(*orig.cards_list[i]);
 }
 
@@ -145,7 +146,7 @@ Hand::Hand() // hand default constuructor
 /// <param name="orig">  takes a constant Hand object by reference</param>
 Hand::Hand(const Hand& orig) : hand(orig.hand.size()) // hand copy contrustor for vector
 {
-	for (std::size_t i = 0; i < orig.hand.size(); ++i)
+	for (int i = 0; i < orig.hand.size(); ++i)
 		hand[i] = new Cards(*orig.hand[i]);
 }
 
@@ -201,14 +202,14 @@ ostream& operator << (ostream& output, const Hand& hand)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="card">takes a constant Card object by reference</param>
-void Deck::Initialize(Deck& deck, Cards& card) 
+void Deck::initialize(Deck& deck, Cards& card) 
 {
-	for (int j = 0; j < deck.deck_multiplier; ++j) 
+	for (int i = 0; i < deck.deck_multiplier; ++i) 
 	{
-		for (int i = 0; i < card.num_of_types; ++i) 
+		for (int j = 0; j < card.num_of_types; ++j) 
 		{
 			Cards* card = new Cards();
-			card->type = Type(i);
+			card->type = Type(j);
 			deck.cards_list.push_back(card);
 		}
 	}
@@ -247,7 +248,7 @@ void Deck::shuffle(Deck& deck)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="h">takes a constant Hand object by reference</param>
-void Hand::Draw(Deck& deck, Hand& h) 
+void Hand::draw(Deck& deck, Hand& h) 
 {
 	h.hand.push_back(deck.cards_list[0]);
 	deck.cards_list.erase(deck.cards_list.begin());
@@ -266,17 +267,16 @@ void Hand::Draw(Deck& deck, Hand& h)
 /// <param name="h">takes a constant Hand object by reference</param>
 /// <param name="ol">takes a constant OrderList object by reference</param>
 /// <param name="d">takes a constant deck object by reference</param>
-void Hand::Play(Hand& h, OrderList& ol, Deck& d)
+void Hand::play(Hand& h, OrderList& ol, Deck& d)
 {
 	
 	std::cout << "This is Your Hand" << std::endl  << h << " which card would you like to play?" << std::endl;
 	std::string name;
 	std::cin >> name;
 	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-
 	if (name == "bomb")
 	{
-		int counter = 1;
+		int counter = 0;
 		for (Cards* c : h.hand)
 		{
 			
@@ -287,13 +287,13 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 				std::cout << "Bomb Card has been selected" << std::endl;
 				break;
 			}		
-			else if (c->type != Type(0) && h.hand.size() == counter)
-			{
-				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-				return;
-
-			}
 			counter++;
+		}
+
+		if (counter == h.hand.size())
+		{
+			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+			return;
 		}
 	 
 		Bomb* b = new Bomb();
@@ -303,7 +303,7 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 
 	else if (name == "reinforcement")
 	{
-		int counter = 1;
+		int counter = 0;
 		for (Cards* c : h.hand)
 		{
 			if (c->type == Type(1))
@@ -312,21 +312,21 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
 				break;
 			}
-			else if (c->type != Type(1) && h.hand.size() == counter)
-			{
-				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-				return;
-
-			}
 			counter++;
-			
 		}
+
+		if (counter == h.hand.size())
+		{
+			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+			return;
+		}
+
 		std::cout << "Reinforcement has been played, this card is not a special order" << std::endl;
 	}
 
 	else if (name == "blockade")
 	{
-		int counter = 1;
+		int counter = 0;
 		for (Cards* c : h.hand)
 		{
 			if (c->type == Type(2))
@@ -335,17 +335,14 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
 				break;
 			}
-			else if (c->type != Type(2) && h.hand.size() == counter)
-			{
-				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-				return;
-
-			}
 			counter++;
 		}
+		if (counter == h.hand.size())
+		{
+			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+			return;
+		}
 	
-	
-
 		Blockade* bl = new Blockade();
 		ol.list.push_back(bl);
 		std::cout << "Blockade has been Placed in the Order List" << std::endl;
@@ -353,7 +350,7 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 
 	else if (name == "airlift")
 	{
-		int counter = 1;
+		int counter = 0;
 		for (Cards* c : h.hand)
 		{
 			if (c->type == Type(3))
@@ -362,15 +359,14 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
 				break;
 			}
-			else if (c->type != Type(3) && h.hand.size() == counter)
-			{
-				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-				return;
-
-			}
 			counter++;
 		}
 	
+		if (counter == h.hand.size())
+		{
+			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+			return;
+		}
 
 		Airlift* a = new Airlift();
 		ol.list.push_back(a);
@@ -378,7 +374,7 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 	}
 	else if (name == "diplomacy")
 	{
-		int counter = 1;
+		int counter = 0;
 		for (Cards* c : h.hand)
 		{
 			if (c->type == Type(4))
@@ -387,14 +383,13 @@ void Hand::Play(Hand& h, OrderList& ol, Deck& d)
 				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
 				break;
 			}
-			else if (c->type != Type(4) && h.hand.size() == counter)
-			{
-				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-				return;
-
-			}
 			counter++;
+		}
 
+		if (counter == h.hand.size())
+		{
+			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+			return;
 		}
 
 		Diplomacy* dp = new Diplomacy();

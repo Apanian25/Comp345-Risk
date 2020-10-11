@@ -14,7 +14,7 @@ namespace CardsDriver {
 		Hand* H2 = new Hand();
 
 		std::cout << "-----------------Initial Deck---------------------" << std::endl;
-		My_Deck->Initialize(*My_Deck, *card);
+		My_Deck->initialize(*My_Deck, *card);
 		cout << *My_Deck;
 		
 		std::cout << "------------------shuffled Deck-------------------------" << std::endl;
@@ -25,8 +25,8 @@ namespace CardsDriver {
 		
 		for (int i = 0; i < 3; i++)
 		{
-			H1->Draw(*My_Deck, *H1);
-			H2->Draw(*My_Deck, *H2);
+			H1->draw(*My_Deck, *H1);
+			H2->draw(*My_Deck, *H2);
 		}
 		
 		std::cout << " -----------------------Hand1-------------------------------" << std::endl;
@@ -40,13 +40,15 @@ namespace CardsDriver {
 		std::cout << " ----------------------Deck View after Cards Drawn-----------------------------" << std::endl;
 		cout << *My_Deck;
 		
-
-		std::cout << " -----------------------Play Method Called-------------------------------" << std::endl;
 		for (int i = 0; i < 3; i++)
 		{
-			H1->Play(*H1, *ol, *My_Deck);
+			std::cout << " -----------------------Play Method Called-------------------------------" << std::endl;
+			H1->play(*H1, *ol, *My_Deck);
 			
 		}
+		std::cout << " -----------------------Hand view after play methods-------------------------------" << std::endl;
+		cout << *H1;
+
 
 		std::cout << "----------------------------- order list after all cards are played-----------------------------" << std::endl;
 		for (int i = 0; i < ol->list.size(); i++)

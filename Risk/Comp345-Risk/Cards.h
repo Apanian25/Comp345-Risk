@@ -12,8 +12,8 @@ enum Type { bomb, reinforcement, blockade, airlift, diplomacy };
 
 
 /// <summary>
-/// Crad class that initializes each separate card
-/// each card has a type whihc is held in the enum 
+/// Cards class that initializes each separate card
+/// each card has a type which is held in the enum 
 /// there is a max of 5 types of cards
 /// </summary>
 class Cards
@@ -40,7 +40,7 @@ class  Deck
 public:
 	vector<Cards*> cards_list;
 	int deck_multiplier = 5;
-	void Initialize(Deck& deck, Cards& card);
+	void initialize(Deck& deck, Cards& card);
 	void shuffle(Deck&);
 	Deck();
 	~Deck();
@@ -59,8 +59,8 @@ class Hand
 {
 public:
 	vector<Cards*> hand; 
-	void Draw(Deck&, Hand&);
-	void Play(Hand& h, OrderList& ol, Deck& d);
+	void draw(Deck&, Hand&);
+	void play(Hand& h, OrderList& ol, Deck& d);
 	Hand();
 	~Hand();
 	Hand(const Hand& orig);
