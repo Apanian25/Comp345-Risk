@@ -35,6 +35,9 @@ public:
 	Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> o); //Constructtor which creates a player with a name, order, hand, and territory
 	Player(const Player& p); //Copy constructor
 	~Player(); //Destructor
+	vector <Territory*> terrToAtk;
+	vector<Territory*> terrToDef;
+
 
 
 
@@ -43,7 +46,7 @@ public:
 	*/
 
 	vector<Territory*> toAttack(); //Allows territories to attack
-	vector<Territory*> toDefend(); //Allows territories to defend
+	void toDefend(); //Allows territories to defend
 	void issueOrder(Order* order); //Gives order to the player and adds it to the other list
 
 

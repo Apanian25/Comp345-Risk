@@ -54,29 +54,33 @@ Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> 
 /// </summary>
 vector<Territory*> Player::toAttack()
 {
-	vector<Territory*> attackList;
-	for (Territory* territory : territories) {
-		for (Territory* attackable : territory->adjacentTerritoriesTo) {
-			attackList.push_back(attackable);
-		}
+	Territory* tAtt1 = new Territory("Congo", 3, 22);
 
-	
+	terrToAtk.push_back(tAtt1);
+
+	cout << "Here are the territories that a player can defend:\n";
+	for (int i = 0; i < terrToAtk.size(); i++) {
+		cout << *terrToAtk[i] << endl;
 	}
-	return attackList;
+
+
+	return terrToAtk;
 
 }
 ///<summary>
-///Method which allows the player to defend themselves from adjacent countries adjacent countries
+///Method which allows the player to defend themselves from other countries
 ///</summary>
-vector<Territory*> Player::toDefend()
+void Player::toDefend()
 {
-	vector<Territory*> defendList;
-	for (Territory* territory : territories) {
-		for (Territory* defendable : territory->adjacentTerritoriesFrom) {
-			defendList.push_back(defendable);
-		}
+	Territory* t1 = new Territory("Kenya", 3, 21);
+
+	terrToDef.push_back(t1);
+
+	cout << "Here are the territories that a player can defend:\n";
+	for (int i =0; i < terrToDef.size(); i++) {
+		cout << *terrToDef[i] << endl;
 	}
-	return defendList;
+
 }
 
 

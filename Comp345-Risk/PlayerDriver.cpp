@@ -62,14 +62,7 @@ int main() {
 	Player* Player2 = new Player("Jason", hand, terr, order);
 	Player* Player3 = new Player("Mark");
 
-	vector<Territory*> terrToDef = Player2->toDefend();
-	vector<Territory*> terrToAtk = Player1->toAttack();
 
-	terrToDef.push_back(t1);
-	terrToDef.push_back(t2);
-
-	terrToAtk.push_back(t3);
-	terrToAtk.push_back(t4);
 
 
 	/*
@@ -80,44 +73,31 @@ int main() {
 	/*
 		Printing out players and some methods
 	*/
-	cout << *Player2;
-	cout <<endl;
+	cout << *Player2<<endl;
 	cout << endl;
 
 	Player2->issueOrder(or2);
 	cout << endl;
 
 
-	cout << *Player1;
-	cout << endl;
+	cout << *Player1<< endl;
 	cout << endl;
 
 
-	cout << *Player4;
-	cout << endl;
+	cout << *Player4<< endl;
 	cout << endl;
 
 	cout << *Player3 << endl;
 	cout << endl;
 
 
-
 	/*
-		Printing out territories to attack
+		Testing out the toAttack and toDefend method
 	*/
-	cout << "\nTerritories that can attack" << endl;
-	for (int i = 0; i < terrToAtk.size(); i++) {
-		cout << *terrToAtk[i] << endl;
-	}
 
-
-	/*
-		Printing out territories to defend
-	*/
-	cout << "\nTerritories that can defend" << endl;
-	for (int i = 0; i < terrToDef.size(); i++) {
-		cout << *terrToDef[i] << endl;
-	}
+	Player2->toAttack();
+	Player2->toDefend();
+	
 
 
 	return 0;
