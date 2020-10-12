@@ -2,6 +2,7 @@
 #include "Orders.h"
 #include <iostream>
 #include <cstdlib>
+#include <time.h> 
 #include <iterator>
 #include <algorithm>
 
@@ -226,10 +227,13 @@ void Deck::initialize(Deck& deck, Cards& card)
 /// <param name="deck">takes a constant Deck object by reference</param>
 void Deck::shuffle(Deck& deck)   
 {
+	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
+	srand(time(NULL));
+
 	vector <Cards*> shuffled_Deck;
 	while (!deck.cards_list.empty())
 	{
-		size_t randomizer = rand() % deck.cards_list.size();
+		int randomizer = rand() % deck.cards_list.size();
 		shuffled_Deck.push_back(deck.cards_list[randomizer]);
 		deck.cards_list.erase(deck.cards_list.begin() + randomizer);
 	}
@@ -270,134 +274,147 @@ void Hand::draw(Deck& deck, Hand& h)
 void Hand::play(Hand& h, OrderList& ol, Deck& d)
 {
 	
-	std::cout << "This is Your Hand" << std::endl  << h << " which card would you like to play?" << std::endl;
-	std::string name;
-	std::cin >> name;
-	std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-	if (name == "bomb")
-	{
-		int counter = 0;
-		for (Cards* c : h.hand)
+	bool isValidCard = false;
+	while (!isValidCard) {
+
+		std::cout << "This is Your Hand" << std::endl  << h << " which card would you like to play?" << std::endl;
+		std::string name;
+		std::cin >> name;
+		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+		if (name == "bomb")
 		{
+			int counter = 0;
+			int initialHandSize = h.hand.size();
+			for (Cards* c : h.hand)
+			{
 			
-			if (c->type == Type(0))
-			{
-				d.cards_list.push_back(c);
-				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());\
-				std::cout << "Bomb Card has been selected" << std::endl;
-				break;
-			}		
-			counter++;
-		}
+				if (c->type == Type(0))
+				{
+					d.cards_list.push_back(c);
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());\
+					std::cout << "Bomb Card has been selected" << std::endl;
+					isValidCard = true;
+					break;
+				}		
+				counter++;
+			}
 
-		if (counter == h.hand.size())
-		{
-			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-			return;
-		}
+			if (counter == initialHandSize)
+			{
+				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+				return;
+			}
 	 
-		Bomb* b = new Bomb();
-		ol.list.push_back(b);
-		std::cout << "Bomb has been Placed in the Order List" << std::endl;
-	}
+			Bomb* b = new Bomb();
+			ol.list.push_back(b);
+			std::cout << "Bomb has been Placed in the Order List" << std::endl;
+		}
 
-	else if (name == "reinforcement")
-	{
-		int counter = 0;
-		for (Cards* c : h.hand)
+		else if (name == "reinforcement")
 		{
-			if (c->type == Type(1))
+			int counter = 0;
+			int initialHandSize = h.hand.size();
+			for (Cards* c : h.hand)
 			{
-				d.cards_list.push_back(c);
-				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
-				break;
+				if (c->type == Type(1))
+				{
+					d.cards_list.push_back(c);
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+					isValidCard = true;
+					break;
+				}
+				counter++;
 			}
-			counter++;
-		}
 
-		if (counter == h.hand.size())
-		{
-			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-			return;
-		}
-
-		std::cout << "Reinforcement has been played, this card is not a special order" << std::endl;
-	}
-
-	else if (name == "blockade")
-	{
-		int counter = 0;
-		for (Cards* c : h.hand)
-		{
-			if (c->type == Type(2))
+			if (counter == initialHandSize)
 			{
-				d.cards_list.push_back(c);
-				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
-				break;
+				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+				return;
 			}
-			counter++;
+
+			std::cout << "Reinforcement has been played, this card is not a special order" << std::endl;
 		}
-		if (counter == h.hand.size())
+
+		else if (name == "blockade")
 		{
-			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-			return;
-		}
+			int counter = 0;
+			int initialHandSize = h.hand.size();
+			for (Cards* c : h.hand)
+			{
+				if (c->type == Type(2))
+				{
+					d.cards_list.push_back(c);
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+					isValidCard = true;
+					break;
+				}
+				counter++;
+			}
+			if (counter == initialHandSize)
+			{
+				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+				return;
+			}
 	
-		Blockade* bl = new Blockade();
-		ol.list.push_back(bl);
-		std::cout << "Blockade has been Placed in the Order List" << std::endl;
-	}
+			Blockade* bl = new Blockade();
+			ol.list.push_back(bl);
+			std::cout << "Blockade has been Placed in the Order List" << std::endl;
+		}
 
-	else if (name == "airlift")
-	{
-		int counter = 0;
-		for (Cards* c : h.hand)
+		else if (name == "airlift")
 		{
-			if (c->type == Type(3))
+			int counter = 0;
+			int initialHandSize = h.hand.size();
+			for (Cards* c : h.hand)
 			{
-				d.cards_list.push_back(c);
-				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
-				break;
+				if (c->type == Type(3))
+				{
+					d.cards_list.push_back(c);
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+					isValidCard = true;
+					break;
+				}
+				counter++;
 			}
-			counter++;
-		}
 	
-		if (counter == h.hand.size())
-		{
-			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-			return;
-		}
-
-		Airlift* a = new Airlift();
-		ol.list.push_back(a);
-		std::cout << "Airlift has been Placed in the Order List" << std::endl;
-	}
-	else if (name == "diplomacy")
-	{
-		int counter = 0;
-		for (Cards* c : h.hand)
-		{
-			if (c->type == Type(4))
+			if (counter == initialHandSize)
 			{
-				d.cards_list.push_back(c);
-				h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
-				break;
+				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+				return;
 			}
-			counter++;
-		}
 
-		if (counter == h.hand.size())
+			Airlift* a = new Airlift();
+			ol.list.push_back(a);
+			std::cout << "Airlift has been Placed in the Order List" << std::endl;
+		}
+		else if (name == "diplomacy")
 		{
-			std::cout << "sorry your Hand doesnt contain this card" << std::endl;
-			return;
+			int counter = 0;
+			int initialHandSize = h.hand.size();
+			for (Cards* c : h.hand)
+			{
+				if (c->type == Type(4))
+				{
+					d.cards_list.push_back(c);
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());
+					isValidCard = true;
+					break;
+				}
+				counter++;
+			}
+
+			if (counter == initialHandSize)
+			{
+				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
+				return;
+			}
+
+			Diplomacy* dp = new Diplomacy();
+			ol.list.push_back(dp);
+			std::cout << "Diplomacy has been Placed in the Order List" << std::endl;
 		}
-
-		Diplomacy* dp = new Diplomacy();
-		ol.list.push_back(dp);
-		std::cout << "Diplomacy has been Placed in the Order List" << std::endl;
 	}
-	
-
 }
 
 

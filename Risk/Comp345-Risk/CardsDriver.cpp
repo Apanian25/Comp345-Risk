@@ -53,7 +53,6 @@ namespace CardsDriver {
 		std::cout << "----------------------------- order list after all cards are played-----------------------------" << std::endl;
 		for (int i = 0; i < ol->list.size(); i++)
 		{
-			
 			std::cout << *(ol->list[i]) << std::endl;
 		}
 		
