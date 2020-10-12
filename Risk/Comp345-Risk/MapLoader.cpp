@@ -80,7 +80,12 @@ Map* MapLoader::LoadMap(std::string mapFilePath) {
 
 	parsedMap = ReadMap(mapFilePath);
 
-	cout << "Map successfully generated, returning parsed map...\n" << endl;
+	if (parsedMap == NULL) {
+		cout << "Map was NOT successfully generated\n" << endl;
+	}
+	else {
+		cout << "Map successfully generated, returning parsed map...\n" << endl;
+	}
 
 	return parsedMap;
 }
