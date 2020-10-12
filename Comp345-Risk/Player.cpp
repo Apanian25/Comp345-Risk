@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "Cards.h"
 #include "Map.h"
-#include "OrdersList.h"
+#include "Orders.h"
 #include <vector>
 #include <list>
 using namespace std;
@@ -11,6 +11,8 @@ using namespace std;
 
 
 // *********************************************************** PLAYER ***********************************************************
+
+
 
 
 /// <summary>
@@ -24,6 +26,12 @@ Player::Player() {
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 
+
+}
+
+Player::Player(string n)
+{
+	this->player_name = n;
 
 }
 
@@ -51,6 +59,8 @@ vector<Territory*> Player::toAttack()
 		for (Territory* attackable : territory->adjacentTerritoriesTo) {
 			attackList.push_back(attackable);
 		}
+
+	
 	}
 	return attackList;
 
@@ -75,7 +85,11 @@ vector<Territory*> Player::toDefend()
 /// </summary>
 void Player::issueOrder(Order* order)
 {
+	
 	this->orders.push_back(order);
+
+
+	cout << "Order " << *order << " has been passed to the order list for player " << player_name <<"." <<endl;
 }
 
 
@@ -85,7 +99,7 @@ void Player::issueOrder(Order* order)
 Player& Player::operator=(const Player& p)
 {
 	// copy orders
-	this->orders = p.orders; 
+	this->orders = p.orders;
 
 	// copy territories
 	for (int i = 0; i < p.territories.size(); i++)
@@ -106,7 +120,7 @@ Player& Player::operator=(const Player& p)
 ///</summary>
 Player::Player(const Player& play) {
 
-	
+
 	for (int i = 0; i < play.hand.size(); i++) {
 
 		Cards* c = play.hand.at(i);
@@ -136,7 +150,7 @@ Player::Player(const Player& play) {
 /// </summary>
 Player::~Player() {
 
-	delete this;
+	
 }
 
 
@@ -145,8 +159,8 @@ Player::~Player() {
 /// </summary>
 ostream& operator<<(ostream& strm, Player& player)
 {
-	strm << "Player has " << player.territories.size() << " territories at his disposal.\n" << "He has "
-		<< player.hand.size() << " number of cards.\n" << "And, he has " << player.orders.size() << " orders that he can use.";
+	strm <<"Player's name is " <<player.player_name <<".\n" << player.player_name << " has " << player.territories.size() << " territories at their disposal.\n" << "He has "
+		<< player.hand.size() << " number of cards in his hand.\n" << "And, he has " << player.orders.size() << " orders that he can use.";
 
 
 	return strm;
