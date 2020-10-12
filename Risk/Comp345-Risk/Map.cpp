@@ -156,7 +156,11 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 /// <summary>
 /// Map no-param constructor
 /// </summary>
-Map::Map() { }
+Map::Map() { 
+	this->territories = std::map<int, Territory*>();
+	this->continents = std::map<int, Continent*>();
+	this->continentTerritories = std::map<int, std::vector<Territory*>>();
+}
 
 /// <summary>
 /// The maps copy constructor

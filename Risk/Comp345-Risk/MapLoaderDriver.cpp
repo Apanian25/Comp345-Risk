@@ -3,47 +3,60 @@
 #include <iostream>
 #include <vector>
 #include <filesystem>
-namespace fs = std::filesystem;
+#include <fstream>
+#include <iostream>
+namespace fs = std::experimental::filesystem;
 
+
+void testValid(MapLoader* loader);
+void testInvalid(MapLoader* loader);
 namespace MapLoaderDriver {
 	int main() {
 		std::cout << "MapLoaderDriver\n" << std::endl;
 
-		//valid map
-		ifstream mapFile("Maps\\solar.map");
+		MapLoader* loader = new MapLoader("solar");
 
-		try
-		{
-			Map* map = MapLoader::LoadMap(mapFile);
-		}
-		catch (const std::exception&)
-		{
-			cout << "Loading map failed with the following error: " << endl;
-			cout << exception << "\n" << endl;
-		}
+		testValid(loader);
+		testInvalid(loader);
 
-		std::vector<string> invalidMaps;
-		
-		//invalid maps
-		std::string path = "Maps";
-		for (auto& entry: fs::directory_iterator(path)) {
-			invalidMaps.push_back(entry.path());
-		}
+		delete loader;
+		loader = NULL;
 
-		for (size_t i = 0; i < invalidMaps.size; i++)	
-		{
-			try
-			{
-				Map* map = MapLoader::LoadMap(invalidMaps[i]);
-			}
-			catch (const std::exception&)
-			{
-				cout << "Loading map failed with the following error: " << endl;
-				cout << exception << "\n" << endl;
-			}
-		}
+		return 0;
+	}
+}
 
-		
-		return 1;
+void testValid(MapLoader* loader) {
+	Map* map = loader->LoadMap("Maps\\solar.map");
+	if (map == NULL) {
+			cout << "MAP is invalid, failed to load (should be valid) " << endl;
+	}
+	else {
+		cout << "Map: " << loader->mapName << " was valid" << endl;
+	}
+	delete map;
+	map = NULL;
+}
+
+void testInvalid(MapLoader* loader) {
+	//invalid maps
+	std::string path = "Maps";
+	std::string invalidMaps[10]{ "NoBordersHeader.map", "NoBordersSolar.map",
+								"NoContinentHeader.map", "NoContinentsSolar.map",
+								"NoCountriesContinentID.map", "NoCountriesHeader.map",
+								"NoCountriesID.map", "NoCountriesSolar.map",
+								"NoHeaders.map", "NoNumOfArmies.map" };
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		Map* map = loader->LoadMap(invalidMaps[i]);
+		if (map == NULL) {
+			cout << "MAP: " << invalidMaps[i] << " is invalid, failed to load" << endl;
+		}
+		else {
+			cout << "MAP is valid(but it shouldn't be)" << endl;
+		}
+		delete map;
+		map = NULL;
 	}
 }

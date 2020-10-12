@@ -9,6 +9,11 @@
 
 using namespace std;
 
+
+namespace MapLoaderDriver {
+	int main();
+}
+
 class MapLoader {
 
 public:
@@ -27,7 +32,7 @@ public:
 	Map* LoadMap(std::string mapFilePath);
 
 	std::string mapName;
-	friend istream& operator << (istream& in, MapLoader &m);
+	friend ostream& operator << (ostream& output, MapLoader &m);
 
 private:
 	static const int NUM_ENTRIES_CONTINENT = 3;
