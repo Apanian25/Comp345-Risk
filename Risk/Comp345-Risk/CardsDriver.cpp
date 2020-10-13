@@ -59,7 +59,17 @@ namespace CardsDriver {
 		
 		std::cout << " ----------------------Deck View after Play function-----------------------------" << std::endl;
 		cout << *My_Deck;
-		
+
+		delete H2;
+		H2 = NULL;
+		delete H1;
+		H1 = NULL;
+		delete ol;
+		ol = NULL;
+		delete My_Deck;
+		My_Deck = NULL;
+		delete card;
+		card = NULL;
 
 		return 1;
 	}

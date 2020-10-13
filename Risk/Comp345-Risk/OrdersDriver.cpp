@@ -53,6 +53,7 @@ namespace OrdersDriver {
 
 		//ALL pointers get deleted in the listOfOrders Destructor
 		delete listoforders;
+		listoforders = NULL;
 
 		return 0;
 	

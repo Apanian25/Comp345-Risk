@@ -39,6 +39,7 @@ std::string test1() {
 
 	std::cout << *map;
 	delete map;
+	map = NULL;
 	return valid ? "Map is valid" : "Map is invalid";
 }
 
@@ -61,5 +62,6 @@ std::string test2() {
 	bool valid = map->validate();
 
 	delete map;
+	map = NULL;
 	return valid ? "Map is valid" : "Map is invalid";
 }

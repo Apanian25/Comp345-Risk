@@ -97,6 +97,40 @@ namespace PlayerDriver {
 		Player2->toAttack();
 		Player2->toDefend();
 
+		delete t1;
+		t1 = NULL;
+		delete t2;
+		t2 = NULL;
+		delete t3;
+		t3 = NULL;
+		delete t4;
+		t4 = NULL;
+
+
+		delete Player1;
+		Player1 = NULL;
+		delete Player2;
+		Player2 = NULL;
+		delete Player3;
+		Player3 = NULL;
+		
+
+		/*
+		* Player 4 pointed to the same memory location as Player 2, no need to delete it
+		* delete Player4;
+		*/
+		Player4 = NULL;
+
+
+		delete car1;
+		car1 = NULL;
+		delete car2;
+		car2 = NULL;
+
+		delete or1;
+		or1 = NULL;
+		delete or2;
+		or2 = NULL;
 
 
 		return 0;
