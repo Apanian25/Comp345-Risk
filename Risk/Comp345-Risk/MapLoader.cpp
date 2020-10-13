@@ -74,11 +74,11 @@ MapLoader& MapLoader::operator=(const MapLoader& mapLoader)
 /// </summary>
 /// <param name="mapFilePath">path to the map file.</param>
 /// <returns></returns>
-Map* MapLoader::LoadMap(std::string mapFilePath) {
+Map* MapLoader::loadMap(std::string mapFilePath) {
 
 	cout << "Verifying map before loading...\n" << endl; 
 
-	parsedMap = ReadMap(mapFilePath);
+	parsedMap = readMap(mapFilePath);
 
 	if (parsedMap == NULL) {
 		cout << "Map was NOT successfully generated\n" << endl;
@@ -96,7 +96,7 @@ Map* MapLoader::LoadMap(std::string mapFilePath) {
 /// </summary>
 /// <param name="mapFilePath">Path to the map file.</param>
 /// <returns>pointer to valid map, or NULL if map is invalid</returns>
-Map* MapLoader::ReadMap(std::string mapFilePath) {
+Map* MapLoader::readMap(std::string mapFilePath) {
 
 	std::string line{ "" };
 	std::ifstream openFile(mapFilePath);

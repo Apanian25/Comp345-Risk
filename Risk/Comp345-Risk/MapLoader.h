@@ -29,7 +29,7 @@ public:
 	MapLoader& operator= (const MapLoader& mapLoader);
 
 	//method to be called by other classes to load a parsed map
-	Map* LoadMap(std::string mapFilePath);
+	Map* loadMap(std::string mapFilePath);
 
 	std::string mapName;
 	friend ostream& operator << (ostream& output, MapLoader &m);
@@ -47,6 +47,6 @@ private:
 	};
 
 	//read the map file - reject if not playable or missing headers/continents/countries/borders
-	Map* ReadMap(std::string mapFilePath);
+	Map* readMap(std::string mapFilePath);
 
 };
