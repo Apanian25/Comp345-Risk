@@ -27,7 +27,7 @@ namespace MapLoaderDriver {
 }
 
 void testValid(MapLoader* loader) {
-	Map* map = loader->LoadMap("Maps\\solar.map");
+	Map* map = loader->loadMap("Maps\\solar.map");
 	if (map == NULL) {
 			cout << "MAP is invalid, failed to load (should be valid) " << endl;
 	}
@@ -49,7 +49,7 @@ void testInvalid(MapLoader* loader) {
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		Map* map = loader->LoadMap(invalidMaps[i]);
+		Map* map = loader->loadMap(invalidMaps[i]);
 		if (map == NULL) {
 			cout << "MAP: " << invalidMaps[i] << " is invalid, failed to load" << endl;
 		}

@@ -1,6 +1,3 @@
-#ifndef PLAYER_H
-#define PLAYER_H
-
 #pragma once
 #include <stdio.h>
 #include <iostream>
@@ -67,5 +64,3 @@ public:
 
 
 };
-
-#endif
