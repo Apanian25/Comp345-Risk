@@ -7,13 +7,13 @@
 //Uncomment any of the main function calls to run that part of the project.
 int main() {
 	//Part 1
-	//Map::main();
+	//MapDriver::main();
 	//Part 2
-	//MapLoader::main();
+	//MapLoaderDriver::main();
 	//Part 3
-	//Player::main();
+	PlayerDriver::main();
 	//Part 4
-	OrdersDriver::main();
+	//OrdersList::main();
 	//Part 5
-	//Cards::main();
+	//CardsDriver::main();
 }
