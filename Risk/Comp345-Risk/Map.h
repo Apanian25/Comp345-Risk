@@ -29,6 +29,7 @@ struct Territory {
 	Territory(const Territory& territory);
 	void addArmies(int armies);
 	void removeArmies(int armies);
+	void setOwner(int id);
 	Territory& operator= (const Territory& territory);
 	friend std::ostream & operator << (std::ostream& output, const Territory& territory);
 
@@ -60,5 +61,8 @@ class Map {
 		void addEdges(int src, std::vector<int> dest);
 		void addEdge(int src, int dest);
 		Territory* getTerritory(int id);
+		std::map<int, Continent*> getContinents();
+		std::map<int, std::vector<Territory*>> getContinentTerritories();
+
 		bool validate();
 };

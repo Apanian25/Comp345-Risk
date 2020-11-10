@@ -6,6 +6,7 @@
 #include "Orders.h"
 #include <vector>
 #include <list>
+#include <time.h> 
 using namespace std;
 
 
@@ -22,15 +23,16 @@ using namespace std;
 Player::Player() {
 
 	this->player_name = "";
-	this->hand = vector<Cards*>(0);
+	this->hand = new Hand();
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 
 
 }
 
-Player::Player(string n)
+Player::Player(int id, string n)
 {
+	this->id = id;
 	this->player_name = n;
 
 }
@@ -39,13 +41,13 @@ Player::Player(string n)
 /// Parametrised constructor where we create a player with his own hand, territory, and order
 /// </summary>
 
-Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> o)
+Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o)
 {
+	this->id = id;
 	this->player_name = n;
 	this->hand = h;
 	this->territories = t;
 	this->orders = o;
-
 }
 
 
@@ -54,46 +56,98 @@ Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> 
 /// </summary>
 vector<Territory*> Player::toAttack()
 {
-	Territory* tAtt1 = new Territory("Congo", 3, 22);
+	map<int, Territory*> terrToAtk;
 
-	terrToAtk.push_back(tAtt1);
-
-	cout << "Here are the territories that a player can attack:" << endl;
-	for (int i = 0; i < terrToAtk.size(); i++) {
-		cout << *terrToAtk[i] << endl;
+	//build a unique list of the territories that the player can attack
+	for (Territory* territory : this->territories) {
+		for (Territory* canAttk : territory->adjacentTerritoriesTo) {
+			if (terrToAtk.count(canAttk->id) == 0) {
+				//not already in the map
+				terrToAtk[canAttk->id] = canAttk;
+			}
+		}
 	}
 
+	vector<Territory*> vecToAtk;
+	for (pair<int, Territory*> territory : terrToAtk) {
+		vecToAtk.push_back(territory.second);
+	}
 
-	return terrToAtk;
-
+	return vecToAtk;
 }
+
 ///<summary>
 ///Method which allows the player to defend themselves from other countries
 ///</summary>
-void Player::toDefend()
+vector<Territory*>  Player::toDefend()
 {
-	Territory* t1 = new Territory("Kenya", 3, 21);
+	map<int, Territory*> terrToDef;
 
-	terrToDef.push_back(t1);
-
-	cout << "Here are the territories that a player can defend:" << endl;
-	for (int i =0; i < terrToDef.size(); i++) {
-		cout << *terrToDef[i] << endl;
+	//build a unique list of the territories that the player can attack
+	for (Territory* territory : this->territories) {
+		for (Territory* canDef : territory->adjacentTerritoriesFrom) {
+			if (terrToDef.count(canDef->id) == 0) {
+				//not already in the map
+				terrToDef[canDef->id] = canDef;
+			}
+		}
 	}
 
+	vector<Territory*> vecToDef;
+	for (pair<int, Territory*> territory : terrToDef) {
+		vecToDef.push_back(territory.second);
+	}
+
+	return vecToDef;
 }
 
 
 ///<summary>
 ///Method which will add an issued order to the orders list
 /// </summary>
-void Player::issueOrder(Order* order)
+Order* Player::issueOrder()
 {
-	
-	this->orders.push_back(order);
+	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
+	srand(time(NULL));
+	if (numOfArmies > 0) {
+		//Deploy Phase
+		vector<Territory*> toDefend = this->toDefend();
+		int index = rand() % toDefend.size(); // from 0 - (size - 1)
+		int armiesToDeploy =  1 + (rand() % this->numOfArmies); //from 1 - numOfArmies
+		//should call Deploy here
+		toDefend.at(index)->addArmies(1);
+		numOfArmies -= armiesToDeploy;
+		Deploy* dep;
+		return dep;
+	}
+	else {
+		//Deploy phase done
+		if (this->orders.size() != 0) {
+			Order* order = this->orders.at(orders.size() - 1);
+			orders.pop_back();
 
+			return order;
+		}
+		else {
+			//check if there are any armies on our territories, if there are we can have a 50/50 to choose to attack
+			bool attack = (rand() % 2) == 0; // from 0 - 1
+			if (attack) {
+				//choose a territory and number of armies to send.
+				Advance* adv;
+				return adv;
+			}
+		}
+	}
 
-	cout << "Order " << *order << " has been passed to the order list for player " << player_name <<"." <<endl;
+	return NULL;
+}
+
+vector<Territory*> Player::getTerritories() {
+	return this->territories;
+}
+
+void Player::giveArmies(int numOfArmies) {
+	this->numOfArmies += numOfArmies;
 }
 
 
@@ -123,32 +177,21 @@ Player& Player::operator=(const Player& p)
 ///Creates a shallow copy
 ///</summary>
 Player::Player(const Player& play) {
+	this->id = play.id;
 
+	this->hand = new Hand(*play.hand);
 
-	for (int i = 0; i < play.hand.size(); i++) {
-
-		Cards* c = play.hand.at(i);
-		this->hand.push_back(new Cards(*c));
-
-
-		for (int i = 0; i < play.orders.size(); i++) {
-
-			Order* order = play.orders.at(i);
-			this->orders.push_back(new Order(*order));
-
-		}
-
-		for (int i = 0; play.territories.size(); i++) {
-
-			Territory* terr = play.territories.at(i);
-			this->territories.push_back(new Territory(*terr));
-
-		}
-
-
+	for (int i = 0; i < play.orders.size(); i++) {
+		Order* order = play.orders.at(i);
+		this->orders.push_back(new Order(*order));
 	}
 
+	for (int i = 0; play.territories.size(); i++) {
+		Territory* terr = play.territories.at(i);
+		this->territories.push_back(new Territory(*terr));
+	}
 }
+
 ///<summary>
 ///Destructor for the player
 /// </summary>
@@ -164,8 +207,7 @@ Player::~Player() {
 ostream& operator<<(ostream& strm, Player& player)
 {
 	strm <<"Player's name is " <<player.player_name << endl << player.player_name << " has " << player.territories.size() << " territories at their disposal." << endl << "He has "
-		<< player.hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders.size() << " orders that he can use.";
-
+		<< player.hand->hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders.size() << " orders that he can use.";
 
 	return strm;
 }

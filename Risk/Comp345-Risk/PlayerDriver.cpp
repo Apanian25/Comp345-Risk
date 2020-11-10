@@ -58,8 +58,8 @@ namespace PlayerDriver {
 		*/
 
 		Player* Player1 = new Player();
-		Player* Player2 = new Player("Jason", hand, terr, order);
-		Player* Player3 = new Player("Mark");
+		Player* Player2 = new Player(1, "Jason", hand, terr, order);
+		Player* Player3 = new Player(2, "Mark");
 
 
 
@@ -75,7 +75,7 @@ namespace PlayerDriver {
 		cout << *Player2 << endl;
 		cout << endl;
 
-		Player2->issueOrder(or2);
+		Player2->issueOrder();
 		cout << endl;
 
 

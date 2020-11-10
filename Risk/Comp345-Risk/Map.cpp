@@ -89,6 +89,10 @@ Territory::Territory(const Territory& territory): id(territory.id), continentId(
 	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
 }
 
+void Territory::setOwner(int id) {
+	ownedBy = id;
+}
+
 /// <summary>
 /// Adds armies to the territory
 /// </summary>
@@ -200,6 +204,14 @@ Map::~Map() {
 			territory = NULL;
 		}
 	}
+}
+
+std::map<int, std::vector<Territory*>> Map::getContinentTerritories() {
+	return continentTerritories;
+}
+
+std::map<int, Continent*> Map::getContinents() {
+	return continents;
 }
 
 /// <summary>
