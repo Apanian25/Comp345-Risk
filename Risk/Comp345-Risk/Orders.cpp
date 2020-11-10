@@ -1,9 +1,9 @@
 #include<iostream>
 #include <string>
 #include "Orders.h"
-#include "Player.h"
 #include "Cards.h"
 #include "Map.h"
+#include "Util.h";
 #include <algorithm>
 #include <time.h>
 
@@ -72,25 +72,9 @@ string Deploy::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Deploy::validate() {
-	
-	int counter = 0;
-	int OwnedTerritoriesSize = playerPtr->territories.size();
-	
-		for (Territory* t : playerPtr->territories)
-		{
-			if (t->id = territoryPtr->id)
-			{
-				return true;
-			}
-			counter++;
-		}
-
-		if (counter == OwnedTerritoriesSize)
-		{
-			std::cout << "invalid order, player does not own target territory, please select another" << std::endl;
-			return false;
-		}	
+	return territoryPtr->ownedBy == playerId;
 }
+
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
@@ -113,9 +97,9 @@ void Deploy::execute()
 Deploy::Deploy() {}
 
 
-Deploy::Deploy(Player* p, Territory* t, int numOfArmies)
+Deploy::Deploy(int playerId, Territory* t, int numOfArmies)
 {
-	this->playerPtr = p;
+	this->playerId = playerId;
 	this->territoryPtr = t;
 	this->numOfArmies = numOfArmies;
 };
@@ -159,29 +143,7 @@ string Bomb::getName() const {
 /// <returns>true</returns>
 bool Bomb::validate()
 {
-	int counter = 0;
-	int OwnedTerritoriesSize = player2->territories.size();
-	for (Territory* t : player1->territories)
-	{
-		if (t->id = target->id)
-		{
-			return false;
-		}
-		else
-			for (Territory* t : player2->territories)
-			{
-				if (t->id = target->id)
-				{
-					return true;
-				}
-				counter++;
-			}
-		if (counter == OwnedTerritoriesSize)
-		{
-			return false;
-		}
-	}
-	
+	return target->ownedBy != playerId1;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
@@ -203,10 +165,10 @@ void Bomb::execute() {
 /// </summary>
 Bomb::Bomb() {};
 
-Bomb::Bomb(Player* p1, Player* p2, Territory* target)
+Bomb::Bomb(int playerId1, int playerId2, Territory* target)
 {
-	this->player1 = p1;
-	this->player2 = p2;
+	this->playerId1 = playerId1;
+	this->playerId2 = playerId2;
 	this->target = target;
 	
 }
@@ -247,43 +209,14 @@ string Airlift::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Airlift::validate() {
-	int counter = 0;
-	int OwnedTerritoriesSize = playerPtr->territories.size();
-	
-
-	for (Territory* t : playerPtr->territories)
-	{
-		if (t->id = source->id)
-		{
-			if (find(playerPtr->territories.begin(), playerPtr->territories.end(), target) != playerPtr->territories.end())
-			{
-				cout << "armies are being added";
-				option = 1;
-				return true;
-			}
-			else
-			{
-
-				cout << "an attack is commencing";
-				option = 2;
-				return true;
-
-			}
-		}
-		counter++;
-	}
-
-	if (counter == OwnedTerritoriesSize)
-	{
-		std::cout << "invalid order" << std::endl;
-		return false;
-	}
+	bool playerOwnsSrcTerritory = source->ownedBy == playerId;
+	option = !playerOwnsSrcTerritory ? -1 : target->ownedBy == playerId ? 1 : 2;
+	return playerOwnsSrcTerritory;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Airlift::execute() {
-	vector<Player*> players; // TODO:REMOVE
 	srand(time(NULL));
 	isExecuted = validate();
 
@@ -310,13 +243,13 @@ void Airlift::execute() {
 
 				if (randomizer >= 1 && randomizer <= 6)
 				{
-					cout << "opponent army destroyed" << endl;
+					cout << "defending army destroyed" << endl;
 					defendingArmiesCount--;
 					defendingArmiesdestroyed++;
 				}
 				else
 				{
-					cout << "opponent army survived" << endl;
+					cout << "defending army survived" << endl;
 				}
 			}
 
@@ -327,30 +260,28 @@ void Airlift::execute() {
 
 				if (randomizer >= 1 && randomizer <= 7)
 				{
-					cout << "opponent army destroyed" << endl;
+					cout << "attacking army destroyed" << endl;
 					attackingArmiesCount--;
 					attackingArmiesdestroyed++;
 
 				}
 				else
 				{
-					cout << "opponent army survived" << endl;
+					cout << "attacking army survived" << endl;
 				}
 			}
-
-			if (defendingArmiesCount = 0 && attackingArmiesCount != 0)
+			
+			
+			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
+			if (defendingArmiesCount = 0 && attackingArmiesCount > 0)
 			{
-				for (Player* p : players)
-				{
-					if (p->id == target->ownedBy)
-					{
-						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
-					}
-					playerPtr->territories.push_back(target);
-					target->numberOfArmies = attackingArmiesCount;
-					// draw a card
-					//player1.Hand.draw()
-				}
+				Util* util = new Util();
+
+				util->removeTerritory(target->ownedBy, target);
+				util->addTerritory(playerId, target, attackingArmiesCount);
+				// draw a card
+				//player1.Hand.draw()
+				delete util;
 			}
 
 			else if ((attackingArmiesCount = 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
@@ -368,9 +299,9 @@ void Airlift::execute() {
 /// </summary>
 Airlift::Airlift() {};
 
-Airlift::Airlift(Player* p, Territory* s, Territory* t, int numOfArmies)
+Airlift::Airlift(int playerId, Territory* s, Territory* t, int numOfArmies)
 {
-	this->playerPtr = p;
+	this->playerId = playerId;
 	this->source = s;
 	this->target = t;
 	this->numOfArmies = numOfArmies;
@@ -414,42 +345,20 @@ string Advance::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Advance::validate() {// need to fix
-	int counter = 0;
-	int OwnedTerritoriesSize = playerPtr->territories.size();
-	
-	for (Territory* t : playerPtr->territories)
-	{
-		if (t->id = source->id && (find(adjacent->adjacentTerritoriesFrom.begin(), adjacent->adjacentTerritoriesFrom.end(), t) != adjacent->adjacentTerritoriesFrom.end()))
-		{
-			if (find(playerPtr->territories.begin(), playerPtr->territories.end(), adjacent) != playerPtr->territories.end())
-			{
-				cout << "armies are being added";
-				option = 1;
+	if (source->ownedBy == playerId) {
+		for (Territory* t : source->adjacentTerritoriesTo) {
+			if (t->id == adjacent->id) {
+				option = adjacent->ownedBy == playerId ? 1 : 2;
 				return true;
-			}
-			else 
-			{
-			
-				cout << "an attack is commencing";
-				option = 2;
-				return true;
-				
 			}
 		}
-		counter++;
 	}
-
-	if (counter == OwnedTerritoriesSize)
-	{
-		std::cout << "invalid order" << std::endl;
-		return false;
-	}
+	return false;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Advance::execute() {
-	vector<Player*> players; // TODO:REMOVE
 	srand(time(NULL));
 	isExecuted = validate();
 	if (isExecuted)
@@ -501,21 +410,17 @@ void Advance::execute() {
 				}
 			}
 
-			if (defendingArmiesCount = 0 && attackingArmiesCount != 0)
+
+			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
+			if (defendingArmiesCount = 0 && attackingArmiesCount > 0)
 			{
-				for (Player* p : players)
-				{
-					if (p->id == adjacent->ownedBy)
-					{
-						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), adjacent), p->territories.end());
-					}
-					playerPtr->territories.push_back(adjacent);
-					adjacent->numberOfArmies = attackingArmiesCount;
-					// draw a card
-					//player1.Hand.draw()
-					
-				}
-				
+				Util* util = new Util();
+
+				util->removeTerritory(adjacent->ownedBy, adjacent);
+				util->addTerritory(playerId, adjacent, attackingArmiesCount);
+				// draw a card
+				//player1.Hand.draw()
+				delete util;
 			}
 			else if ((attackingArmiesCount = 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
 			{
@@ -530,9 +435,9 @@ void Advance::execute() {
 /// </summary>
 Advance::Advance() {};
 
-Advance::Advance(Player* p, Territory* source, Territory* target, int numOfArmies)
+Advance::Advance(int playerId, Territory* source, Territory* target, int numOfArmies)
 {
-	this->playerPtr = p;
+	this->playerId = playerId;
 	this->source = source;
 	this->adjacent = target;
 	this->numOfArmies = numOfArmies;
@@ -575,24 +480,10 @@ string Blockade::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Blockade::validate() {
-	int counter = 0;
-	int OwnedTerritoriesSize = playerPtr->territories.size();
-
-	for (Territory* t : playerPtr->territories)
-	{
-		if (t->id = target->id)
-		{
-			return true;
-		}
-		counter++;
-	}
-
-	if (counter == OwnedTerritoriesSize)
-	{
-		std::cout << "invalid order, player does not own target territory, please select another" << std::endl;
-		return false;
-	}
+	return target->ownedBy == playerId;
+	//std::cout << "invalid order, player does not own target territory, please select another" << std::endl;
 };
+
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
@@ -602,16 +493,11 @@ void Blockade::execute() { // need to fix
 	{
 		int counter = 0;
 		target->addArmies(target->numberOfArmies);
-		for (Territory* t : playerPtr->territories)
-		{
-			if (t->id = target->id)
-			{
-				playerPtr->territories.erase(playerPtr->territories.begin() + counter);
-				break;
-			}
-			counter++;
-		}
+
+		Util* util = new Util();
+		util->removeTerritory(target->ownedBy, target);
 		getName();
+		delete util;
 	}
 	else
 	{
@@ -623,9 +509,9 @@ void Blockade::execute() { // need to fix
 /// </summary>
 Blockade::Blockade() {};
 
-Blockade::Blockade(Player* p, Territory* t)
+Blockade::Blockade(int playerId, Territory* t)
 {
-	this->playerPtr = p;
+	this->playerId = playerId;
 	this->target = t;
 }
 
@@ -666,7 +552,7 @@ string Diplomacy::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Diplomacy::validate() {
-	
+	/*
 		if (source == target)
 		{
 			return false;
@@ -674,7 +560,8 @@ bool Diplomacy::validate() {
 		else if (source != target)
 		{
 			return true;
-		}
+		}*/
+	return true;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
@@ -692,10 +579,10 @@ void Diplomacy::execute() {
 /// </summary>
 Diplomacy::Diplomacy() {};
 
-Diplomacy::Diplomacy(Player* p1, Player* p2)
+Diplomacy::Diplomacy(int playerId1, int playerId2)
 {
-	this->source = p1;
-	this->target = p2;
+	//this->source = p1;
+	//this->target = p2;
 }
 
 /// <summary>

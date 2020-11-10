@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Map.h"
-#include "Player.h"
+
 using namespace std;
 
 class Order {
@@ -20,7 +20,7 @@ public:
 
 class Deploy : public Order {
 public:
-	Player* playerPtr;
+	int playerId;
 	Territory* territoryPtr;
 
 	int numOfArmies;
@@ -28,7 +28,7 @@ public:
 	bool validate();
 	void execute();
 	Deploy();  //no parameter  constructor  
-	Deploy(Player* p, Territory* t, int numOfArmies);
+	Deploy(int playerId, Territory* t, int numOfArmies);
 	Deploy(const Deploy& d);      // copy constructor
 	~Deploy();
 	Deploy& operator=(const Deploy& d);  //assignment operator
@@ -37,7 +37,7 @@ public:
 
 class Advance : public Order {
 public:
-	Player* playerPtr;
+	int playerId;
 	Territory* source;
 	Territory* adjacent;
 	int numOfArmies;
@@ -47,7 +47,7 @@ public:
 	bool validate();
 	void execute();
 	Advance();
-	Advance(Player* p, Territory* source, Territory* adjacent, int numOfArmies);
+	Advance(int playerId, Territory* source, Territory* adjacent, int numOfArmies);
 	Advance(const Advance& d);
 	~Advance();
 	Advance& operator = (const Advance& a);
@@ -55,15 +55,15 @@ public:
 
 class Bomb : public Order {
 public:
-	Player* player1;
-	Player* player2;
+	int playerId1;
+	int playerId2;
 	Territory* target;
 	
 	string getName() const;
 	bool validate();
 	void execute();
 	Bomb();
-	Bomb(Player* p1, Player* p2, Territory* target);
+	Bomb(int playerId1, int playerId2, Territory* target);
 	Bomb(const Bomb& d);
 	~Bomb();
 	Bomb& operator = (const Bomb& a);
@@ -71,7 +71,7 @@ public:
 
 class Airlift : public Order {
 public:
-	Player* playerPtr; 
+	int playerId; 
 	Territory* source;
 	Territory* target;
 	int numOfArmies;
@@ -81,7 +81,7 @@ public:
 	bool validate();
 	void execute();
 	Airlift();
-	Airlift(Player* p, Territory* s, Territory* t, int numOfArmies);
+	Airlift(int playerId, Territory* s, Territory* t, int numOfArmies);
 	Airlift(const Airlift& d);
 	~Airlift();
 	Airlift& operator = (const Airlift& a);
@@ -89,14 +89,14 @@ public:
 
 class Blockade : public Order {
 public:
-	Player* playerPtr;
+	int playerId;
 	Territory* target;
 
 	string getName() const;
 	bool validate();
 	void execute();
 	Blockade();
-	Blockade(Player* p, Territory* t);
+	Blockade(int playerId, Territory* t);
 	Blockade(const Blockade& d);
 	~Blockade();
 	Blockade& operator = (const Blockade& a);
@@ -104,14 +104,14 @@ public:
 
 class Diplomacy : public Order {
 public:
-	Player* source;
-	Player* target;
+	//Player* source;
+	//Player* target;
 
 	string getName() const;
 	bool validate();
 	void execute();
 	Diplomacy();
-	Diplomacy(Player* p1, Player* p2);
+	Diplomacy(int playerId1, int playerId2);
 	Diplomacy(const Diplomacy& d);
 	~Diplomacy();
 	Diplomacy& operator = (const Diplomacy& a);
@@ -130,6 +130,7 @@ public:
 	void move(int ind, int fin);
 
 };
+
 namespace OrdersDriver {
 	int main();
 }
