@@ -261,6 +261,9 @@ Territory* Map::getTerritory(int id) {
 Territory* Map::addTerritory(std::string country, int id, int continentId) {
 	Territory* territory = new Territory(country, id, continentId);
 	territories[id] = territory;
+	if (id > 100) {
+		std::cout << "something" << std::endl;
+	}
 	continentTerritories[continentId].push_back(territory);
 	return territory;
 }
@@ -315,7 +318,10 @@ void Map::addEdge(int src, int dest) {
 /// <returns>boolean true if the Map is a conencted graph, false otherwise</returns>
 bool Map::validate() {
 	std::vector<int> visited;
-	std::queue<Territory*> queue;
+	std::queue<Territory*> queue = std::queue<Territory*>();
+	if (territories.size() < 1) {
+		return false;
+	}
 	queue.push(territories.begin()->second);
 
 	while (!queue.empty()) {

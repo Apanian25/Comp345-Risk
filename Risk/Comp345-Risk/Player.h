@@ -14,16 +14,23 @@ namespace PlayerDriver {
 class Player {
 
 private:
-	vector<Territory*> territories;
-	vector<Order*> orders;
+
+	
+
+	//vector<Territory*> territories;
+	//vector<Order*> orders;
 	//vector<Cards*> hand;
 	string player_name;
 	int numOfArmies;
-	Hand* hand;
+	
 
 
 public:
 	int id;
+	vector<Territory*> territories;
+	vector<Order*> orders;
+	Hand* hand;
+
 
 	/*
 	   Constructors and destructors
