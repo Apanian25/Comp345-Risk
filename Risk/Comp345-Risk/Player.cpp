@@ -32,6 +32,10 @@ Player::Player() {
 Player::Player(string n)
 {
 	this->player_name = n;
+	this->hand = vector<Cards*>(0);
+	this->orders = vector<Order*>(0);
+	this->territories = vector<Territory*>(0);
+
 
 }
 

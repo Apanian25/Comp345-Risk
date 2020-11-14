@@ -125,7 +125,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 
 						if (words.size() != NUM_ENTRIES_CONTINENT) {
 							cout << "The file has invalid continent information.\n" << endl;
-							exit(1);
+							return NULL;
 						}
 
 						int numberOfArmies = std::stoi(words[1]);
@@ -233,5 +233,10 @@ std::vector<string> MapLoader::split(string s, string delim) {
 		s.erase(0, pos + delim.length());
 	}
 
+	//temporary hack until I figure out how to enter the last word
+	if (s != "") {
+		words.push_back(s);
+	}
+	
 	return words;
 }

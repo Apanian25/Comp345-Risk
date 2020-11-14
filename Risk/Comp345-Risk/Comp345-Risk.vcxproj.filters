@@ -48,7 +48,11 @@
     <ClCompile Include="OrdersDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Util.cpp">
+=======
+    <ClCompile Include="GameEngine.cpp">
+>>>>>>> 9e1d505dca1a7bdef1df3fc4832b210b58c6ea2e
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,7 +72,11 @@
     <ClInclude Include="Orders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Util.h">
+=======
+    <ClInclude Include="GameEngine.h">
+>>>>>>> 9e1d505dca1a7bdef1df3fc4832b210b58c6ea2e
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
