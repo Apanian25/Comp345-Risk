@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Cards.h"
 #include <iostream>
 
 gameEngine::gameEngine()
@@ -6,11 +7,11 @@ gameEngine::gameEngine()
 
 };
 
+extern Deck* deck = new Deck();
 
 bool observerOn{ 0 };
 
 	int main() {
-
 		gameEngine* engine = new gameEngine();
 
 		bool validMap{ false };
@@ -78,11 +79,11 @@ bool observerOn{ 0 };
 		}
 
 		cout << "--- Initializing deck ---" << endl;
-		engine->deck->initialize(*engine->deck, *engine->card);
-		cout << *engine->deck << endl;
+		deck->initialize(*deck, *engine->card);
+		cout << deck << endl;
 		cout << "--- Shuffling deck ---" << endl;
-		engine->deck->shuffle(*engine->deck);
-		cout << *engine->deck << endl;
+		deck->shuffle(*deck);
+		cout << deck << endl;
 
 
 		cout << "Please choose whether you'd like the observers to be On(1) or Off(0): " << endl;

@@ -38,6 +38,7 @@ struct Territory {
 	int continentId;
 	int id;
 	int numberOfArmies;
+	int commitedNumberOfArmies;
 	int ownedBy;
 	std::vector<Territory*> adjacentTerritoriesTo;
 	std::vector<Territory*> adjacentTerritoriesFrom;

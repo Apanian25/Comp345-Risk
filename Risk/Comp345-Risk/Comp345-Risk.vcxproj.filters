@@ -52,7 +52,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameEngine.cpp">
-	    <Filter>Source Files</Filter>
+	  <Filter>Source Files</Filter>
 	</ClCompile>
     <ClCompile Include="Util.cpp">
       <Filter>Source Files</Filter>
@@ -75,7 +75,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine.h">
-	    <Filter>Header Files</Filter>
+	  <Filter>Header Files</Filter>
     </CInclude>
     <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>

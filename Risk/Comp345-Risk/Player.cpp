@@ -4,6 +4,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "GameEngine.h"
 #include <vector>
 #include <algorithm>
 #include <list>
@@ -126,48 +127,118 @@ Order* Player::issueOrder()
 	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
 	srand(time(NULL));
 	if (numOfArmies > 0) {
-		//Deploy Phase
-		vector<Territory*> toDefend = this->toDefend ();
-		int index = rand() % toDefend.size(); // from 0 - (size - 1)
+		//DEPLOY PHASE
+		vector<Territory*> toDefend = this->toDefend();
 		int armiesToDeploy =  1 + (rand() % this->numOfArmies); //from 1 - numOfArmies
-		//should call Deploy here
-		toDefend.at(index)->addArmies(1);
 		numOfArmies -= armiesToDeploy;
-		Deploy* dep = new Deploy();
+		//assume that the player owns at least 1 territory, if they don't have any territories, they are ejected from the gmae
+		Deploy* dep = new Deploy(this, toDefend.at(0), armiesToDeploy); 
+		this->orders.push_back(dep);
 		return dep;
 	}
 	else {
-		//Deploy phase done
+		//DEPLOY PHASE DONE
+		//Playing cards, if the player has any
 		if (this->hand->hand.size() != 0) {
-			Cards* card = this->hand->hand.at(0);
-			Order* order;
-
-			switch (card->type) {
-			case 0:
-				order = new Bomb();
-				break;
-			case 2:
-				order = new Blockade();
-				break;
-			case 3:
-				order = new Airlift();
-				break;
-			case 4:
-				order = new Diplomacy();
-				break;
-			}
-
-
+			Order* order = hand->play(this);
 			orders.push_back(order);
 			return order;
 		}
 		else {
-			//check if there are any armies on our territories, if there are we can have a 50/50 to choose to attack
-			bool attack = (rand() % 2) == 0; // from 0 - 1
+			vector<Territory*> toDefend = this->toDefend();
+			vector<Territory*> toDefendWithArmiesLeft;
+			for (Territory* territory : toDefend) {
+				if ((territory->numberOfArmies - territory->commitedNumberOfArmies) > 0)
+					toDefendWithArmiesLeft.push_back(territory);
+			}
+
+			//we cannot create anymore deploy orders;
+			if (toDefendWithArmiesLeft.size() == 0)
+				return NULL;
+
+			//33% chance to advance(attack), advance(reinforce a territory) or stop issuing orders
+			int luck = rand() % 3;
+			bool attack = luck == 0;
+			bool defend = luck == 1;
+
+
 			if (attack) {
-				//choose a territory and number of armies to send.
-				Advance* adv = new Advance();
+				bool isValidMove = false;
+				int index = 0;
+				vector<Territory*> defendable;
+				vector<Territory*> listToAttack = this->toAttack();
+				Territory* target = listToAttack.at(0);
+
+				while (!isValidMove && index < listToAttack.size()) {
+					target = listToAttack.at(index);
+					for (Territory* territory : target->adjacentTerritoriesFrom) {
+						if (territory->ownedBy == this->id) {
+							defendable.push_back(territory);
+						}
+					}
+
+					if (defendable.size() > 0)
+						isValidMove = true;
+
+					index++;
+				}
+
+				if (!isValidMove)
+					return NULL; //cannot attack
+
+				//sort in decreasing order of number of available armies
+				std::sort(defendable.begin(), defendable.end(), [](Territory* t1, Territory* t2) {
+					//better to attack a territory with more armies.
+					return (t1->numberOfArmies - t1->commitedNumberOfArmies) > (t2->numberOfArmies - t2->commitedNumberOfArmies);
+				});
+
+				Territory* source = defendable.at(0);
+				int availableArmies = source->numberOfArmies = source->commitedNumberOfArmies;
+				if (availableArmies == 0)
+					return NULL;
+
+				int attackingArmies = 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies));
+				if (target != NULL && availableArmies > target->numberOfArmies) {
+					attackingArmies = target->numberOfArmies + (rand() % (availableArmies - target->numberOfArmies));
+				}
+				else {
+					attackingArmies = 1 + (rand() % availableArmies);
+				}
+
+				source->commitedNumberOfArmies += attackingArmies;
+				Advance* adv = new Advance(this, source, target, attackingArmies);
 				return adv;
+			}
+			else if(defend) {
+				if (toDefendWithArmiesLeft.size() < 2)
+					return NULL;
+				int src, targ;
+
+				bool hasValidMove = false;
+				for (int i = 0; i < toDefendWithArmiesLeft.size(); i++) {
+					for (int j = i + 1; j < toDefendWithArmiesLeft.size(); j++) {
+						if (toDefendWithArmiesLeft.at(i)->ownedBy == toDefendWithArmiesLeft.at(j)->ownedBy) {
+							src = i;
+							targ = j;
+							hasValidMove = true;
+							break;
+						}
+					}
+					if (hasValidMove)
+						break;
+				}
+
+				if (!hasValidMove)
+					return NULL;
+
+				Territory* source = toDefendWithArmiesLeft.at(src);
+				Territory* target = toDefendWithArmiesLeft.at(targ);
+
+				Advance* adv = new Advance(this, source, target, 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies)));
+				return adv;
+			}
+			else {
+				return NULL; //NO MORE MOVES
 			}
 		}
 	}

@@ -65,7 +65,7 @@ public:
 	bool validate();
 	void execute();
 	Bomb();
-	Bomb(Player* p1, Player* p2, Territory* target);
+	Bomb(Player* p1, Territory* target);
 	Bomb(const Bomb& d);
 	~Bomb();
 	Bomb& operator = (const Bomb& a);
@@ -117,6 +117,16 @@ public:
 	Diplomacy(const Diplomacy& d);
 	~Diplomacy();
 	Diplomacy& operator = (const Diplomacy& a);
+};
+
+class Reinforcement : public Order {
+public:
+	Reinforcement();
+	Reinforcement(const Reinforcement& r);
+	~Reinforcement();
+	void execute();
+	string getName() const;
+	Reinforcement& operator = (const Reinforcement& a);
 };
 
 class OrderList {

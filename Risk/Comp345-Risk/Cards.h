@@ -61,6 +61,7 @@ public:
 	vector<Cards*> hand; 
 	void draw(Deck&);
 	void play(Hand& h, OrderList& ol, Deck& d);
+	Order* play(Player* player);
 	Hand();
 	~Hand();
 	Hand(const Hand& orig);

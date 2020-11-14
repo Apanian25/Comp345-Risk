@@ -10,7 +10,8 @@ using namespace std;
 
 int main();
 void turnObserversOnOff();
-static std::vector<Player*> players;
+extern std::vector<Player*> players;
+extern Deck* deck;
 
 class gameEngine {
 public:
@@ -20,7 +21,6 @@ public:
 	int numOfPlayers{ 0 };
 
 	Cards* card = new Cards();
-	Deck* deck = new Deck();
 
 	gameEngine();
 };

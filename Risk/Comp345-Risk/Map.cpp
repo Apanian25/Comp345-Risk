@@ -65,7 +65,7 @@ std::ostream & operator << (std::ostream & output, const Continent& continent) {
 /// <summary>
 /// Territory no-param constructor
 /// </summary>
-Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0), country(""){ }
+Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0), commitedNumberOfArmies(0), country(""){ }
 
 /// <summary>
 /// Constructor that sets the territory name, id, continent id
@@ -73,7 +73,7 @@ Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0),
 /// <param name="country">the name of the country/territory</param>
 /// <param name="id">the territory's id</param>
 /// <param name="continentId">the id of the continent the territory belongs to</param>
-Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), numberOfArmies(0), ownedBy(-1) { }
+Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), numberOfArmies(0), commitedNumberOfArmies(0), ownedBy(-1) { }
 
 /// <summary>
 /// Destructor 
@@ -84,7 +84,7 @@ Territory::~Territory() {};
 /// Copy Contructor 
 /// </summary>
 /// <param name="territory"></param>
-Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), numberOfArmies(0), country(territory.country) {
+Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), numberOfArmies(0), commitedNumberOfArmies(0), country(territory.country) {
 	this->adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
 	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
 }

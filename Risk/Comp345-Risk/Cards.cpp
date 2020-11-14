@@ -1,5 +1,7 @@
 #include "Cards.h"
 #include "Orders.h"
+#include "Player.h"
+#include "GameEngine.h"
 #include <iostream>
 #include <cstdlib>
 #include <time.h> 
@@ -417,6 +419,71 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 	}
 }
 
+
+Order* Hand::play(Player* player) {
+
+	if (player != NULL && player->hand->hand.size() != 0) {
+
+		Cards* card = player->hand->hand.at(0);
+		player->hand->hand.erase(player->hand->hand.begin());
+		deck->cards_list.push_back(card);
+
+		switch (card->type) {
+		case 0:
+		{
+			vector<Territory*> toAttk = player->toAttack();
+			int index = rand() % toAttk.size(); // from 0 - (size - 1)
+			Territory* terr = toAttk.at(index);
+			return new Bomb(player, terr);
+		}
+		break;
+		case 1:
+			//reinforcement
+			player->giveArmies(5);
+			return new Reinforcement();
+			break;
+		case 2:
+		{
+			vector<Territory*> toDefend = player->toDefend();
+			//0 - (size-1) random territory owned by user
+			return new Blockade(player, toDefend.at(rand() % toDefend.size()));
+		}
+		break;
+		case 3:
+		{
+			vector<Territory*> toDefend = player->toDefend();
+			int defendingIndex = rand() % toDefend.size(); // from 0 - (size - 1)
+			Territory* source = toDefend.at(defendingIndex);
+			Territory* target = source;
+
+			//choose a territory other than the source territory
+			while (target == source) {
+				int playerIndex = rand() % toDefend.size();
+				vector<Territory*> targets = players.at(playerIndex)->toDefend();
+				target = targets.at(rand() % targets.size());
+			}
+
+			int armiesToDeploy = 1 + (rand() % source->numberOfArmies);
+			source->commitedNumberOfArmies += armiesToDeploy;
+			return new Airlift(player, source, target, armiesToDeploy); // from 1 - numOfArmies
+		}
+		break;
+		case 4:
+			vector<Player*> otherPlayers;
+			for (Player* player : players) {
+				if (player->id != player->id)
+					otherPlayers.push_back(player);
+			}
+			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
+			return new Diplomacy(player, declarePeaceWith);
+			break;
+		}
+
+	}
+
+	return NULL;
+
+}
 
 
 

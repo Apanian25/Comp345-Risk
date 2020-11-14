@@ -168,10 +168,9 @@ void Bomb::execute() {
 /// </summary>
 Bomb::Bomb() {};
 
-Bomb::Bomb(Player* p1, Player* p2, Territory* target) //TODO : mAYBE REMOVE PLAYER 2
+Bomb::Bomb(Player* p1, Territory* target) //TODO : mAYBE REMOVE PLAYER 2
 {
 	this->player1 = p1;
-	this->player2 = p2;
 	this->target = target;
 	
 }
@@ -456,10 +455,17 @@ void Advance::execute() {
 /// <summary>
 /// This constructor is empty as there are no data members to Advance
 /// </summary>
-Advance::Advance() {};
+Advance::Advance() {
+	this->option = -1;
+	this->playerPtr = NULL;
+	this->source = NULL;
+	this->adjacent = NULL;
+	this->numOfArmies = -1;
+};
 
 Advance::Advance(Player* p, Territory* source, Territory* target, int numOfArmies)
 {
+	this->option = -1;
 	this->playerPtr = p;
 	this->source = source;
 	this->adjacent = target;
@@ -629,6 +635,15 @@ Diplomacy& Diplomacy::operator=(const Diplomacy& d) {
 	Order::operator=(d);
 	return *this;
 }
+
+
+Reinforcement::Reinforcement() {}
+Reinforcement::~Reinforcement() {}
+Reinforcement::Reinforcement(Reinforcement const& r) {}
+void Reinforcement::execute() {}
+string Reinforcement::getName() const { return "Reinforcement"; }
+Reinforcement& Reinforcement::operator=(const Reinforcement& r) { return *this; }
+
 /// <summary>
 /// This constructor initializes list to a vector of pointer Objects
 /// </summary>
