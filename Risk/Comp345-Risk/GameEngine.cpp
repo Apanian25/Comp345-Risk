@@ -1,22 +1,19 @@
 #include "GameEngine.h"
 #include <iostream>
 
+gameEngine::gameEngine()
+{
+
+};
+
 
 bool observerOn{ 0 };
 
 	int main() {
 
-		int selectedMap;
-		Map* map = NULL;
-		MapLoader m;
-		int numOfPlayers{ 0 };
+		gameEngine* engine = new gameEngine();
 
 		bool validMap{ false };
-
-		std::vector<Player*> players;
-		Cards* card = new Cards();
-		Deck* deck = new Deck();
-
 		std::string path = "Maps";
 		std::string Maps[7]{
 			"artic.map", "canada.map",
@@ -26,7 +23,7 @@ bool observerOn{ 0 };
 
 		std::cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
 
-		while (map == NULL && !validMap) {
+		while (engine->map == NULL && !validMap) {
 
 			std::cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
@@ -35,24 +32,24 @@ bool observerOn{ 0 };
 				std::cout << i << ": " << Maps[i] << std::endl;
 			}
 
-			std::cin >> selectedMap;
-			std::cout << "--- You've selected map number " << selectedMap << ". ---" << endl;
+			std::cin >> engine->selectedMap;
+			std::cout << "--- You've selected map number " << engine->selectedMap << ". ---" << endl;
 			std::cout << "--- Verifying validity of map file... ---" << endl;
 
-			map = m.loadMap("Maps\\" + Maps[selectedMap]);
+			engine->map = engine->m.loadMap("Maps\\" + Maps[engine->selectedMap]);
 
-			if (map != NULL) {
+			if (engine->map != NULL) {
 				cout << "--- Map file is valid. Verifying if it is a connected graph... ---" << endl;
-				validMap = map->validate();
+				validMap = engine->map->validate();
 			}
 		}
 
 		cout << "--- Congratulations, the map is valid! ---" << endl;
 
-		while (numOfPlayers < 2 || numOfPlayers >5) {
+		while (engine->numOfPlayers < 2 || engine->numOfPlayers >5) {
 
 			cout << "Please enter the number of players (2-5): " << endl;
-			cin >> numOfPlayers;
+			cin >> engine->numOfPlayers;
 
 			if (cin.fail()) {
 				cin.clear();
@@ -60,32 +57,32 @@ bool observerOn{ 0 };
 				cout << "You did not enter a valid integer." << endl;
 			}
 
-			if (numOfPlayers < 2 || numOfPlayers > 5) {
+			if (engine->numOfPlayers < 2 || engine->numOfPlayers > 5) {
 				cout << "Invalid number of players. Please try a number between 2 and 5." << endl;
 			}
 		}
 
-		for (size_t i = 0; i < numOfPlayers; i++)
+		for (size_t i = 0; i < engine->numOfPlayers; i++)
 		{
 			std::string playerName{ "Player " + std::to_string(i) };
 			Player* player = new Player(playerName);
-			players.push_back(player);
+			engine->players.push_back(player);
 		}
 
-		cout << "You have chosen " << numOfPlayers << " players." << endl;
+		cout << "You have chosen " << engine->numOfPlayers << " players." << endl;
 
-		for (size_t i = 0; i < players.size(); i++)
+		for (size_t i = 0; i < engine->players.size(); i++)
 		{
 			cout << "The players are: " << endl;
-			cout << *players[i] << endl;
+			cout << *engine->players[i] << endl;
 		}
 
 		cout << "--- Initializing deck ---" << endl;
-		deck->initialize(*deck, *card);
-		cout << *deck << endl;
+		engine->deck->initialize(*engine->deck, *engine->card);
+		cout << *engine->deck << endl;
 		cout << "--- Shuffling deck ---" << endl;
-		deck->shuffle(*deck);
-		cout << *deck << endl;
+		engine->deck->shuffle(*engine->deck);
+		cout << *engine->deck << endl;
 
 
 		cout << "Please choose whether you'd like the observers to be On(1) or Off(0): " << endl;
