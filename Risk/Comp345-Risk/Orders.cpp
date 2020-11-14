@@ -7,8 +7,10 @@
 //#include "Util.h";
 #include <algorithm>
 #include <time.h>
+#include "GameEngine.h"
 
 using namespace std;
+gameEngine* engine = new gameEngine();
 /// <summary>
 /// This constructor initializes isExecuted to false.
 /// </summary>
@@ -218,7 +220,7 @@ bool Airlift::validate() {
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Airlift::execute() {
-	std::vector<Player*> players; // TODO : REMOVE
+	//std::vector<Player*> players; // TODO : REMOVE
 	srand(time(NULL));
 	isExecuted = validate();
 
@@ -277,14 +279,14 @@ void Airlift::execute() {
 			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
-				for (Player* p : players)
+				for (Player* p : engine->players)
 				{
 					if (p->id == target->ownedBy) {
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
 					}
 				}
 
-				for (Player* p : players) {
+				for (Player* p : engine->players) {
 					if (p->id = playerPtr->id) {
 						p->territories.push_back(target);
 						target->numberOfArmies = numOfArmies;
@@ -369,7 +371,7 @@ bool Advance::validate() {// need to fix
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Advance::execute() {
-	std::vector<Player*> players; // TODO : REMOVE
+	//std::vector<Player*> players; // TODO : REMOVE
 	srand(time(NULL));
 	isExecuted = validate();
 	if (isExecuted)
@@ -426,14 +428,14 @@ void Advance::execute() {
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
 				
-				for (Player * p : players)
+				for (Player * p : engine->players)
 				{
 					if (p->id == adjacent->ownedBy) {
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), adjacent), p->territories.end());
 					}
 				}
 
-				for (Player* p : players) {
+				for (Player* p : engine->players) {
 					if (p->id = playerPtr->id) {
 						p->territories.push_back(adjacent);
 						adjacent->numberOfArmies = numOfArmies; 
@@ -509,13 +511,13 @@ bool Blockade::validate() {
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Blockade::execute() { // need to fix
-	std::vector<Player*> players; // TODO : REMOVE
+
 	isExecuted = validate();
 	if (isExecuted)
 	{
 		target->addArmies(target->numberOfArmies);
 
-		for (Player* p : players)
+		for (Player* p : engine->players)
 		{
 			if (p->id == target->ownedBy) {
 				p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());

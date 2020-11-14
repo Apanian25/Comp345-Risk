@@ -18,7 +18,7 @@ public:
 	MapLoader m;
 	int numOfPlayers{ 0 };
 
-	std::vector<Player*> players;
+	static std::vector<Player*> players;
 	Cards* card = new Cards();
 	Deck* deck = new Deck();
 
