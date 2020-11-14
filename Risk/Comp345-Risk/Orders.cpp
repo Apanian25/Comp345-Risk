@@ -211,6 +211,8 @@ string Airlift::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Airlift::validate() {
+	if (playerPtr->hasNegotiatedWithId == target->ownedBy)
+		return false;
 	bool playerOwnsSrcTerritory = source->ownedBy == playerPtr->id;
 	option = !playerOwnsSrcTerritory ? -1 : target->ownedBy == playerPtr->id ? 1 : 2;
 	return playerOwnsSrcTerritory;
@@ -291,8 +293,8 @@ void Airlift::execute() {
 						target->numberOfArmies = numOfArmies;
 					}
 				}
-				// draw a card
-				//player1.Hand.draw()
+				
+				playerPtr->hasConqueredTerritory = true;
 			}
 
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
@@ -357,6 +359,8 @@ string Advance::getName() const {
 /// <returns>true</returns>
 bool Advance::validate() {// need to fix
 	if (source->ownedBy == playerPtr->id) {
+		if (playerPtr->hasNegotiatedWithId == adjacent->ownedBy)
+			return false;
 		for (Territory* t : source->adjacentTerritoriesTo) {
 			if (t->id == adjacent->id) {
 				option = adjacent->ownedBy == playerPtr->id ? 1 : 2;
@@ -440,8 +444,7 @@ void Advance::execute() {
 						adjacent->numberOfArmies = numOfArmies; 
 					}
 				}
-				// draw a card
-				//player1.Hand.draw()
+				playerPtr->hasConqueredTerritory = true;
 				
 			}
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
@@ -601,7 +604,8 @@ void Diplomacy::execute() {
 	isExecuted = validate();
 	if (isExecuted)
 	{
-		
+		player1->hasNegotiatedWithId = player2->id;
+		player2->hasNegotiatedWithId = player1->id;
 	}
 };
 /// <summary>

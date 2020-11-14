@@ -31,6 +31,7 @@ public:
 	vector<Order*> orders;
 	Hand* hand;
 	bool hasConqueredTerritory;
+	int hasNegotiatedWithId;
 
 
 	/*
