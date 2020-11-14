@@ -38,7 +38,7 @@ public:
 	Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> o); //Constructtor which creates a player with a name, order, hand, and territory
 	Player(const Player& p); //Copy constructor
 	~Player(); //Destructor
-	vector <Territory*> terrToAtk;
+	vector <Territory*> terrToAtk; 
 	vector<Territory*> terrToDef;
 
 
