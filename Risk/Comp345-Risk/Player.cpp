@@ -24,11 +24,12 @@ using namespace std;
 
 Player::Player() {
 
+	this->id = -2;
 	this->player_name = "";
 	this->hand = new Hand();
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
-
+	this->hasConqueredTerritory = false;
 
 }
 
@@ -39,6 +40,7 @@ Player::Player(int id, string n)
 	this->hand = new Hand();
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
+	this->hasConqueredTerritory = false;
 
 
 }
@@ -54,6 +56,7 @@ Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o
 	this->hand = h;
 	this->territories = t;
 	this->orders = o;
+	this->hasConqueredTerritory = false;
 }
 
 
@@ -285,6 +288,7 @@ Player& Player::operator=(const Player& p)
 Player::Player(const Player& play) {
 	this->numOfArmies = play.numOfArmies;
 	this->id = play.id;
+	this->hasConqueredTerritory = play.hasConqueredTerritory;
 
 	this->hand = new Hand(*play.hand);
 

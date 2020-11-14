@@ -30,6 +30,7 @@ public:
 	vector<Territory*> territories;
 	vector<Order*> orders;
 	Hand* hand;
+	bool hasConqueredTerritory;
 
 
 	/*
