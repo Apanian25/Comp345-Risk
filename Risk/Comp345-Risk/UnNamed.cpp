@@ -34,6 +34,8 @@ void removePlayersWithoutTerritories() {
 void issueOrderPhase(vector<Order*>& deploy, vector<Order*>& otherOrders) {
 	for (Player* player : players) {
 		while (true) {
+
+
 			Order* order = player->issueOrder();
 			if (order == NULL)
 				break;

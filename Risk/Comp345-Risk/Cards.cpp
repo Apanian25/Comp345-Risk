@@ -252,9 +252,9 @@ void Deck::shuffle(Deck& deck)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="h">takes a constant Hand object by reference</param>
-void Hand::draw(Deck& deck, Hand& h) 
+void Hand::draw(Deck& deck) 
 {
-	h.hand.push_back(deck.cards_list[0]);
+	hand.push_back(deck.cards_list[0]);
 	deck.cards_list.erase(deck.cards_list.begin());
 }
 

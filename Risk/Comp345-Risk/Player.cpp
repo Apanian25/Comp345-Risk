@@ -5,6 +5,7 @@
 #include "Map.h"
 #include "Orders.h"
 #include <vector>
+#include <algorithm>
 #include <list>
 #include <time.h> 
 using namespace std;
@@ -69,9 +70,15 @@ vector<Territory*> Player::toAttack()
 	}
 
 	vector<Territory*> vecToAtk;
+
 	for (pair<int, Territory*> territory : terrToAtk) {
 		vecToAtk.push_back(territory.second);
 	}
+
+	std::sort(vecToAtk.begin(), vecToAtk.end(), [](Territory* t1, Territory* t2) {
+		//easier to conquer a territory with fewer armies.
+		return t1->numberOfArmies < t2->numberOfArmies;
+	});
 
 	return vecToAtk;
 }
@@ -98,6 +105,11 @@ vector<Territory*>  Player::toDefend()
 		vecToDef.push_back(territory.second);
 	}
 
+	std::sort(vecToDef.begin(), vecToDef.end(), [](Territory* t1, Territory* t2) {
+		//better to defend territories with fewer armies.
+		return t1->numberOfArmies < t2->numberOfArmies;
+	});
+
 	return vecToDef;
 }
 
@@ -111,21 +123,38 @@ Order* Player::issueOrder()
 	srand(time(NULL));
 	if (numOfArmies > 0) {
 		//Deploy Phase
-		vector<Territory*> toDefend = this->toDefend();
+		vector<Territory*> toDefend = this->toDefend ();
 		int index = rand() % toDefend.size(); // from 0 - (size - 1)
 		int armiesToDeploy =  1 + (rand() % this->numOfArmies); //from 1 - numOfArmies
 		//should call Deploy here
 		toDefend.at(index)->addArmies(1);
 		numOfArmies -= armiesToDeploy;
-		Deploy* dep;
+		Deploy* dep = new Deploy();
 		return dep;
 	}
 	else {
 		//Deploy phase done
-		if (this->orders.size() != 0) {
-			Order* order = this->orders.at(orders.size() - 1);
-			orders.pop_back();
+		if (this->hand->hand.size() != 0) {
+			Cards* card = this->hand->hand.at(0);
+			Order* order;
 
+			switch (card->type) {
+			case 0:
+				order = new Bomb();
+				break;
+			case 2:
+				order = new Blockade();
+				break;
+			case 3:
+				order = new Airlift();
+				break;
+			case 4:
+				order = new Diplomacy();
+				break;
+			}
+
+
+			orders.push_back(order);
 			return order;
 		}
 		else {
@@ -133,7 +162,7 @@ Order* Player::issueOrder()
 			bool attack = (rand() % 2) == 0; // from 0 - 1
 			if (attack) {
 				//choose a territory and number of armies to send.
-				Advance* adv;
+				Advance* adv = new Advance();
 				return adv;
 			}
 		}
@@ -141,6 +170,8 @@ Order* Player::issueOrder()
 
 	return NULL;
 }
+
+
 
 vector<Territory*> Player::getTerritories() {
 	return this->territories;
@@ -177,6 +208,7 @@ Player& Player::operator=(const Player& p)
 ///Creates a shallow copy
 ///</summary>
 Player::Player(const Player& play) {
+	this->numOfArmies = play.numOfArmies;
 	this->id = play.id;
 
 	this->hand = new Hand(*play.hand);

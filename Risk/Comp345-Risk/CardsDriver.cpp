@@ -25,8 +25,8 @@ namespace CardsDriver {
 		
 		for (int i = 0; i < 3; i++)
 		{
-			H1->draw(*My_Deck, *H1);
-			H2->draw(*My_Deck, *H2);
+			H1->draw(*My_Deck);
+			H2->draw(*My_Deck);
 		}
 		
 		std::cout << " -----------------------Hand1-------------------------------" << std::endl;

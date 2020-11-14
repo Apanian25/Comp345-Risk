@@ -17,9 +17,9 @@ private:
 	vector<Territory*> territories;
 	vector<Order*> orders;
 	//vector<Cards*> hand;
-	Hand* hand;
 	string player_name;
 	int numOfArmies;
+	Hand* hand;
 
 
 public:

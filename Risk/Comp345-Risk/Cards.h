@@ -59,7 +59,7 @@ class Hand
 {
 public:
 	vector<Cards*> hand; 
-	void draw(Deck&, Hand&);
+	void draw(Deck&);
 	void play(Hand& h, OrderList& ol, Deck& d);
 	Hand();
 	~Hand();

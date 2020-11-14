@@ -14,7 +14,7 @@ namespace PlayerDriver {
 		*/
 		vector<Order*> order;
 		vector<Territory*> terr;
-		vector<Cards*> hand;
+		Hand* hand = new Hand();
 
 		Territory* t1 = new Territory("England", 14, 4);
 		Territory* t2 = new Territory("Zimbabwe", 12, 3);
@@ -38,9 +38,9 @@ namespace PlayerDriver {
 		Cards* car3 = new Cards();
 
 
-		hand.push_back(car1);
-		hand.push_back(car2);
-		hand.push_back(car3);
+		hand->hand.push_back(car1);
+		hand->hand.push_back(car2);
+		hand->hand.push_back(car3);
 
 		/*
 			Adding orders in the order vector
@@ -131,6 +131,9 @@ namespace PlayerDriver {
 		or1 = NULL;
 		delete or2;
 		or2 = NULL;
+
+		delete hand;
+		hand = NULL;
 
 
 		return 0;
