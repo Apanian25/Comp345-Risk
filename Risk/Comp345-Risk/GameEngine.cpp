@@ -65,16 +65,16 @@ bool observerOn{ 0 };
 		for (size_t i = 0; i < engine->numOfPlayers; i++)
 		{
 			std::string playerName{ "Player " + std::to_string(i) };
-			Player* player = new Player(playerName);
-			engine->players.push_back(player);
+			Player* player = new Player(i, playerName);
+			players.push_back(player);
 		}
 
 		cout << "You have chosen " << engine->numOfPlayers << " players." << endl;
 
-		for (size_t i = 0; i < engine->players.size(); i++)
+		for (size_t i = 0; i < players.size(); i++)
 		{
 			cout << "The players are: " << endl;
-			cout << *engine->players[i] << endl;
+			cout << players[i] << endl;
 		}
 
 		cout << "--- Initializing deck ---" << endl;

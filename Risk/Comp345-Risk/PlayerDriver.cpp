@@ -46,11 +46,11 @@ namespace PlayerDriver {
 			Adding orders in the order vector
 		*/
 
-		Order* or1 = new Order();
-		Order* or2 = new Order();
+	/*	Order* or1;
+		Order* or2;*/
 
 
-		order.push_back(or1);
+		//order.push_back(or1);
 
 
 		/*
@@ -127,10 +127,10 @@ namespace PlayerDriver {
 		delete car2;
 		car2 = NULL;
 
-		delete or1;
+		/*delete or1;
 		or1 = NULL;
 		delete or2;
-		or2 = NULL;
+		or2 = NULL;*/
 
 		delete hand;
 		hand = NULL;

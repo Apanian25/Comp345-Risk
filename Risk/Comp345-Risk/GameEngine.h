@@ -10,6 +10,7 @@ using namespace std;
 
 int main();
 void turnObserversOnOff();
+static std::vector<Player*> players;
 
 class gameEngine {
 public:
@@ -18,9 +19,10 @@ public:
 	MapLoader m;
 	int numOfPlayers{ 0 };
 
-	static std::vector<Player*> players;
 	Cards* card = new Cards();
 	Deck* deck = new Deck();
 
 	gameEngine();
 };
+
+

@@ -14,7 +14,7 @@ public:
 	Order();
 	~Order();
 	Order(const Order& a);
-	virtual void execute(); //added this virtual method, so that the subclasses can override it
+	virtual void execute() = 0; //added this virtual method, so that the subclasses can override it
 	virtual string getName() const;  // getName is used for the << operator to display the description of the order
 	friend std::ostream& operator <<(std::ostream& stream, const Order& e);
 	Order& operator = (const Order& a);

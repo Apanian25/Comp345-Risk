@@ -279,14 +279,14 @@ void Airlift::execute() {
 			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
-				for (Player* p : engine->players)
+				for (Player* p : players)
 				{
 					if (p->id == target->ownedBy) {
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
 					}
 				}
 
-				for (Player* p : engine->players) {
+				for (Player* p : players) {
 					if (p->id = playerPtr->id) {
 						p->territories.push_back(target);
 						target->numberOfArmies = numOfArmies;
@@ -428,14 +428,14 @@ void Advance::execute() {
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
 				
-				for (Player * p : engine->players)
+				for (Player * p : players)
 				{
 					if (p->id == adjacent->ownedBy) {
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), adjacent), p->territories.end());
 					}
 				}
 
-				for (Player* p : engine->players) {
+				for (Player* p : players) {
 					if (p->id = playerPtr->id) {
 						p->territories.push_back(adjacent);
 						adjacent->numberOfArmies = numOfArmies; 
@@ -517,7 +517,7 @@ void Blockade::execute() { // need to fix
 	{
 		target->addArmies(target->numberOfArmies);
 
-		for (Player* p : engine->players)
+		for (Player* p : players)
 		{
 			if (p->id == target->ownedBy) {
 				p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());

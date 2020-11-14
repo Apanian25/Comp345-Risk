@@ -35,7 +35,7 @@ Player::Player(int id, string n)
 {
 	this->id = id;
 	this->player_name = n;
-	this->hand = vector<Cards*>(0);
+	this->hand = new Hand();
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 
@@ -219,7 +219,7 @@ Player::Player(const Player& play) {
 
 	for (int i = 0; i < play.orders.size(); i++) {
 		Order* order = play.orders.at(i);
-		this->orders.push_back(new Order(*order));
+		this->orders.push_back(order);
 	}
 
 	for (int i = 0; play.territories.size(); i++) {
