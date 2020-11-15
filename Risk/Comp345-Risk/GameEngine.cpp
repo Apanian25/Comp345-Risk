@@ -12,6 +12,7 @@ GameEngine::GameEngine()
 };
 
 extern Deck* deck = new Deck();
+extern vector<Player*> players = vector<Player*>();
 
 bool observerOn{ 0 };
 

@@ -1,11 +1,10 @@
 #pragma once
 #include "Map.h"
 #include "MapLoader.h"
-#include "Player.h"
 #include "Cards.h"
+#include "Player.h"
 #include <vector>
 
-class Cards;
 
 using namespace std;
 
