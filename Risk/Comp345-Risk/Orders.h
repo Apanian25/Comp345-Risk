@@ -24,8 +24,8 @@ class Deploy : public Order {
 public:
 	Player* playerPtr;
 	Territory* territoryPtr;
-
 	int numOfArmies;
+
 	string getName() const;
 	bool validate();
 	void execute();

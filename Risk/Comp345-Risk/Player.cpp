@@ -30,6 +30,7 @@ Player::Player() {
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
+	this->hasNegotiatedWithId = -500;
 
 }
 
@@ -41,6 +42,7 @@ Player::Player(int id, string n)
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
+	this->hasNegotiatedWithId = -500;
 
 
 }
@@ -57,6 +59,7 @@ Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o
 	this->territories = t;
 	this->orders = o;
 	this->hasConqueredTerritory = false;
+	this->hasNegotiatedWithId = -500;
 }
 
 
@@ -267,6 +270,8 @@ Player& Player::operator=(const Player& p)
 {
 	// copy orders
 	this->orders = p.orders;
+	this->hasNegotiatedWithId = p.hasNegotiatedWithId;
+	this->hasConqueredTerritory = p.hasConqueredTerritory;
 
 	// copy territories
 	for (int i = 0; i < p.territories.size(); i++)
@@ -289,6 +294,7 @@ Player::Player(const Player& play) {
 	this->numOfArmies = play.numOfArmies;
 	this->id = play.id;
 	this->hasConqueredTerritory = play.hasConqueredTerritory;
+	this->hasNegotiatedWithId = play.hasNegotiatedWithId;
 
 	this->hand = new Hand(*play.hand);
 
