@@ -13,7 +13,7 @@ void turnObserversOnOff();
 extern std::vector<Player*> players;
 extern Deck* deck;
 
-class gameEngine {
+class GameEngine {
 public:
 	int selectedMap;
 	Map* map = NULL;
@@ -22,7 +22,14 @@ public:
 
 	Cards* card = new Cards();
 
-	gameEngine();
+	GameEngine();
+
+	int mainGameLoop();
+	void removePlayersWithoutTerritories();
+	void reinforcementPhase();
+	void issueOrderPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
+	void ordersExecutionPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
+	bool hasWinner();
 };
 
 
