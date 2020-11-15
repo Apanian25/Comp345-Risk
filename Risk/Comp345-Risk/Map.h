@@ -64,6 +64,7 @@ class Map {
 		Territory* getTerritory(int id);
 		std::map<int, Continent*> getContinents();
 		std::map<int, std::vector<Territory*>> getContinentTerritories();
+		std::map<int, Territory*> getAllTerritories();
 
 		bool validate();
 };

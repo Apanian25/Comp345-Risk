@@ -210,6 +210,10 @@ std::map<int, std::vector<Territory*>> Map::getContinentTerritories() {
 	return continentTerritories;
 }
 
+std::map<int, Territory*> Map::getAllTerritories() {
+	return territories;
+}
+
 std::map<int, Continent*> Map::getContinents() {
 	return continents;
 }

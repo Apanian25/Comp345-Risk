@@ -1,15 +1,16 @@
 #include "Map.h"
 #include "Player.h"
+#include "GameEngine.h";
 #include <iostream>
 #include <vector>
 #include <map>
 
 Map gameMap;
-vector<Player*> players;
 void removePlayersWithoutTerritories();
 void reinforcementPhase();
 void issueOrderPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
 void ordersExecutionPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
+bool hasWinner();
 
 
 int mainGameLoop() {
@@ -20,14 +21,24 @@ int mainGameLoop() {
 		reinforcementPhase();
 		issueOrderPhase(deploy, otherOrders);
 		ordersExecutionPhase(deploy, otherOrders);
-	} while (true);
+
+		for (Player* player : players) {
+			player->hasConqueredTerritory = false;
+			//player->hasNegotiatedWithID = -500;
+		}
+	} while (hasWinner());
 }
 
 void removePlayersWithoutTerritories() {
+	vector<Player*> playersToRemove;
 	for (Player* player : players) {
 		if (player->getTerritories().size() == 0) {
-			//erase
+			playersToRemove.push_back(player);
 		}
+	}
+
+	for (Player* player : playersToRemove) {
+		players.erase(std::remove(players.begin(), players.end(), player));
 	}
 }
 
@@ -67,5 +78,43 @@ void reinforcementPhase() {
 }
 
 void ordersExecutionPhase(vector<Order*>& deploy, vector<Order*>& otherOrders) {
-	
+	//Deploy orders execute first
+	for (Player* player : players) {
+		vector<Order*> deploys;
+		for (Order* order : player->orders) {
+			if (dynamic_cast<Deploy*>(order)) {
+				deploys.push_back(order);
+			}
+		}
+
+		for (Order* order : deploys) {
+			order->execute();
+			delete order;
+			player->orders.erase(std::remove(player->orders.begin(), player->orders.end(), order));
+		}
+	}
+
+	//Other orders execute second.
+	for (Player* player : players) {
+		for (Order* order : player->orders) {
+			order->execute();
+			delete order;
+		}
+
+		player->orders.clear();
+		if (player->hasConqueredTerritory) {
+			player->hand->draw(*deck);
+		}
+	}
+}
+
+bool hasWinner() {
+	map<int, Territory*> territories = gameMap.getAllTerritories();
+	int point = territories.at(0)->ownedBy;
+	for (pair<int, Territory*> territory : territories) {
+		if (territory.second->ownedBy != point)
+			return false;
+	}
+
+	return true;
 }
