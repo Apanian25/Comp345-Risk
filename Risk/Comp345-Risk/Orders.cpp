@@ -10,7 +10,7 @@
 #include "GameEngine.h"
 
 using namespace std;
-gameEngine* engine = new gameEngine();
+GameEngine* engine = new GameEngine();
 /// <summary>
 /// This constructor initializes isExecuted to false.
 /// </summary>

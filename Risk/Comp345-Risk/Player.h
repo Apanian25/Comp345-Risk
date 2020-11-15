@@ -7,6 +7,8 @@
 #include <vector>
 using namespace std;
 
+class Orders;
+
 namespace PlayerDriver {
 	int main();
 }

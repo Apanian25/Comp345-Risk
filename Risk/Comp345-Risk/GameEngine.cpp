@@ -111,14 +111,12 @@ int main() {
 
 
 //*********************************************************  PART3  *********************************************************
-int GameEngine::mainGameLoop() {
+void GameEngine::mainGameLoop() {
 	do {
-		vector<Order*> deploy;
-		vector<Order*> otherOrders;
 		removePlayersWithoutTerritories();
 		reinforcementPhase();
-		issueOrderPhase(deploy, otherOrders);
-		ordersExecutionPhase(deploy, otherOrders);
+		issueOrderPhase();
+		ordersExecutionPhase();
 
 		for (Player* player : players) {
 			player->hasConqueredTerritory = false;
@@ -140,7 +138,7 @@ void GameEngine::removePlayersWithoutTerritories() {
 	}
 }
 
-void GameEngine::issueOrderPhase(vector<Order*>& deploy, vector<Order*>& otherOrders) {
+void GameEngine::issueOrderPhase() {
 	for (Player* player : players) {
 		while (true) {
 			Order* order = player->issueOrder();
@@ -175,7 +173,7 @@ void GameEngine::reinforcementPhase() {
 	}
 }
 
-void GameEngine::ordersExecutionPhase(vector<Order*>& deploy, vector<Order*>& otherOrders) {
+void GameEngine::ordersExecutionPhase() {
 	//Deploy orders execute first
 	for (Player* player : players) {
 		vector<Order*> deploys;

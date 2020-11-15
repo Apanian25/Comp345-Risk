@@ -2,9 +2,10 @@
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
-#include "Orders.h"
 #include "Cards.h"
 #include <vector>
+
+class Cards;
 
 using namespace std;
 
@@ -24,11 +25,11 @@ public:
 
 	GameEngine();
 
-	int mainGameLoop();
+	void mainGameLoop();
 	void removePlayersWithoutTerritories();
 	void reinforcementPhase();
-	void issueOrderPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
-	void ordersExecutionPhase(vector<Order*>& deploy, vector<Order*>& otherOrders);
+	void issueOrderPhase();
+	void ordersExecutionPhase();
 	bool hasWinner();
 };
 
