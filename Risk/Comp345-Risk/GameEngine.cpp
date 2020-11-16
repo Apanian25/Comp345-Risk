@@ -19,31 +19,75 @@ bool observerOn{ 0 };
 int main() {
 	GameEngine* engine = new GameEngine();
 
-	bool validMap{ false };
-	std::string path = "Maps";
-	std::string Maps[7]{
-		"artic.map", "canada.map",
-		"europe.map", "solar.map",
-		"sw_baltic.map", "invalidMapTest.map",
-		"invalidSolarDisconnected.map" };
+		int selectedMap;
+		Map* map = NULL;
+		MapLoader* m = NULL;
+		int numOfPlayers{ 0 };
 
-	std::cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
+		bool validMap{ false };
 
+		vector<Player*> players;
+		Cards* card = new Cards();
+		Deck* deck = new Deck();
+
+		string path = "Maps";
+		string Maps[7]{
+			"artic.map", "canada.map",
+			"europe.map", "solar.map",
+			"sw_baltic.map", "invalidMapTest.map",
+			"invalidSolarDisconnected.map" };
+
+		cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
+
+		while (map == NULL || !validMap) {
 	while (engine->map == NULL && !validMap) {
 
-		std::cout << "Please select a map by entering its number from the following list:\n" << std::endl;
+			cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
-		for (size_t i = 0; i < 7; i++)
-		{
-			std::cout << i << ": " << Maps[i] << std::endl;
+			for (size_t i = 0; i < 7; i++)
+			{
+				cout << i << ": " << Maps[i] << std::endl;
+			}
+			
+			cin >> selectedMap;
+
+			if (cin.fail()) {
+				cin.clear();
+				cin.ignore(512, '\n');
+				cout << "You did not enter a valid integer." << endl;
+				cout << "" << endl;
+				selectedMap = -1;
+			}
+
+			if (selectedMap < 0 && selectedMap != -1 || selectedMap >6) {
+				cout << " --- You've selected an invalid map number ---" << endl;
+				cout << "" << endl;
+			}
+
+			if (selectedMap >= 0 && selectedMap < 7) {
+
+				cout << "--- You've selected map number " << selectedMap << ". ---" << endl;
+				cout << "--- Verifying validity of map file... ---" << endl;
+
+				if (m != NULL) {
+					delete m;
+					m = NULL;
+				}
+
+				m = new MapLoader();
+
+				map = m->loadMap("Maps\\" + Maps[selectedMap]);
+
+				if (map != NULL) {
+					cout << "--- Map file exists. Verifying if it is a connected graph... ---" << endl;
+					validMap = map->validate();
+				}
+
+				if (!validMap) {
+					cout << "--- Map is not a connectd graph. Please choose another map... ---" << endl;
+				}
+			}
 		}
-
-		std::cin >> engine->selectedMap;
-		std::cout << "--- You've selected map number " << engine->selectedMap << ". ---" << endl;
-		std::cout << "--- Verifying validity of map file... ---" << endl;
-
-		engine->map = engine->m.loadMap("Maps\\" + Maps[engine->selectedMap]);
-
 		if (engine->map != NULL) {
 			cout << "--- Map file is valid. Verifying if it is a connected graph... ---" << endl;
 			validMap = engine->map->validate();
@@ -68,6 +112,12 @@ int main() {
 		}
 	}
 
+		for (size_t i = 0; i < numOfPlayers; i++)
+		{
+			string playerName{ "Player " + std::to_string(i) };
+			Player* player = new Player(playerName);
+			players.push_back(player);
+		}
 	for (size_t i = 0; i < engine->numOfPlayers; i++)
 	{
 		std::string playerName{ "Player " + std::to_string(i) };
