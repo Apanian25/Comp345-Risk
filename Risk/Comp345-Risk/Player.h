@@ -1,18 +1,15 @@
-#pragma once
-#include <stdio.h>
-#include <iostream>
-#include "Map.h"
-#include "Cards.h"
-#include "Orders.h"
-#include <vector>
+#pragma once	
+#include <stdio.h>	
+#include <iostream>	
+#include "Map.h"	
+#include "Cards.h"	
+#include "Orders.h"	
+#include <vector>	
 using namespace std;
-
 namespace PlayerDriver {
 	int main();
 }
-
 class Player {
-
 private:
 	string player_name;
 	
@@ -38,6 +35,8 @@ public:
 	/*
 	   Methods for the player class
 	*/
+	int getNumOfArmies();
+	void addTerritory(Territory* terr);
 	vector<Territory*> toAttack(); //Allows territories to attack
 	vector<Territory*> toDefend(); //Allows territories to defend
 	void giveArmies(int numOfArmies); //Gives armies to the player

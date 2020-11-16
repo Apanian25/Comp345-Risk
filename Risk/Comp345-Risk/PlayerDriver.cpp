@@ -53,9 +53,9 @@ namespace PlayerDriver {
 		//order.push_back(or1);
 
 
-		/*
-			Here we created new players and push objects to some of the methods
-		*/
+			/*
+				Here we created new players and push objects to some of the methods
+			*/
 
 		Player* Player1 = new Player();
 		Player* Player2 = new Player(1, "Jason", hand, terr, order);
@@ -113,7 +113,7 @@ namespace PlayerDriver {
 		Player2 = NULL;
 		delete Player3;
 		Player3 = NULL;
-		
+
 
 		/*
 		* Player 4 pointed to the same memory location as Player 2, no need to delete it
@@ -140,4 +140,3 @@ namespace PlayerDriver {
 
 	}
 }
-

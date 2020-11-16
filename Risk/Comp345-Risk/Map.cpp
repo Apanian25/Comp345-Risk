@@ -19,7 +19,7 @@ Continent::Continent() : id(-1), numberOfArmies(-1), name("") {}
 /// <param name="name">the name of the continent</param>
 /// <param name="id">the id of the continent</param>
 /// <param name="numberOfArmies">The bonus number of armies that you get for conquering a continent</param>
-Continent::Continent(std::string name, int id, int numberOfArmies): name(name), id(id), numberOfArmies(numberOfArmies) {}
+Continent::Continent(std::string name, int id, int numberOfArmies) : name(name), id(id), numberOfArmies(numberOfArmies) {}
 
 /// <summary>
 /// Destructor
@@ -30,7 +30,7 @@ Continent::~Continent() { }
 /// Copy constructor 
 /// </summary>
 /// <param name="continent"></param>
-Continent::Continent(const Continent& continent): id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
+Continent::Continent(const Continent& continent) : id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
 
 /// <summary>
 /// Overload of the assignment operator
@@ -51,7 +51,7 @@ Continent& Continent::operator= (const Continent& continent) {
 /// <param name="output"></param>
 /// <param name="continent"></param>
 /// <returns></returns>
-std::ostream & operator << (std::ostream & output, const Continent& continent) {
+std::ostream& operator << (std::ostream& output, const Continent& continent) {
 	output << "ID: " << continent.id << std::endl
 		<< "NAME: " << continent.name << std::endl
 		<< "NUMBER OF ARMIES(BONUS): " << continent.numberOfArmies << std::endl;
@@ -143,7 +143,7 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 		<< "CAN ATTACK:" << std::endl;
 
 	for (Territory* to : territory.adjacentTerritoriesTo) {
-		output << "\t" << to->country <<std::endl;
+		output << "\t" << to->country << std::endl;
 	}
 
 	output << "CAN BE ATTACKED BY:" << std::endl;
@@ -160,7 +160,7 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 /// <summary>
 /// Map no-param constructor
 /// </summary>
-Map::Map() { 
+Map::Map() {
 	this->territories = std::map<int, Territory*>();
 	this->continents = std::map<int, Continent*>();
 	this->continentTerritories = std::map<int, std::vector<Territory*>>();
@@ -218,6 +218,14 @@ std::map<int, Continent*> Map::getContinents() {
 	return continents;
 }
 
+std::map<int, std::vector<Territory*>> Map::getContinentTerritories() {
+	return continentTerritories;
+}
+
+std::map<int, Continent*> Map::getContinents() {
+	return continents;
+}
+
 /// <summary>
 /// Overload of the assignment operator
 /// </summary>
@@ -239,7 +247,7 @@ Map& Map::operator= (const Map& map) {
 std::ostream& operator << (std::ostream& output, const Map& map) {
 
 	for (std::pair<int, std::vector<Territory*>> continent : map.continentTerritories) {
-			output << "Continent: " << map.continents.at(continent.first)->name << std::endl;
+		output << "Continent: " << map.continents.at(continent.first)->name << std::endl;
 		for (Territory* territory : continent.second) {
 			output << *territory;
 		}
@@ -280,7 +288,7 @@ Territory* Map::addTerritory(std::string country, int id, int continentId) {
 /// <param name="numberOfArmies">the bonus number of armies you get for conquering the entire continent</param>
 /// <returns></returns>
 Continent* Map::addContinent(std::string continent, int continentId, int numberOfArmies) {
-	Continent *newContinent = new Continent(continent, continentId, numberOfArmies);
+	Continent* newContinent = new Continent(continent, continentId, numberOfArmies);
 	continents[continentId] = newContinent;
 
 	return newContinent;

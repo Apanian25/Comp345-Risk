@@ -11,25 +11,25 @@ using namespace std;
 int main();
 void turnObserversOnOff();
 extern std::vector<Player*> players;
+extern std::vector<int> playerorder;
 extern Deck* deck;
 
 class GameEngine {
 public:
-	int selectedMap;
-	Map* map = NULL;
-	MapLoader m;
-	int numOfPlayers{ 0 };
+    int selectedMap;
+    Map* map;
+    MapLoader* mapLoader;
+    int numOfPlayers;
+    bool validMap;
 
-	Cards* card = new Cards();
+    Cards* card = new Cards();
 
-	GameEngine();
+    GameEngine();
 
-	void mainGameLoop();
-	void removePlayersWithoutTerritories();
-	void reinforcementPhase();
-	void issueOrderPhase();
-	void ordersExecutionPhase();
-	bool hasWinner();
+    void mainGameLoop();
+    void removePlayersWithoutTerritories();
+    void reinforcementPhase();
+    void issueOrderPhase();
+    void ordersExecutionPhase();
+    bool hasWinner();
 };
-
-

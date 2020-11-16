@@ -123,7 +123,14 @@ vector<Territory*>  Player::toDefend()
 
 	return vecToDef;
 }
+int Player::getNumOfArmies() {
+	return this->numOfArmies;
+}
 
+void Player::addTerritory(Territory* terr)
+{
+	this->territories.push_back(terr);
+}
 
 ///<summary>
 ///Method which will add an issued order to the orders list
@@ -314,7 +321,7 @@ Player::Player(const Player& play) {
 /// </summary>
 Player::~Player() {
 
-	
+
 }
 
 

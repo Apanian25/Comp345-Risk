@@ -661,13 +661,13 @@ OrderList::OrderList() {
 OrderList::OrderList(const OrderList& d) {
 	list = vector<Order*>();
 
-	copy(d.list.begin(), d.list.end(), back_inserter(list));  
+	copy(d.list.begin(), d.list.end(), back_inserter(list));
 }
 
 OrderList& OrderList::operator =(const OrderList& e) {
 	list = vector<Order*>(e.list);
 	return *this;
-} 
+}
 /// <summary>
 /// This destructor deletes every pointer object from the list
 /// </summary>
@@ -706,4 +706,3 @@ void OrderList::move(int ind, int fin) {
 	}
 
 };
-
