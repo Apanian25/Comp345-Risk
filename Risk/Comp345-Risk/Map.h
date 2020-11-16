@@ -28,7 +28,6 @@ struct Territory {
 	Territory(std::string country, int id, int continent_id);
 	Territory(const Territory& territory);
 	void addArmies(int armies);
-	void setOwner(int id);
 	void removeArmies(int armies);
 	void setOwner(int id);
 	Territory& operator= (const Territory& territory);

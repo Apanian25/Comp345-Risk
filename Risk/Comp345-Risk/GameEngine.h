@@ -16,6 +16,7 @@ extern Deck* deck;
 
 class GameEngine {
 public:
+
     int selectedMap;
     Map* map;
     MapLoader* mapLoader;
@@ -33,3 +34,4 @@ public:
     void ordersExecutionPhase();
     bool hasWinner();
 };
+

@@ -24,7 +24,8 @@ MapLoader::MapLoader(std::string mapName) {
 /// </summary>
 MapLoader::~MapLoader() {
 	//call delete on map pointer created
-	delete parsedMap;
+	if(parsedMap != NULL)
+		delete parsedMap;
 	parsedMap = NULL;
 }
 
@@ -188,7 +189,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 						std::vector<int> borders;
 						int countryId = std::stoi(words[0]);
 
-						for (int i = 1; i < words.size() - 1; ++i) {
+						for (int i = 1; i < words.size(); ++i) {  
 
 							borders.push_back(std::stoi(words[i]));
 						}
@@ -233,8 +234,7 @@ std::vector<string> MapLoader::split(string s, string delim) {
 		s.erase(0, pos + delim.length());
 	}
 
-	//temporary hack until I figure out how to enter the last word
-	if (s != "") {
+	if (!s.empty()) {
 		words.push_back(s);
 	}
 	
