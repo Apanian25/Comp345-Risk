@@ -16,9 +16,10 @@ extern Deck* deck;
 class GameEngine {
 public:
 	int selectedMap;
-	Map* map = NULL;
-	MapLoader m;
-	int numOfPlayers{ 0 };
+	Map* map;
+	MapLoader* mapLoader;
+	int numOfPlayers;
+	bool validMap;
 
 	Cards* card = new Cards();
 

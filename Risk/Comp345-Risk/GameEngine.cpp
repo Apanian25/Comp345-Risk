@@ -8,6 +8,10 @@
 
 GameEngine::GameEngine()
 {
+	map = NULL;
+	mapLoader = NULL;
+	numOfPlayers = 0;
+	validMap = false;
 
 };
 
@@ -19,12 +23,10 @@ bool observerOn{ 0 };
 int main() {
 	GameEngine* engine = new GameEngine();
 
-		int selectedMap;
-		Map* map = NULL;
-		MapLoader* m = NULL;
-		int numOfPlayers{ 0 };
-
-		bool validMap{ false };
+		//map = NULL;
+		//MapLoader* m = NULL;
+		//int numOfPlayers{ 0 };
+		//bool validMap{ false };
 
 		vector<Player*> players;
 		Cards* card = new Cards();
@@ -39,7 +41,7 @@ int main() {
 
 		cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
 		
-		while (engine->map == NULL || !validMap) {
+		while (engine->map == NULL || !engine->validMap) {
 
 			cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
@@ -48,41 +50,41 @@ int main() {
 				cout << i << ": " << Maps[i] << std::endl;
 			}
 			
-			cin >> selectedMap;
+			cin >> engine->selectedMap;
 
 			if (cin.fail()) {
 				cin.clear();
 				cin.ignore(512, '\n');
 				cout << "You did not enter a valid integer." << endl;
 				cout << "" << endl;
-				selectedMap = -1;
+				engine->selectedMap = -1;
 			}
 
-			if (selectedMap < 0 && selectedMap != -1 || selectedMap >6) {
+			if (engine->selectedMap < 0 && engine->selectedMap != -1 || engine->selectedMap >6) {
 				cout << " --- You've selected an invalid map number ---" << endl;
 				cout << "" << endl;
 			}
 
-			if (selectedMap >= 0 && selectedMap < 7) {
+			if (engine->selectedMap >= 0 && engine->selectedMap < 7) {
 
-				cout << "--- You've selected map number " << selectedMap << ". ---" << endl;
+				cout << "--- You've selected map number " << engine->selectedMap << ". ---" << endl;
 				cout << "--- Verifying validity of map file... ---" << endl;
 
-				if (m != NULL) {
-					delete m;
-					m = NULL;
+				if (engine->mapLoader != NULL) {
+					delete engine->mapLoader;
+					engine->mapLoader = NULL;
 				}
 
-				m = new MapLoader();
+				engine->mapLoader = new MapLoader();
 
-				map = m->loadMap("Maps\\" + Maps[selectedMap]);
+				engine->map = engine->mapLoader->loadMap("Maps\\" + Maps[engine->selectedMap]);
 
 				if (engine->map != NULL) {
 					cout << "--- Map file exists. Verifying if it is a connected graph... ---" << endl;
-					validMap = map->validate();
+					engine->validMap = engine->map->validate();
 				}
 
-				if (!validMap) {
+				if (!engine->validMap) {
 					cout << "--- Map is not a connectd graph. Please choose another map... ---" << endl;
 				}
 			}
