@@ -234,7 +234,6 @@ std::vector<string> MapLoader::split(string s, string delim) {
 		s.erase(0, pos + delim.length());
 	}
 
-	//temporary hack until I figure out how to enter the last word
 	if (!s.empty()) {
 		words.push_back(s);
 	}
