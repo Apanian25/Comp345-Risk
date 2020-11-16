@@ -13,6 +13,7 @@
     <ClCompile Include="OrdersDriver.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerDriver.cpp" />
+    <ClCompile Include="GameEngineDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cards.h" />

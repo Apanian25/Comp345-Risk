@@ -14,18 +14,10 @@ namespace PlayerDriver {
 class Player {
 
 private:
-
-	
-
-	//vector<Territory*> territories;
-	//vector<Order*> orders;
-	//vector<Cards*> hand;
 	string player_name;
-	int numOfArmies;
 	
-
-
 public:
+	int numOfArmies;
 	int id;
 	vector<Territory*> territories;
 	vector<Order*> orders;
@@ -43,7 +35,6 @@ public:
 	Player(const Player& p); //Copy constructor
 	~Player(); //Destructor
 
-
 	/*
 	   Methods for the player class
 	*/
@@ -52,8 +43,6 @@ public:
 	void giveArmies(int numOfArmies); //Gives armies to the player
 	Order* issueOrder(); //Gives order to the player and adds it to the other list
 	vector<Territory*> getTerritories();//the territories that the player owns
-	
-
 
 	/*
 	   Assignment and insertion operators
