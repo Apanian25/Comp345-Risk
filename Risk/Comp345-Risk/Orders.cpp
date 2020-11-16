@@ -87,12 +87,9 @@ void Deploy::execute()
 	if (isExecuted)
 	{
 		territoryPtr->addArmies(numOfArmies);
-		getName();
+		cout << getName() << endl;
 	}
-	else
-	{
-		cout << "order not executed";
-	}
+	
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Deploy
@@ -156,12 +153,8 @@ void Bomb::execute() {
 	if (isExecuted)
 	{
 		target->removeArmies(target->numberOfArmies / 2);
-		getName();
 	}
-	else
-	{
-		cout << "order not executed" << endl;
-	}
+	
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Bomb
@@ -276,8 +269,15 @@ void Airlift::execute() {
 				}
 			}
 			
+			if (defendingArmiesCount < 0)
+			{
+				defendingArmiesCount = 0;
+			}
+			if (attackingArmiesCount < 0)
+			{
+				attackingArmiesCount = 0;
+			}
 			
-			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
 				for (Player* p : players)
@@ -287,13 +287,11 @@ void Airlift::execute() {
 					}
 				}
 
-				for (Player* p : players) {
-					if (p->id = playerPtr->id) {
-						p->territories.push_back(target);
-						target->numberOfArmies = numOfArmies;
-					}
-				}
-				
+				playerPtr->territories.push_back(target);
+				target->numberOfArmies = attackingArmiesCount;
+				target->ownedBy = playerPtr->id;
+				source->numberOfArmies -= numOfArmies;
+
 				playerPtr->hasConqueredTerritory = true;
 			}
 
@@ -359,8 +357,12 @@ string Advance::getName() const {
 /// <returns>true</returns>
 bool Advance::validate() {// need to fix
 	if (source->ownedBy == playerPtr->id) {
-		if (playerPtr->hasNegotiatedWithId == adjacent->ownedBy)
-			return false;
+		if (playerPtr->hasNegotiatedWithId == adjacent->ownedBy) 
+		{
+			cout << " Can't attack under diplomacy act" << endl;
+				return false;
+		}
+			
 		for (Territory* t : source->adjacentTerritoriesTo) {
 			if (t->id == adjacent->id) {
 				option = adjacent->ownedBy == playerPtr->id ? 1 : 2;
@@ -391,43 +393,50 @@ void Advance::execute() {
 			int defendingArmiesdestroyed = 0;
 			int defendingArmiesCount = adjacent->numberOfArmies;
 			int attackingArmiesdestroyed = 0;
-			int randomizer = rand() % 10 + 1;
-			for (int i = 1; i <= numOfArmies; i++)
+			//int randomizer = rand() % 10 + 1;
+			for (int i = 0; i < numOfArmies; i++)
 			{
-				int low = 1;
-				int high = 6;
-				
+				int randomizer = rand() % 10 + 1;
+				cout << randomizer;
 				if (randomizer >= 1 && randomizer <= 6)
 				{
-					cout << "opponent army destroyed" << endl;
+					cout << "defending army destroyed" << endl;
 					defendingArmiesCount--;
 					defendingArmiesdestroyed++;
+					
 				}
 				else
 				{
-					cout << "opponent army survived" << endl;
+					cout << "defending army survived" << endl;
 				}
 			}
-			for (int i = 1; i <= adjacent->numberOfArmies; i++)
+			for (int i = 0; i < adjacent->numberOfArmies; i++)
 			{
-				int low = 1;
-				int high = 7;
-				
+				int randomizer = rand() % 10 + 1;
+				cout << randomizer;
 				if (randomizer >= 1 && randomizer <= 7)
 				{
-					cout << "opponent army destroyed" << endl;
+					
+					cout << "attacking army destroyed" << endl;
 					attackingArmiesCount--;
 					attackingArmiesdestroyed++;
-
+					
 				}
 				else
 				{
-					cout << "opponent army survived" << endl;
+					cout << "attacking army survived" << endl;
 				}
 			}
 
-
-			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
+			if (defendingArmiesCount < 0)
+			{
+				defendingArmiesCount = 0;
+			}
+			if (attackingArmiesCount < 0)
+			{
+				attackingArmiesCount = 0;
+			}
+			
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
 				
@@ -438,12 +447,11 @@ void Advance::execute() {
 					}
 				}
 
-				for (Player* p : players) {
-					if (p->id = playerPtr->id) {
-						p->territories.push_back(adjacent);
-						adjacent->numberOfArmies = numOfArmies; 
-					}
-				}
+				playerPtr->territories.push_back(adjacent);
+				adjacent->numberOfArmies = attackingArmiesCount;
+				adjacent->ownedBy = playerPtr->id;
+				source->numberOfArmies -= numOfArmies;
+				
 				playerPtr->hasConqueredTerritory = true;
 				
 			}
@@ -519,27 +527,18 @@ bool Blockade::validate() {
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
-void Blockade::execute() { // need to fix
+void Blockade::execute() { 
 
 	isExecuted = validate();
 	if (isExecuted)
 	{
 		target->addArmies(target->numberOfArmies);
 
-		for (Player* p : players)
-		{
-			if (p->id == target->ownedBy) {
-				p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
-			}
-		}
-		
-		getName();
+		playerPtr->territories.erase(std::remove(playerPtr->territories.begin(), playerPtr->territories.end(), target), playerPtr->territories.end());
+		target->ownedBy = -1;
 		
 	}
-	else
-	{
-		cout << "order not executed";
-	}
+
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Blockade

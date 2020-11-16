@@ -219,7 +219,9 @@ void GameEngine::startUpPhase() {
 
 //*********************************************************  PART3  *********************************************************
 void GameEngine::mainGameLoop() {
+	int round = 1;
 	do {
+		cout << "STARTING ROUND" << round << endl;
 		removePlayersWithoutTerritories();
 		reinforcementPhase();
 		issueOrderPhase();
@@ -229,6 +231,7 @@ void GameEngine::mainGameLoop() {
 			player->hasConqueredTerritory = false;
 			player->hasNegotiatedWithId = -500;
 		}
+		++round;
 	} while (!hasWinner());
 }
 
@@ -319,6 +322,7 @@ bool GameEngine::hasWinner() {
 			return false;
 	}
 
+	cout << "WINNER" << endl;
 	return true;
 }
 

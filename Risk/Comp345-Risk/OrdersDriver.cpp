@@ -1,6 +1,7 @@
 #include "Orders.h"
 #include "Player.h"
 #include "Map.h"
+//#include "GameEngine.h"
 #include <iostream>
 
 
@@ -15,6 +16,7 @@ namespace OrdersDriver {
 	int main() {
 		
 		//assignment1Test();
+		assignment2Test();
 		return 0;
 	
 	}
@@ -77,7 +79,7 @@ void assignment1Test()
 
 void assignment2Test()
 {
-	/*Player* player1 = new Player(100, "John");
+	Player* player1 = new Player(100, "John");
 	Player* player2 = new Player(110, "Bob");
 	Player* player3 = new Player(120, "Mark");
 
@@ -104,14 +106,19 @@ void assignment2Test()
 	mark1->adjacentTerritoriesFrom.push_back(john1);
 	john2->adjacentTerritoriesFrom.push_back(john1);
 
+	john1->numberOfArmies = 10;
+	mark1->numberOfArmies = 4;
+	bob1->numberOfArmies = 30;
 
 	Deploy* deploy = new Deploy(player1,john1,10);
-	Deploy* deploy2 = new Deploy(player2,bob1,10);
+	Deploy* deploy2 = new Deploy(player2,mark2,10);
 
 	if (deploy->validate())
 	{
+		cout << "John1 numbert of armies : " << john1->numberOfArmies << endl;
 		std::cout << " deploy is valid" << std::endl;
 		deploy->execute();
+		cout << "John1 numbert of armies : " << john1->numberOfArmies << endl;
 	}
 	else
 	{
@@ -130,16 +137,21 @@ void assignment2Test()
 		std::cout << " deploy2 is Invalid" << std::endl;
 		deploy2->execute();
 	}
-	
+	cout << "----------------------------------------------------------------------------------" << endl;
 
-	Advance* advance = new Advance(player1,john1,mark1,3);
+	Advance* advance = new Advance(player1,john1,mark1,6);
 	Advance* advance2 = new Advance(player1,john1,mark2,3);
 
 	if (advance->validate())
 	{
-		
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout <<"mark1 number of armies : " <<  mark1->numberOfArmies << endl;
+		cout << "mark1 owner (by ID) : " << mark1->ownedBy;
 		std::cout << " advance is valid" << std::endl;
 		advance->execute();
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout << "mark1 number of armies : " << mark1->numberOfArmies << endl;
+		cout << "mark1 owner (by ID) : " << mark1->ownedBy;
 	}
 	else
 	{
@@ -157,16 +169,176 @@ void assignment2Test()
 	{
 		std::cout << " advance2 is Invalid" << std::endl;
 		advance2->execute();
-	}*/
+	}
 
 
 
 
+	cout << "----------------------------------------------------------------------------------" << endl;
+	Airlift* airlift1 = new Airlift(player1,john1,john2,2);
+	Airlift* airlift2 = new Airlift(player3,john1,mark3,2);
+	if (airlift1->validate())
+	{
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout << "John2 number of armies : " << john2->numberOfArmies << endl;
+		std::cout << " airlift is valid" << std::endl;
+		airlift1->execute();
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout << "John2 number of armies : " << john2->numberOfArmies << endl;
+	}
+	else
+	{
+		std::cout << " airlift is Invalid" << std::endl;
+		airlift1->execute();
+	}
 
-	/*Airlift* airlift = new Airlift(player1,source,target,2);
-	Airlift* airlift = new Airlift(player1,source,target,2);
-	Bomb* bomb = new Bomb(player1,target2);
-	Bomb* bomb = new Bomb(player1,target2);
-	Diplomacy* diplomacy = new Diplomacy(player1,player2);*/
+
+	if (airlift2->validate())
+	{
+		std::cout << " airlift2 is valid" << std::endl;
+		airlift2->execute();
+		 
+	}
+	else
+	{
+		std::cout << " airlift2 is Invalid" << std::endl;
+		airlift2->execute();
+	}
+
+	cout << "----------------------------------------------------------------------------------" << endl;
+	Bomb* bomb = new Bomb(player1,bob1);
+	Bomb* bomb2 = new Bomb(player1,john2);
+
+	if (bomb->validate())
+	{
+		cout << "bob1 number of armies :  " <<  bob1->numberOfArmies << endl;
+		std::cout << " bomb is valid" << std::endl;
+		bomb->execute();
+		cout << "bob1 number of armies : " << bob1->numberOfArmies << endl;
+	}
+	else
+	{
+		std::cout << " bomb is Invalid" << std::endl;
+		bomb->execute();
+	}
+
+
+	if (bomb2->validate())
+	{
+		std::cout << " bomb2 is valid" << std::endl;
+		bomb2->execute();
+
+	}
+	else
+	{
+		std::cout << " bomb2 is Invalid" << std::endl;
+		bomb2->execute();
+	}
+	cout << "----------------------------------------------------------------------------------" << endl;
+	Diplomacy* diplomacy = new Diplomacy(player1,player2);
+	Diplomacy* diplomacy2 = new Diplomacy(player1,player1);
+	Advance* advance3 = new Advance(player1, john1, bob1, 3);
+
+	if (diplomacy->validate())
+	{
+
+		std::cout << " diplomacy is valid" << std::endl;
+		diplomacy->execute();
+		advance3->execute();
+
+	}
+	else
+	{
+		std::cout << " diplomacy is Invalid" << std::endl;
+		diplomacy->execute();
+	}
+
+
+	if (diplomacy2->validate())
+	{
+		std::cout << " diplomacy2 is valid" << std::endl;
+		diplomacy2->execute();
+
+
+	}
+	else
+	{
+		std::cout << " diplomacy2 is Invalid" << std::endl;
+		diplomacy2->execute();
+	}
+	cout << "----------------------------------------------------------------------------------" << endl;
+	Blockade* blockade = new Blockade(player1, john1);
+	Blockade* blockade2 = new Blockade(player1, mark1);
+
+	if (blockade->validate())
+	{
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout << "john1 owned (id) : " << john1->ownedBy << endl;
+		std::cout << " blockade is valid" << std::endl;
+		blockade->execute();
+		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
+		cout << "john1 owned (id) : " << john1->ownedBy << endl;
+		
+
+	}
+	else
+	{
+		std::cout << " blockade is Invalid" << std::endl;
+		blockade->execute();
+	}
+
+
+	if (blockade2->validate())
+	{
+		std::cout << " blockade2 is valid" << std::endl;
+		blockade2->execute();
+
+
+	}
+	else
+	{
+		std::cout << " blockade2 is Invalid" << std::endl;
+		blockade2->execute();
+	}
+
+
+
+
+	delete player1;
+	player1 = NULL;
+	delete player2;
+	player2 = NULL;
+	delete player3;
+	player3 = NULL;
+
+	delete john1;
+	john1 = NULL;
+	delete john2;
+	john2 = NULL;
+	delete bob1;
+	bob1 = NULL;
+	delete bob2;
+	bob2 = NULL;
+	delete mark1;
+	mark1 = NULL;
+	delete mark2;
+
+	delete mark3;
+	
+	delete deploy;
+	delete deploy2;
+	delete advance;
+	delete advance2;
+	delete advance3;
+	delete bomb;
+	delete bomb2;
+	delete airlift1;
+	delete airlift2;
+	delete blockade;
+	delete blockade2;
+	delete diplomacy;
+	delete diplomacy2;
+
+
 
 }
