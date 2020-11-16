@@ -38,9 +38,8 @@ int main() {
 			"invalidSolarDisconnected.map" };
 
 		cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
-
-		while (map == NULL || !validMap) {
-	while (engine->map == NULL && !validMap) {
+		
+		while (engine->map == NULL || !validMap) {
 
 			cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
@@ -78,7 +77,7 @@ int main() {
 
 				map = m->loadMap("Maps\\" + Maps[selectedMap]);
 
-				if (map != NULL) {
+				if (engine->map != NULL) {
 					cout << "--- Map file exists. Verifying if it is a connected graph... ---" << endl;
 					validMap = map->validate();
 				}
@@ -88,74 +87,63 @@ int main() {
 				}
 			}
 		}
-		if (engine->map != NULL) {
-			cout << "--- Map file is valid. Verifying if it is a connected graph... ---" << endl;
-			validMap = engine->map->validate();
+		
+		cout << "--- Congratulations, the map is valid! ---" << endl;
+		
+		while (engine->numOfPlayers < 2 || engine->numOfPlayers >5) {
+			
+			cout << "Please enter the number of players (2-5): " << endl;
+			cin >> engine->numOfPlayers;
+
+			if (cin.fail()) {
+				cin.clear();
+				cin.ignore(512, '\n');
+				cout << "You did not enter a valid integer." << endl;
+			}
+
+			if (engine->numOfPlayers < 2 || engine->numOfPlayers > 5) {
+				cout << "Invalid number of players. Please try a number between 2 and 5." << endl;
+			}
 		}
-	}
 
-	cout << "--- Congratulations, the map is valid! ---" << endl;
-
-	while (engine->numOfPlayers < 2 || engine->numOfPlayers >5) {
-
-		cout << "Please enter the number of players (2-5): " << endl;
-		cin >> engine->numOfPlayers;
-
-		if (cin.fail()) {
-			cin.clear();
-			cin.ignore(512, '\n');
-			cout << "You did not enter a valid integer." << endl;
-		}
-
-		if (engine->numOfPlayers < 2 || engine->numOfPlayers > 5) {
-			cout << "Invalid number of players. Please try a number between 2 and 5." << endl;
-		}
-	}
-
-		for (size_t i = 0; i < numOfPlayers; i++)
+		for (size_t i = 0; i < engine->numOfPlayers; i++)
 		{
-			string playerName{ "Player " + std::to_string(i) };
-			Player* player = new Player(playerName);
+			string playerName{ "Player " + to_string(i) };
+			Player* player = new Player(i, playerName);
 			players.push_back(player);
 		}
-	for (size_t i = 0; i < engine->numOfPlayers; i++)
-	{
-		std::string playerName{ "Player " + std::to_string(i) };
-		Player* player = new Player(i, playerName);
-		players.push_back(player);
-	}
+		
+		cout << "You have chosen " << engine->numOfPlayers << " players." << endl;
 
-	cout << "You have chosen " << engine->numOfPlayers << " players." << endl;
+		for (size_t i = 0; i < players.size(); i++)
+		{
+			cout << "The players are: " << endl;
+			cout << players[i] << endl;
+		}
 
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		cout << "The players are: " << endl;
-		cout << players[i] << endl;
-	}
-
-	cout << "--- Initializing deck ---" << endl;
-	deck->initialize(*deck, *engine->card);
-	cout << deck << endl;
-	cout << "--- Shuffling deck ---" << endl;
-	deck->shuffle(*deck);
-	cout << deck << endl;
+		cout << "--- Initializing deck ---" << endl;
+		deck->initialize(*deck, *engine->card);
+		cout << deck << endl;
+		cout << "--- Shuffling deck ---" << endl;
+		deck->shuffle(*deck);
+		cout << deck << endl;
 
 
-	cout << "Please choose whether you'd like the observers to be On(1) or Off(0): " << endl;
-	cin >> observerOn;
+		cout << "Please choose whether you'd like the observers to be On(1) or Off(0): " << endl;
+		cin >> observerOn;
 
-	while (cin.fail()) {
-		cin.clear();
-		cin.ignore(512, '\n');
-		cout << "You did not enter a valid input. Setting the observers off." << endl;
-	}
+		while (cin.fail()) {
+			cin.clear();
+			cin.ignore(512, '\n');
+			cout << "You did not enter a valid input. Setting the observers off." << endl;
+		}
 
-	if (observerOn) {
-		cout << "The observers are now on." << endl;
-	}
-	else {
-		cout << "The observers are off." << endl;
-	}
+		if (observerOn) {
+			cout << "The observers are now on." << endl;
+		}
+		else {
+			cout << "The observers are off." << endl;
+		}
 
 	return 0;
 }
