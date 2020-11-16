@@ -34,7 +34,7 @@ MapLoader::~MapLoader() {
 /// <param name="in"></param>
 /// <param name="m"></param>
 /// <returns></returns>
-ostream & operator << (ostream& output, MapLoader& m)
+ostream& operator << (ostream& output, MapLoader& m)
 {
 	output << "The map name is ..." << m.mapName << endl;
 	return output;
@@ -45,7 +45,7 @@ ostream & operator << (ostream& output, MapLoader& m)
 /// Copy Constructor
 /// </summary>
 /// <param name="map">Map pointer</param>
-MapLoader::MapLoader(const MapLoader &map){
+MapLoader::MapLoader(const MapLoader& map) {
 
 	cout << "Copy constructor is being called...\n" << endl;
 	this->mapName = map.mapName;
@@ -76,7 +76,7 @@ MapLoader& MapLoader::operator=(const MapLoader& mapLoader)
 /// <returns></returns>
 Map* MapLoader::loadMap(std::string mapFilePath) {
 
-	cout << "Verifying map before loading...\n" << endl; 
+	cout << "Verifying map before loading...\n" << endl;
 
 	parsedMap = readMap(mapFilePath);
 
@@ -125,7 +125,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 
 						if (words.size() != NUM_ENTRIES_CONTINENT) {
 							cout << "The file has invalid continent information.\n" << endl;
-							exit(1);
+							return NULL;
 						}
 
 						int numberOfArmies = std::stoi(words[1]);
@@ -136,12 +136,12 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 						cout << "Adding continent number " << continentId << "\n" << endl;
 						cout << "Continent name: " << words[0] << "\n" << endl;
 						cout << "Number of bonus armies: " << numberOfArmies << "\n" << endl;
-					} 
+					}
 					else {
 						cout << "Finished adding continents.\n" << endl;
 						break;
 					}
-				} 
+				}
 			}
 
 
@@ -204,7 +204,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 					}
 				}
 			}
-			
+
 		}
 	}
 
@@ -231,6 +231,11 @@ std::vector<string> MapLoader::split(string s, string delim) {
 		if (token != "")
 			words.push_back(token);
 		s.erase(0, pos + delim.length());
+	}
+
+	//temporary hack until I figure out how to enter the last word
+	if (s != "") {
+		words.push_back(s);
 	}
 
 	return words;

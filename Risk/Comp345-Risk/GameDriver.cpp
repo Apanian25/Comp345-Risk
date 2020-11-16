@@ -5,15 +5,15 @@
 #include "Cards.h"
 
 //Uncomment/comment any of the main function calls to run/ignore that part of the project.
-int main() {
+//int main() {
 	//Part 1
-	MapDriver::main();
+	//MapDriver::main();
 	//Part 2
-	MapLoaderDriver::main();
+	//MapLoaderDriver::main();
 	//Part 3
-	PlayerDriver::main();
+	//PlayerDriver::main();
 	//Part 4
-	OrdersDriver::main();
+	//OrdersDriver::main();
 	//Part 5
-	CardsDriver::main();
-}
+	//CardsDriver::main();
+//}

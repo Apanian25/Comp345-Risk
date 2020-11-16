@@ -4,8 +4,11 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "GameEngine.h"
 #include <vector>
+#include <algorithm>
 #include <list>
+#include <time.h> 
 using namespace std;
 
 
@@ -21,17 +24,24 @@ using namespace std;
 
 Player::Player() {
 
+	this->id = -2;
 	this->player_name = "";
-	this->hand = vector<Cards*>(0);
+	this->hand = new Hand();
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
-
+	this->hasConqueredTerritory = false;
 
 }
 
-Player::Player(string n)
+Player::Player(int id, string n)
 {
+	this->id = id;
 	this->player_name = n;
+	this->hand = new Hand();
+	this->orders = vector<Order*>(0);
+	this->territories = vector<Territory*>(0);
+	this->hasConqueredTerritory = false;
+
 
 }
 
@@ -39,13 +49,14 @@ Player::Player(string n)
 /// Parametrised constructor where we create a player with his own hand, territory, and order
 /// </summary>
 
-Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> o)
+Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o)
 {
+	this->id = id;
 	this->player_name = n;
 	this->hand = h;
 	this->territories = t;
 	this->orders = o;
-
+	this->hasConqueredTerritory = false;
 }
 
 
@@ -54,46 +65,206 @@ Player::Player(string n, vector<Cards*> h, vector<Territory*> t, vector<Order*> 
 /// </summary>
 vector<Territory*> Player::toAttack()
 {
-	Territory* tAtt1 = new Territory("Congo", 3, 22);
+	map<int, Territory*> terrToAtk;
 
-	terrToAtk.push_back(tAtt1);
-
-	cout << "Here are the territories that a player can attack:" << endl;
-	for (int i = 0; i < terrToAtk.size(); i++) {
-		cout << *terrToAtk[i] << endl;
+	//build a unique list of the territories that the player can attack
+	for (Territory* territory : this->territories) {
+		for (Territory* canAttk : territory->adjacentTerritoriesTo) {
+			if (terrToAtk.count(canAttk->id) == 0) {
+				//not already in the map
+				terrToAtk[canAttk->id] = canAttk;
+			}
+		}
 	}
 
+	vector<Territory*> vecToAtk;
 
-	return terrToAtk;
+	for (pair<int, Territory*> territory : terrToAtk) {
+		vecToAtk.push_back(territory.second);
+	}
 
+	std::sort(vecToAtk.begin(), vecToAtk.end(), [](Territory* t1, Territory* t2) {
+		//easier to conquer a territory with fewer armies.
+		return t1->numberOfArmies < t2->numberOfArmies;
+		});
+
+	return vecToAtk;
 }
+
 ///<summary>
 ///Method which allows the player to defend themselves from other countries
 ///</summary>
-void Player::toDefend()
+vector<Territory*>  Player::toDefend()
 {
-	Territory* t1 = new Territory("Kenya", 3, 21);
+	map<int, Territory*> terrToDef;
 
-	terrToDef.push_back(t1);
-
-	cout << "Here are the territories that a player can defend:" << endl;
-	for (int i =0; i < terrToDef.size(); i++) {
-		cout << *terrToDef[i] << endl;
+	//build a unique list of the territories that the player can attack
+	for (Territory* territory : this->territories) {
+		for (Territory* canDef : territory->adjacentTerritoriesFrom) {
+			if (terrToDef.count(canDef->id) == 0) {
+				//not already in the map
+				terrToDef[canDef->id] = canDef;
+			}
+		}
 	}
 
+	vector<Territory*> vecToDef;
+	for (pair<int, Territory*> territory : terrToDef) {
+		vecToDef.push_back(territory.second);
+	}
+
+	std::sort(vecToDef.begin(), vecToDef.end(), [](Territory* t1, Territory* t2) {
+		//better to defend territories with fewer armies.
+		return t1->numberOfArmies < t2->numberOfArmies;
+		});
+
+	return vecToDef;
 }
 
+int Player::getNumOfArmies() {
+	return this->numOfArmies;
+}
+
+void Player::addTerritory(Territory* terr)
+{
+	this->territories.push_back(terr);
+}
 
 ///<summary>
 ///Method which will add an issued order to the orders list
 /// </summary>
-void Player::issueOrder(Order* order)
+Order* Player::issueOrder()
 {
-	
-	this->orders.push_back(order);
+	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
+	srand(time(NULL));
+	if (numOfArmies > 0) {
+		//DEPLOY PHASE
+		vector<Territory*> toDefend = this->toDefend();
+		int armiesToDeploy = 1 + (rand() % this->numOfArmies); //from 1 - numOfArmies
+		numOfArmies -= armiesToDeploy;
+		//assume that the player owns at least 1 territory, if they don't have any territories, they are ejected from the gmae
+		Deploy* dep = new Deploy(this, toDefend.at(0), armiesToDeploy);
+		this->orders.push_back(dep);
+		return dep;
+	}
+	else {
+		//DEPLOY PHASE DONE
+		//Playing cards, if the player has any
+		if (this->hand->hand.size() != 0) {
+			Order* order = hand->play(this);
+			orders.push_back(order);
+			return order;
+		}
+		else {
+			vector<Territory*> toDefend = this->toDefend();
+			vector<Territory*> toDefendWithArmiesLeft;
+			for (Territory* territory : toDefend) {
+				if ((territory->numberOfArmies - territory->commitedNumberOfArmies) > 0)
+					toDefendWithArmiesLeft.push_back(territory);
+			}
+
+			//we cannot create anymore deploy orders;
+			if (toDefendWithArmiesLeft.size() == 0)
+				return NULL;
+
+			//33% chance to advance(attack), advance(reinforce a territory) or stop issuing orders
+			int luck = rand() % 3;
+			bool attack = luck == 0;
+			bool defend = luck == 1;
 
 
-	cout << "Order " << *order << " has been passed to the order list for player " << player_name <<"." <<endl;
+			if (attack) {
+				bool isValidMove = false;
+				int index = 0;
+				vector<Territory*> defendable;
+				vector<Territory*> listToAttack = this->toAttack();
+				Territory* target = listToAttack.at(0);
+
+				while (!isValidMove && index < listToAttack.size()) {
+					target = listToAttack.at(index);
+					for (Territory* territory : target->adjacentTerritoriesFrom) {
+						if (territory->ownedBy == this->id) {
+							defendable.push_back(territory);
+						}
+					}
+
+					if (defendable.size() > 0)
+						isValidMove = true;
+
+					index++;
+				}
+
+				if (!isValidMove)
+					return NULL; //cannot attack
+
+				//sort in decreasing order of number of available armies
+				std::sort(defendable.begin(), defendable.end(), [](Territory* t1, Territory* t2) {
+					//better to attack a territory with more armies.
+					return (t1->numberOfArmies - t1->commitedNumberOfArmies) > (t2->numberOfArmies - t2->commitedNumberOfArmies);
+					});
+
+				Territory* source = defendable.at(0);
+				int availableArmies = source->numberOfArmies = source->commitedNumberOfArmies;
+				if (availableArmies == 0)
+					return NULL;
+
+				int attackingArmies = 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies));
+				if (target != NULL && availableArmies > target->numberOfArmies) {
+					attackingArmies = target->numberOfArmies + (rand() % (availableArmies - target->numberOfArmies));
+				}
+				else {
+					attackingArmies = 1 + (rand() % availableArmies);
+				}
+
+				source->commitedNumberOfArmies += attackingArmies;
+				Advance* adv = new Advance(this, source, target, attackingArmies);
+				return adv;
+			}
+			else if (defend) {
+				if (toDefendWithArmiesLeft.size() < 2)
+					return NULL;
+				int src, targ;
+
+				bool hasValidMove = false;
+				for (int i = 0; i < toDefendWithArmiesLeft.size(); i++) {
+					for (int j = i + 1; j < toDefendWithArmiesLeft.size(); j++) {
+						if (toDefendWithArmiesLeft.at(i)->ownedBy == toDefendWithArmiesLeft.at(j)->ownedBy) {
+							src = i;
+							targ = j;
+							hasValidMove = true;
+							break;
+						}
+					}
+					if (hasValidMove)
+						break;
+				}
+
+				if (!hasValidMove)
+					return NULL;
+
+				Territory* source = toDefendWithArmiesLeft.at(src);
+				Territory* target = toDefendWithArmiesLeft.at(targ);
+
+				Advance* adv = new Advance(this, source, target, 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies)));
+				return adv;
+			}
+			else {
+				return NULL; //NO MORE MOVES
+			}
+		}
+	}
+
+	return NULL;
+}
+
+
+
+vector<Territory*> Player::getTerritories() {
+	return this->territories;
+}
+
+void Player::giveArmies(int numOfArmies) {
+	this->numOfArmies += numOfArmies;
 }
 
 
@@ -123,38 +294,29 @@ Player& Player::operator=(const Player& p)
 ///Creates a shallow copy
 ///</summary>
 Player::Player(const Player& play) {
+	this->numOfArmies = play.numOfArmies;
+	this->id = play.id;
+	this->hasConqueredTerritory = play.hasConqueredTerritory;
 
+	this->hand = new Hand(*play.hand);
 
-	for (int i = 0; i < play.hand.size(); i++) {
-
-		Cards* c = play.hand.at(i);
-		this->hand.push_back(new Cards(*c));
-
-
-		for (int i = 0; i < play.orders.size(); i++) {
-
-			Order* order = play.orders.at(i);
-			this->orders.push_back(new Order(*order));
-
-		}
-
-		for (int i = 0; play.territories.size(); i++) {
-
-			Territory* terr = play.territories.at(i);
-			this->territories.push_back(new Territory(*terr));
-
-		}
-
-
+	for (int i = 0; i < play.orders.size(); i++) {
+		Order* order = play.orders.at(i);
+		this->orders.push_back(order);
 	}
 
+	for (int i = 0; play.territories.size(); i++) {
+		Territory* terr = play.territories.at(i);
+		this->territories.push_back(new Territory(*terr));
+	}
 }
+
 ///<summary>
 ///Destructor for the player
 /// </summary>
 Player::~Player() {
 
-	
+
 }
 
 
@@ -163,9 +325,8 @@ Player::~Player() {
 /// </summary>
 ostream& operator<<(ostream& strm, Player& player)
 {
-	strm <<"Player's name is " <<player.player_name << endl << player.player_name << " has " << player.territories.size() << " territories at their disposal." << endl << "He has "
-		<< player.hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders.size() << " orders that he can use.";
-
+	strm << "Player's name is " << player.player_name << endl << player.player_name << " has " << player.territories.size() << " territories at their disposal." << endl << "He has "
+		<< player.hand->hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders.size() << " orders that he can use.";
 
 	return strm;
 }

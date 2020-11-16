@@ -1,8 +1,16 @@
 #include<iostream>
 #include <string>
 #include "Orders.h"
+#include "Cards.h"
+#include "Map.h"
+#include "Player.h"
+//#include "Util.h";
+#include <algorithm>
+#include <time.h>
+#include "GameEngine.h"
 
 using namespace std;
+gameEngine* engine = new gameEngine();
 /// <summary>
 /// This constructor initializes isExecuted to false.
 /// </summary>
@@ -67,19 +75,37 @@ string Deploy::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Deploy::validate() {
-	if (1)
-		return true;       
+	return territoryPtr->ownedBy == playerPtr->id;
 }
+
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
-void Deploy::execute() {
-	isExecuted = validate();        
+void Deploy::execute()
+{
+	isExecuted = validate();
+	if (isExecuted)
+	{
+		territoryPtr->addArmies(numOfArmies);
+		getName();
+	}
+	else
+	{
+		cout << "order not executed";
+	}
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Deploy
 /// </summary>
-Deploy::Deploy() {};
+Deploy::Deploy() {}
+
+
+Deploy::Deploy(Player* p, Territory* t, int numOfArmies)
+{
+	this->playerPtr = p;
+	this->territoryPtr = t;
+	this->numOfArmies = numOfArmies;
+};
 
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
@@ -118,26 +144,41 @@ string Bomb::getName() const {
 /// This method validates an order, since there is no game implementation yet, just return true
 /// </summary>
 /// <returns>true</returns>
-bool Bomb::validate() {
-	if (1)
-		return true;
+bool Bomb::validate()
+{
+	return target->ownedBy != player1->id;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Bomb::execute() {
 	isExecuted = validate();
+	if (isExecuted)
+	{
+		target->removeArmies(target->numberOfArmies / 2);
+		getName();
+	}
+	else
+	{
+		cout << "order not executed" << endl;
+	}
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Bomb
 /// </summary>
 Bomb::Bomb() {};
 
+Bomb::Bomb(Player* p1, Territory* target) //TODO : mAYBE REMOVE PLAYER 2
+{
+	this->player1 = p1;
+	this->target = target;
+
+}
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
 /// </summary>
 /// <param name="d">d is a Bomb object</param>
-Bomb::Bomb(const Bomb& d) : Order(d) {}
+Bomb::Bomb(const Bomb& d) : Order(d) {};
 
 /// <summary>
 /// This destructor is left empty as there are no pointer data members, compiler will delete anything on the stack
@@ -170,19 +211,113 @@ string Airlift::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Airlift::validate() {
-	if (1)
-		return true;
+	bool playerOwnsSrcTerritory = source->ownedBy == playerPtr->id;
+	option = !playerOwnsSrcTerritory ? -1 : target->ownedBy == playerPtr->id ? 1 : 2;
+	return playerOwnsSrcTerritory;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Airlift::execute() {
+	//std::vector<Player*> players; // TODO : REMOVE
+	srand(time(NULL));
 	isExecuted = validate();
-}
+
+	if (isExecuted)
+	{
+		if (option == 1)
+		{
+			target->addArmies(numOfArmies);
+			source->removeArmies(numOfArmies);
+
+		}
+		else if (option == 2)
+		{
+			int attackingArmiesCount = numOfArmies;
+			int defendingArmiesdestroyed = 0;
+			int defendingArmiesCount = target->numberOfArmies;
+			int attackingArmiesdestroyed = 0;
+			int randomizer = rand() % 10 + 1;
+
+			for (int i = 1; i <= numOfArmies; i++)
+			{
+				int low = 1;
+				int high = 6;
+
+				if (randomizer >= 1 && randomizer <= 6)
+				{
+					cout << "defending army destroyed" << endl;
+					defendingArmiesCount--;
+					defendingArmiesdestroyed++;
+				}
+				else
+				{
+					cout << "defending army survived" << endl;
+				}
+			}
+
+			for (int i = 1; i <= target->numberOfArmies; i++)
+			{
+				int low = 1;
+				int high = 7;
+
+				if (randomizer >= 1 && randomizer <= 7)
+				{
+					cout << "attacking army destroyed" << endl;
+					attackingArmiesCount--;
+					attackingArmiesdestroyed++;
+
+				}
+				else
+				{
+					cout << "attacking army survived" << endl;
+				}
+			}
+
+
+			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
+			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
+			{
+				for (Player* p : players)
+				{
+					if (p->id == target->ownedBy) {
+						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
+					}
+				}
+
+				for (Player* p : players) {
+					if (p->id = playerPtr->id) {
+						p->territories.push_back(target);
+						target->numberOfArmies = numOfArmies;
+					}
+				}
+				// draw a card
+				//player1.Hand.draw()
+			}
+
+			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
+			{
+				source->numberOfArmies -= attackingArmiesdestroyed;
+				target->numberOfArmies -= defendingArmiesdestroyed;
+			}
+
+		}
+	}
+
+};
 /// <summary>
 /// This constructor is empty as there are no data members to Airlift
 /// </summary>
 Airlift::Airlift() {};
+
+Airlift::Airlift(Player* p, Territory* s, Territory* t, int numOfArmies)
+{
+	this->playerPtr = p;
+	this->source = s;
+	this->target = t;
+	this->numOfArmies = numOfArmies;
+	this->option = 0;
+}
 
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
@@ -220,20 +355,122 @@ string Advance::getName() const {
 /// This method validates an order, since there is no game implementation yet, just return true
 /// </summary>
 /// <returns>true</returns>
-bool Advance::validate() {
-	if (1)
-		return true;
+bool Advance::validate() {// need to fix
+	if (source->ownedBy == playerPtr->id) {
+		for (Territory* t : source->adjacentTerritoriesTo) {
+			if (t->id == adjacent->id) {
+				option = adjacent->ownedBy == playerPtr->id ? 1 : 2;
+				return true;
+			}
+		}
+	}
+	return false;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Advance::execute() {
+	//std::vector<Player*> players; // TODO : REMOVE
+	srand(time(NULL));
 	isExecuted = validate();
+	if (isExecuted)
+	{
+		if (option == 1)
+		{
+			adjacent->addArmies(numOfArmies);
+			source->removeArmies(numOfArmies);
+
+		}
+		else if (option == 2)
+		{
+			int attackingArmiesCount = numOfArmies;
+			int defendingArmiesdestroyed = 0;
+			int defendingArmiesCount = adjacent->numberOfArmies;
+			int attackingArmiesdestroyed = 0;
+			int randomizer = rand() % 10 + 1;
+			for (int i = 1; i <= numOfArmies; i++)
+			{
+				int low = 1;
+				int high = 6;
+
+				if (randomizer >= 1 && randomizer <= 6)
+				{
+					cout << "opponent army destroyed" << endl;
+					defendingArmiesCount--;
+					defendingArmiesdestroyed++;
+				}
+				else
+				{
+					cout << "opponent army survived" << endl;
+				}
+			}
+			for (int i = 1; i <= adjacent->numberOfArmies; i++)
+			{
+				int low = 1;
+				int high = 7;
+
+				if (randomizer >= 1 && randomizer <= 7)
+				{
+					cout << "opponent army destroyed" << endl;
+					attackingArmiesCount--;
+					attackingArmiesdestroyed++;
+
+				}
+				else
+				{
+					cout << "opponent army survived" << endl;
+				}
+			}
+
+
+			//MAKE SURE ATTACKING OR DEFENDING ARMIES NEVER GO NEGATIVE
+			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
+			{
+
+				for (Player* p : players)
+				{
+					if (p->id == adjacent->ownedBy) {
+						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), adjacent), p->territories.end());
+					}
+				}
+
+				for (Player* p : players) {
+					if (p->id = playerPtr->id) {
+						p->territories.push_back(adjacent);
+						adjacent->numberOfArmies = numOfArmies;
+					}
+				}
+				// draw a card
+				//player1.Hand.draw()
+
+			}
+			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
+			{
+				source->numberOfArmies -= attackingArmiesdestroyed;
+				adjacent->numberOfArmies -= defendingArmiesdestroyed;
+			}
+		}
+	}
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Advance
 /// </summary>
-Advance::Advance() {};
+Advance::Advance() {
+	this->option = -1;
+	this->playerPtr = NULL;
+	this->source = NULL;
+	this->adjacent = NULL;
+	this->numOfArmies = -1;
+};
+
+Advance::Advance(Player* p, Territory* source, Territory* target, int numOfArmies)
+{
+	this->option = -1;
+	this->playerPtr = p;
+	this->source = source;
+	this->adjacent = target;
+	this->numOfArmies = numOfArmies;
+}
 
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
@@ -272,19 +509,45 @@ string Blockade::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Blockade::validate() {
-	if (1)
-		return true;
+	return target->ownedBy == playerPtr->id;
+	//std::cout << "invalid order, player does not own target territory, please select another" << std::endl;
 };
+
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
-void Blockade::execute() {
+void Blockade::execute() { // need to fix
+
 	isExecuted = validate();
+	if (isExecuted)
+	{
+		target->addArmies(target->numberOfArmies);
+
+		for (Player* p : players)
+		{
+			if (p->id == target->ownedBy) {
+				p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
+			}
+		}
+
+		getName();
+
+	}
+	else
+	{
+		cout << "order not executed";
+	}
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Blockade
 /// </summary>
 Blockade::Blockade() {};
+
+Blockade::Blockade(Player* p, Territory* t)
+{
+	this->playerPtr = p;
+	this->target = t;
+}
 
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
@@ -323,19 +586,34 @@ string Diplomacy::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Diplomacy::validate() {
-	if (1)
+
+	if (player1->id != player2->id)
+	{
 		return true;
+	}
+
+	return false;
 };
 /// <summary>
 /// This method executes an order, changing isExecuted to true
 /// </summary>
 void Diplomacy::execute() {
 	isExecuted = validate();
+	if (isExecuted)
+	{
+
+	}
 };
 /// <summary>
 /// This constructor is empty as there are no data members to Diplomacy
 /// </summary>
 Diplomacy::Diplomacy() {};
+
+Diplomacy::Diplomacy(Player* p1, Player* p2)
+{
+	this->player1 = p1;
+	this->player2 = p2;
+}
 
 /// <summary>
 /// This copy constructor first makes a call to the base class Order copy contructor 
@@ -357,6 +635,15 @@ Diplomacy& Diplomacy::operator=(const Diplomacy& d) {
 	Order::operator=(d);
 	return *this;
 }
+
+
+Reinforcement::Reinforcement() {}
+Reinforcement::~Reinforcement() {}
+Reinforcement::Reinforcement(Reinforcement const& r) {}
+void Reinforcement::execute() {}
+string Reinforcement::getName() const { return "Reinforcement"; }
+Reinforcement& Reinforcement::operator=(const Reinforcement& r) { return *this; }
+
 /// <summary>
 /// This constructor initializes list to a vector of pointer Objects
 /// </summary>
@@ -370,13 +657,13 @@ OrderList::OrderList() {
 OrderList::OrderList(const OrderList& d) {
 	list = vector<Order*>();
 
-	copy(d.list.begin(), d.list.end(), back_inserter(list));  
+	copy(d.list.begin(), d.list.end(), back_inserter(list));
 }
 
 OrderList& OrderList::operator =(const OrderList& e) {
 	list = vector<Order*>(e.list);
 	return *this;
-} 
+}
 /// <summary>
 /// This destructor deletes every pointer object from the list
 /// </summary>
@@ -415,4 +702,3 @@ void OrderList::move(int ind, int fin) {
 	}
 
 };
-
