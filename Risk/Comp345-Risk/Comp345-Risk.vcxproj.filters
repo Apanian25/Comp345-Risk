@@ -54,28 +54,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MapLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cards.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Orders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Cards.h" />
+    <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="Map.h" />
+    <ClInclude Include="MapLoader.h" />
+    <ClInclude Include="Orders.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="artic.map">
-      <Filter>Resource Files</Filter>
-    </None>
+    <None Include="artic.map" />
   </ItemGroup>
 </Project>

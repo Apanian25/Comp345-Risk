@@ -3,9 +3,10 @@
 #include "Player.h"
 #include "Orders.h"
 #include "Cards.h"
+#include "GameEngine.h"
 
 //Uncomment/comment any of the main function calls to run/ignore that part of the project.
-//int main() {
+int main() {
 	//Part 1
 	//MapDriver::main();
 	//Part 2
@@ -15,5 +16,7 @@
 	//Part 4
 	//OrdersDriver::main();
 	//Part 5
-//	CardsDriver::main();
-//}
+	//CardsDriver::main();
+	GameEngine* theEngineThatCould = new GameEngine();
+	theEngineThatCould->setUp();
+}

@@ -27,11 +27,13 @@ public:
 
     GameEngine();
 
+    void setUp();
     void mainGameLoop();
     void removePlayersWithoutTerritories();
     void reinforcementPhase();
     void issueOrderPhase();
     void ordersExecutionPhase();
     bool hasWinner();
+    void startUpPhase();
 };
 

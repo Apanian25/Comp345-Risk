@@ -218,12 +218,12 @@ std::map<int, Continent*> Map::getContinents() {
 	return continents;
 }
 
-std::map<int, std::vector<Territory*>> Map::getContinentTerritories() {
-	return continentTerritories;
-}
-
-std::map<int, Continent*> Map::getContinents() {
-	return continents;
+/// <summary>
+/// returns total number of territories
+/// </summary>
+/// <returns>total number of territories</returns>
+int Map::getSize() {
+	return this->territories.size();
 }
 
 /// <summary>
