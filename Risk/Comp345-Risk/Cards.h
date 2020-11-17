@@ -40,8 +40,8 @@ class  Deck
 public:
 	vector<Cards*> cards_list;
 	int deck_multiplier = 5;
-	void initialize(Deck& deck, Cards& card);
-	void shuffle(Deck&);
+	void initialize();
+	void shuffle();
 	Deck();
 	~Deck();
 	Deck(const Deck& orig);

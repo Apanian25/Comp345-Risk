@@ -14,12 +14,12 @@ namespace CardsDriver {
 		Hand* H2 = new Hand();
 
 		std::cout << "-----------------Initial Deck---------------------" << std::endl;
-		My_Deck->initialize(*My_Deck, *card);
+		My_Deck->initialize();
 		cout << *My_Deck;
 
 		std::cout << "------------------shuffled Deck-------------------------" << std::endl;
-		My_Deck->shuffle(*My_Deck);
-		My_Deck->shuffle(*My_Deck);
+		My_Deck->shuffle();
+		My_Deck->shuffle();
 		cout << *My_Deck;
 
 

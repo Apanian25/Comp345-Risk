@@ -26,6 +26,7 @@ void GameEngine::setUp() {
 
 	Cards* card = new Cards();
 	Deck* deck = new Deck();
+	deck->initialize();
 
 	string path = "Maps";
 	string Maps[7]{
@@ -119,10 +120,10 @@ void GameEngine::setUp() {
 	}
 
 	cout << "--- Initializing deck ---" << endl;
-	deck->initialize(*deck, *card);
+	deck->initialize();
 	cout << deck << endl;
 	cout << "--- Shuffling deck ---" << endl;
-	deck->shuffle(*deck);
+	deck->shuffle();
 	cout << deck << endl;
 
 
@@ -166,12 +167,7 @@ void GameEngine::startUpPhase() {
 		playerrandom.erase(playerrandom.begin() + randoms);
 	}
 
-	vector<Player*> orderedPlayers;
-	for (int i = 0; i < players.size(); ++i) {
-		orderedPlayers.push_back(players.at(playerorder.at(i)));
-	}
-	players = orderedPlayers;
-
+	
 	std::vector<int> terrsize;
 
 	for (int i = 1; i <= map->getSize(); i++) {
@@ -181,8 +177,9 @@ void GameEngine::startUpPhase() {
 	int ind = 0;
 	while (terrsize.size() != 0) {
 		randoms = rand() % terrsize.size();
-		players.at(playerorder.at(ind % players.size()))->addTerritory(map->getTerritory(terrsize.at(randoms)));
-		map->getTerritory(terrsize.at(randoms))->ownedBy = ind % players.size();
+		Player* p = players.at(playerorder.at(ind % players.size()));
+		p->addTerritory(map->getTerritory(terrsize.at(randoms)));
+		map->getTerritory(terrsize.at(randoms))->ownedBy = p->id;
 		terrsize.erase(terrsize.begin() + randoms);
 		ind++;
 	}
@@ -213,6 +210,13 @@ void GameEngine::startUpPhase() {
 	for (int i = 0; i < players.size(); i++) {
 		players[i]->giveArmies(A);
 	}
+
+	vector<Player*> orderedPlayers;
+	for (int i = 0; i < players.size(); ++i) {
+		orderedPlayers.push_back(players.at(playerorder.at(i)));
+	}
+	players = orderedPlayers;
+
 	cout << players[0]->getNumOfArmies() << endl;
 }
 
@@ -231,8 +235,12 @@ void GameEngine::mainGameLoop() {
 			player->hasConqueredTerritory = false;
 			player->hasNegotiatedWithId = -500;
 		}
+		for (pair<int, Territory*> territory : map->getAllTerritories()) {
+			territory.second->commitedNumberOfArmies = 0;
+		}
 		++round;
 	} while (!hasWinner());
+	cout << "Game lasted " << --round << " rounds" << endl;
 }
 
 void GameEngine::removePlayersWithoutTerritories() {
@@ -240,6 +248,10 @@ void GameEngine::removePlayersWithoutTerritories() {
 	for (Player* player : players) {
 		if (player->getTerritories().size() == 0) {
 			playersToRemove.push_back(player);
+		}
+		while (player->hand->hand.size() > 0) {
+			deck->cards_list.push_back(player->hand->hand.at(0));
+			player->hand->hand.erase(std::remove(player->hand->hand.begin(), player->hand->hand.end(), player->hand->hand.at(0)));
 		}
 	}
 
@@ -249,6 +261,7 @@ void GameEngine::removePlayersWithoutTerritories() {
 }
 
 void GameEngine::issueOrderPhase() {
+	cout << "Executing Issue Order Phase" << endl;
 	for (Player* player : players) {
 		while (true) {
 			Order* order = player->issueOrder();
@@ -259,6 +272,7 @@ void GameEngine::issueOrderPhase() {
 }
 
 void GameEngine::reinforcementPhase() {
+	cout << "Executing Reinforcement Phase" << endl;
 	std::map<int, std::vector<Territory*>> continentTerritories = map->getContinentTerritories();
 	std::map<int, Continent*> continents = map->getContinents();
 
@@ -284,6 +298,7 @@ void GameEngine::reinforcementPhase() {
 }
 
 void GameEngine::ordersExecutionPhase() {
+	cout << "Executing Orders Phase" << endl;
 	//Deploy orders execute first
 	for (Player* player : players) {
 		vector<Order*> deploys;
@@ -295,8 +310,8 @@ void GameEngine::ordersExecutionPhase() {
 
 		for (Order* order : deploys) {
 			order->execute();
-			delete order;
 			player->orders.erase(std::remove(player->orders.begin(), player->orders.end(), order));
+			delete order;
 		}
 	}
 
@@ -322,7 +337,14 @@ bool GameEngine::hasWinner() {
 			return false;
 	}
 
-	cout << "WINNER" << endl;
+	Player* winner = NULL;
+	for (Player* player : players) {
+		if (player->id == point)
+			winner = player;
+	}
+
+	//winner will not be null
+	cout << "WINNER: " << *winner << endl;
 	return true;
 }
 

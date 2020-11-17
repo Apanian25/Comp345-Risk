@@ -99,30 +99,14 @@ vector<Territory*> Player::toAttack()
 ///</summary>
 vector<Territory*>  Player::toDefend()
 {
-	map<int, Territory*> terrToDef;
-
-	//build a unique list of the territories that the player can attack
-	for (Territory* territory : this->territories) {
-		for (Territory* canDef : territory->adjacentTerritoriesFrom) {
-			if (terrToDef.count(canDef->id) == 0) {
-				//not already in the map
-				terrToDef[canDef->id] = canDef;
-			}
-		}
-	}
-
-	vector<Territory*> vecToDef;
-	for (pair<int, Territory*> territory : terrToDef) {
-		vecToDef.push_back(territory.second);
-	}
-
-	std::sort(vecToDef.begin(), vecToDef.end(), [](Territory* t1, Territory* t2) {
+	std::sort(this->territories.begin(), this->territories.end(), [](Territory* t1, Territory* t2) {
 		//better to defend territories with fewer armies.
 		return t1->numberOfArmies < t2->numberOfArmies;
 	});
 
-	return vecToDef;
+	return this->territories;
 }
+
 int Player::getNumOfArmies() {
 	return this->numOfArmies;
 }
@@ -144,8 +128,8 @@ Order* Player::issueOrder()
 		vector<Territory*> toDefend = this->toDefend();
 		int armiesToDeploy =  1 + (rand() % this->numOfArmies); //from 1 - numOfArmies
 		numOfArmies -= armiesToDeploy;
-		//assume that the player owns at least 1 territory, if they don't have any territories, they are ejected from the gmae
-		Deploy* dep = new Deploy(this, toDefend.at(0), armiesToDeploy); 
+
+		Deploy* dep = new Deploy(this, toDefend.at(rand() % toDefend.size()), armiesToDeploy);
 		this->orders.push_back(dep);
 		return dep;
 	}
@@ -169,72 +153,112 @@ Order* Player::issueOrder()
 			if (toDefendWithArmiesLeft.size() == 0)
 				return NULL;
 
-			//33% chance to advance(attack), advance(reinforce a territory) or stop issuing orders
-			int luck = rand() % 3;
-			bool attack = luck == 0;
-			bool defend = luck == 1;
+			//chance to advance(attack), advance(reinforce a territory) or stop issuing orders
+			int luck = rand() % 100;
+			bool attack = luck < 90;
+			bool defend = luck < 95;
 
 
 			if (attack) {
 				bool isValidMove = false;
 				int index = 0;
-				vector<Territory*> defendable;
+				vector<Territory*> territoriesThatCanAttack;
 				vector<Territory*> listToAttack = this->toAttack();
 				Territory* target = listToAttack.at(0);
 
 				while (!isValidMove && index < listToAttack.size()) {
 					target = listToAttack.at(index);
 					for (Territory* territory : target->adjacentTerritoriesFrom) {
-						if (territory->ownedBy == this->id) {
-							defendable.push_back(territory);
+
+						if (territory->ownedBy == this->id && territory->numberOfArmies - territory->commitedNumberOfArmies > 0) {
+							bool foundDuplicateAttack = false;
+							for (Order* order : this->orders) {
+								Advance* advance = dynamic_cast<Advance*>(order);
+								if (advance != NULL) {
+									if (target->id == advance->adjacent->id && territory->id == advance->source->id) {
+										foundDuplicateAttack = true;
+									}
+								}
+							}
+							if(!foundDuplicateAttack)
+								territoriesThatCanAttack.push_back(territory);
 						}
 					}
 
-					if (defendable.size() > 0)
+					if (territoriesThatCanAttack.size() > 0)
 						isValidMove = true;
 
-					index++;
+					++index;
 				}
 
 				if (!isValidMove)
 					return NULL; //cannot attack
 
 				//sort in decreasing order of number of available armies
-				std::sort(defendable.begin(), defendable.end(), [](Territory* t1, Territory* t2) {
+				std::sort(territoriesThatCanAttack.begin(), territoriesThatCanAttack.end(), [](Territory* t1, Territory* t2) {
 					//better to attack a territory with more armies.
 					return (t1->numberOfArmies - t1->commitedNumberOfArmies) > (t2->numberOfArmies - t2->commitedNumberOfArmies);
 				});
 
-				Territory* source = defendable.at(0);
-				int availableArmies = source->numberOfArmies = source->commitedNumberOfArmies;
+				Territory* source = territoriesThatCanAttack.at(0);
+				int availableArmies = source->numberOfArmies - source->commitedNumberOfArmies;
 				if (availableArmies == 0)
 					return NULL;
 
-				int attackingArmies = 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies));
-				if (target != NULL && availableArmies > target->numberOfArmies) {
-					attackingArmies = target->numberOfArmies + (rand() % (availableArmies - target->numberOfArmies));
+				int attackingArmies = 0;
+				if (target != NULL && availableArmies >= target->numberOfArmies) {
+					if (availableArmies == target->numberOfArmies) {
+						attackingArmies = availableArmies;
+					}
+					else {
+						if (availableArmies - target->numberOfArmies - 1 == 0) {
+							attackingArmies = availableArmies;
+						}
+						else {
+							attackingArmies = target->numberOfArmies + 1 + (rand() % (availableArmies - target->numberOfArmies - 1));
+						}
+					}
 				}
 				else {
-					attackingArmies = 1 + (rand() % availableArmies);
+					int minArmiesToSend = 0.7 * availableArmies;
+					attackingArmies = minArmiesToSend + (rand() % availableArmies-minArmiesToSend);
 				}
 
 				source->commitedNumberOfArmies += attackingArmies;
 				Advance* adv = new Advance(this, source, target, attackingArmies);
+				this->orders.push_back(adv);
 				return adv;
 			}
 			else if(defend) {
 				if (toDefendWithArmiesLeft.size() < 2)
 					return NULL;
 				int src, targ;
-
+				Territory* source = NULL, *target = NULL;
 				bool hasValidMove = false;
-				for (int i = 0; i < toDefendWithArmiesLeft.size(); i++) {
-					for (int j = i + 1; j < toDefendWithArmiesLeft.size(); j++) {
-						if (toDefendWithArmiesLeft.at(i)->ownedBy == toDefendWithArmiesLeft.at(j)->ownedBy) {
-							src = i;
-							targ = j;
-							hasValidMove = true;
-							break;
+
+				std::sort(toDefendWithArmiesLeft.begin(), toDefendWithArmiesLeft.end(), [](Territory* t1, Territory* t2) {
+					return t1->numberOfArmies - t1->commitedNumberOfArmies < t2->numberOfArmies - t2->commitedNumberOfArmies;
+				});
+
+				for (Territory* territory : toDefendWithArmiesLeft) {
+					for (Territory* adj : territory->adjacentTerritoriesTo) {
+						if (territory->ownedBy == adj->ownedBy) {
+							bool foundDuplicateDefend = false;
+							for (Order* order : this->orders) {
+								Advance* advance = dynamic_cast<Advance*>(order);
+								if (advance != NULL) {
+									if (adj->id == advance->adjacent->id) {
+										//Dont want to defend the same territory multiple times.
+										foundDuplicateDefend = true;
+									}
+								}
+							}
+							if (!foundDuplicateDefend) {
+								source = territory;
+								target = adj;
+								hasValidMove = true;
+								break;
+							}
 						}
 					}
 					if (hasValidMove)
@@ -244,10 +268,12 @@ Order* Player::issueOrder()
 				if (!hasValidMove)
 					return NULL;
 
-				Territory* source = toDefendWithArmiesLeft.at(src);
-				Territory* target = toDefendWithArmiesLeft.at(targ);
+				int availableArmies = source->numberOfArmies - source->commitedNumberOfArmies;
+				int numOfDefendingArmies =  1 + (rand() % (availableArmies));
 
-				Advance* adv = new Advance(this, source, target, 1 + (rand() % (source->numberOfArmies - source->commitedNumberOfArmies)));
+				source->commitedNumberOfArmies += numOfDefendingArmies;
+				Advance* adv = new Advance(this, source, target, numOfDefendingArmies);
+				this->orders.push_back(adv);
 				return adv;
 			}
 			else {

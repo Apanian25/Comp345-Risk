@@ -205,15 +205,15 @@ ostream& operator << (ostream& output, const Hand& hand)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="card">takes a constant Card object by reference</param>
-void Deck::initialize(Deck& deck, Cards& card)
+void Deck::initialize()
 {
-	for (int i = 0; i < deck.deck_multiplier; ++i)
+	for (int i = 0; i < this->deck_multiplier; ++i)
 	{
-		for (int j = 0; j < card.num_of_types; ++j)
+		for (int j = 0; j < 5; ++j)
 		{
 			Cards* card = new Cards();
 			card->type = Type(j);
-			deck.cards_list.push_back(card);
+			this->cards_list.push_back(card);
 		}
 	}
 
@@ -227,21 +227,21 @@ void Deck::initialize(Deck& deck, Cards& card)
 /// once the shuffled vector is full and card_list is empty each card pushed back into the Card_list in the randomized orderr
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
-void Deck::shuffle(Deck& deck)
+void Deck::shuffle()
 {
 	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
 	srand(time(NULL));
 
 	vector <Cards*> shuffled_Deck;
-	while (!deck.cards_list.empty())
+	while (!this->cards_list.empty())
 	{
-		int randomizer = rand() % deck.cards_list.size();
-		shuffled_Deck.push_back(deck.cards_list[randomizer]);
-		deck.cards_list.erase(deck.cards_list.begin() + randomizer);
+		int randomizer = rand() % this->cards_list.size();
+		shuffled_Deck.push_back(this->cards_list[randomizer]);
+		this->cards_list.erase(this->cards_list.begin() + randomizer);
 	}
 	for (Cards* card : shuffled_Deck)
 	{
-		deck.cards_list.push_back(card);
+		this->cards_list.push_back(card);
 	}
 
 }
@@ -256,8 +256,10 @@ void Deck::shuffle(Deck& deck)
 /// <param name="h">takes a constant Hand object by reference</param>
 void Hand::draw(Deck& deck) 
 {
-	hand.push_back(deck.cards_list[0]);
-	deck.cards_list.erase(deck.cards_list.begin());
+	if (deck.cards_list.size() > 0) {
+		hand.push_back(deck.cards_list[0]);
+		deck.cards_list.erase(deck.cards_list.begin());
+	}
 }
 
 

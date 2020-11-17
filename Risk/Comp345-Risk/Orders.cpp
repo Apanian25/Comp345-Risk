@@ -87,7 +87,7 @@ void Deploy::execute()
 	if (isExecuted)
 	{
 		territoryPtr->addArmies(numOfArmies);
-		cout << getName() << endl;
+		//cout << getName() << endl;
 	}
 	
 };
@@ -297,8 +297,8 @@ void Airlift::execute() {
 
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
 			{
-				source->numberOfArmies -= attackingArmiesdestroyed;
-				target->numberOfArmies -= defendingArmiesdestroyed;
+				source->numberOfArmies -= attackingArmiesdestroyed > source->numberOfArmies ? source->numberOfArmies : attackingArmiesCount;
+				target->numberOfArmies -= defendingArmiesdestroyed > target->numberOfArmies ? target->numberOfArmies : defendingArmiesdestroyed;
 			}
 			
 		}
@@ -362,6 +362,8 @@ bool Advance::validate() {// need to fix
 			cout << " Can't attack under diplomacy act" << endl;
 				return false;
 		}
+
+		
 			
 		for (Territory* t : source->adjacentTerritoriesTo) {
 			if (t->id == adjacent->id) {
@@ -439,7 +441,6 @@ void Advance::execute() {
 			
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
-				
 				for (Player * p : players)
 				{
 					if (p->id == adjacent->ownedBy) {
@@ -457,8 +458,8 @@ void Advance::execute() {
 			}
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
 			{
-				source->numberOfArmies -= attackingArmiesdestroyed;
-				adjacent->numberOfArmies -= defendingArmiesdestroyed;
+				source->numberOfArmies -= attackingArmiesdestroyed > source->numberOfArmies? source->numberOfArmies : attackingArmiesCount;
+				adjacent->numberOfArmies -= defendingArmiesdestroyed > adjacent->numberOfArmies? adjacent->numberOfArmies : defendingArmiesdestroyed;
 			}
 		} 
 	}
