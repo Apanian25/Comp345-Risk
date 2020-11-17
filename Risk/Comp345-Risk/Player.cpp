@@ -155,8 +155,8 @@ Order* Player::issueOrder()
 
 			//chance to advance(attack), advance(reinforce a territory) or stop issuing orders
 			int luck = rand() % 100;
-			bool attack = luck < 90;
-			bool defend = luck < 95;
+			bool attack = luck < 98;
+			bool defend = luck < 99;
 
 
 			if (attack) {
