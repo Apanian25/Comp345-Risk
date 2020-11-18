@@ -14,9 +14,14 @@ int main() {
 	//Part 3
 	//PlayerDriver::main();
 	//Part 4
-	//OrdersDriver::main();
+	//OrdersDriver::main(1);
 	//Part 5
 	//CardsDriver::main();
-	GameEngine* theEngineThatCould = new GameEngine();
-	theEngineThatCould->setUp();
+	
+	//Assignment2
+
+	//Part 4
+	OrdersDriver::main(2);
+	//GameEngine* theEngineThatCould = new GameEngine();
+	//theEngineThatCould->setUp();
 }

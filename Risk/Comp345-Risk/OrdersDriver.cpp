@@ -13,12 +13,19 @@ namespace OrdersDriver {
 
 	
 
-	int main() {
+	int main(int assignment) {
+
+		switch (assignment) {
+		case 1: 
+			assignment1Test();
+			return 0;
+		case 2:
+			assignment2Test();
+			return 0;
+			
+		}
 		
-		//assignment1Test();
-		assignment2Test();
 		return 0;
-	
 	}
 }
 
@@ -148,7 +155,11 @@ void assignment2Test()
 		cout <<"mark1 number of armies : " <<  mark1->numberOfArmies << endl;
 		cout << "mark1 owner (by ID) : " << mark1->ownedBy;
 		std::cout << " advance is valid" << std::endl;
+		std::cout << "Player1 Hand: " << *player1->hand << std::endl;
 		advance->execute();
+		std::cout << "Player1 Hand after execution: " << *player1->hand << std::endl;
+		std::cout << "No card is drawn for either conquering or not conquering a terrirtory since this logic is in the GameEnginge" << 
+					" since it is aware of the number of turns and the orders are not"  << std::endl;
 		cout << "John1 number of armies : " << john1->numberOfArmies << endl;
 		cout << "mark1 number of armies : " << mark1->numberOfArmies << endl;
 		cout << "mark1 owner (by ID) : " << mark1->ownedBy;

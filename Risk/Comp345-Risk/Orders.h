@@ -144,5 +144,5 @@ public:
 };
 
 namespace OrdersDriver {
-	int main();
+	int main(int assignment);
 }
