@@ -33,8 +33,6 @@ void Subject::Detach(Observer* ob) {
 
 void Subject::Notify() {
 	if (obs->size() > 0) {
-		//system("CLS");
-		//cout << flush;
 		vector<Observer*>::iterator i = obs->begin();
 		for (; i != obs->end(); ++i) {
 			(*i)->update();
@@ -44,8 +42,6 @@ void Subject::Notify() {
 
 void Subject::Notify(string update) {
 	if (obs->size() > 0) {
-		//system("CLS");
-		//cout << flush;
 		vector<Observer*>::iterator i = obs->begin();
 		for (; i != obs->end(); ++i) {
 			(*i)->update(update);
