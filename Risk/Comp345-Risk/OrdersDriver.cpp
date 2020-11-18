@@ -322,23 +322,36 @@ void assignment2Test()
 	delete mark1;
 	mark1 = NULL;
 	delete mark2;
-
+	mark1 = NULL;
 	delete mark3;
-	
-	delete deploy;
-	delete deploy2;
-	delete advance;
-	delete advance2;
-	delete advance3;
-	delete bomb;
-	delete bomb2;
-	delete airlift1;
-	delete airlift2;
-	delete blockade;
-	delete blockade2;
-	delete diplomacy;
-	delete diplomacy2;
+	mark1 = NULL;
 
+	delete deploy;
+	deploy = NULL;
+	delete deploy2;
+	deploy = NULL;
+	delete advance;
+	advance = NULL;
+	delete advance2;
+	advance2 = NULL;
+	delete advance3;
+	advance3 = NULL;
+	delete bomb;
+	bomb = NULL;
+	delete bomb2;
+	bomb2 = NULL;
+	delete airlift1;
+	airlift1 = NULL;
+	delete airlift2;
+	airlift2 = NULL;
+	delete blockade;
+	blockade = NULL;
+	delete blockade2;
+	blockade2 = NULL;
+	delete diplomacy;
+	diplomacy = NULL;
+	delete diplomacy2;
+	diplomacy2 = NULL;
 
 
 }
