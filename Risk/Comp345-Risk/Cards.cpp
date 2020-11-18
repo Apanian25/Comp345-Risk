@@ -436,6 +436,7 @@ Order* Hand::play(Player* player) {
 			vector<Territory*> toAttk = player->toAttack();
 			int index = rand() % toAttk.size(); // from 0 - (size - 1)
 			Territory* terr = toAttk.at(index);
+			player->Notify("Added Bomb order");
 			return new Bomb(player, terr);
 		}
 		break;
@@ -443,11 +444,13 @@ Order* Hand::play(Player* player) {
 			//reinforcement
 			player->giveArmies(5);
 			return new Reinforcement();
+			player->Notify("Added Reinforcement order");
 			break;
 		case 2:
 		{
 			vector<Territory*> toDefend = player->toDefend();
 			//0 - (size-1) random territory owned by user
+			player->Notify("Added Blockade order");
 			return new Blockade(player, toDefend.at(rand() % toDefend.size()));
 		}
 		break;
@@ -467,6 +470,7 @@ Order* Hand::play(Player* player) {
 
 			int armiesToDeploy = 1 + (rand() % source->numberOfArmies);
 			source->commitedNumberOfArmies += armiesToDeploy;
+			player->Notify("Added Airlift order");
 			return new Airlift(player, source, target, armiesToDeploy); // from 1 - numOfArmies
 		}
 		break;
@@ -477,6 +481,7 @@ Order* Hand::play(Player* player) {
 					otherPlayers.push_back(player);
 			}
 			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
+			player->Notify("Added Diplomacy order");
 			return new Diplomacy(player, declarePeaceWith);
 			break;
 		}

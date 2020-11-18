@@ -6,10 +6,13 @@
 #include <vector>
 
 
+
+class StatsObserver;
+
 using namespace std;
 
 int main();
-void turnObserversOnOff();
+
 extern std::vector<Player*> players;
 extern std::vector<int> playerorder;
 extern Deck* deck;
@@ -22,6 +25,7 @@ public:
     MapLoader* mapLoader;
     int numOfPlayers;
     bool validMap;
+    StatsObserver* statsObserver;
 
     Cards* card = new Cards();
 

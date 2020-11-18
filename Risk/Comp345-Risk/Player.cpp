@@ -131,6 +131,7 @@ Order* Player::issueOrder()
 
 		Deploy* dep = new Deploy(this, toDefend.at(rand() % toDefend.size()), armiesToDeploy);
 		this->orders.push_back(dep);
+		this->Notify("Added Deploy order");
 		return dep;
 	}
 	else {
@@ -227,6 +228,7 @@ Order* Player::issueOrder()
 				source->commitedNumberOfArmies += attackingArmies;
 				Advance* adv = new Advance(this, source, target, attackingArmies);
 				this->orders.push_back(adv);
+				this->Notify("Added attacking advance order");
 				return adv;
 			}
 			else if(defend) {
@@ -274,6 +276,7 @@ Order* Player::issueOrder()
 				source->commitedNumberOfArmies += numOfDefendingArmies;
 				Advance* adv = new Advance(this, source, target, numOfDefendingArmies);
 				this->orders.push_back(adv);
+				this->Notify("Added defending advance order");
 				return adv;
 			}
 			else {
@@ -293,6 +296,7 @@ vector<Territory*> Player::getTerritories() {
 
 void Player::giveArmies(int numOfArmies) {
 	this->numOfArmies += numOfArmies;
+	Notify();
 }
 
 
@@ -365,4 +369,13 @@ ostream& operator<<(ostream& strm, Player& player)
 vector<string> Player::getViewBuffer()
 {
 	return viewBuffer;
+}
+
+void Player::setPhase(string phase) {
+	this->phase = phase;
+	Notify();
+}
+
+string Player::getPhase() {
+	return this->phase;
 }

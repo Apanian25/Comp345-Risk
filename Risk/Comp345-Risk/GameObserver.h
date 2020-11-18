@@ -8,7 +8,6 @@ using namespace std;
 /*
 * Create instances of the GameEnigne and the Player class
 */
-
 class Map;
 class GameEngine;
 class Player;
@@ -21,37 +20,26 @@ class Observer {
 
 public:
 	virtual void update() = 0;
-	virtual void updatePhase() = 0;
+	virtual void update(string update) = 0;
 	Observer();
 	~Observer();
-
-
-
-protected:
-	
-
 };
+
 
 /*
 	Subject class for the design pattern
 */
-
 class Subject {
-
 public:
-
 	void Detach(Observer* ob);
 	void Attach(Observer* ob);
 	void Notify();
+	void Notify(string update);
 	Subject();
 	~Subject();
-	
 
 protected:
-
 	vector<Observer*> *obs;
-
-
 };
 
 
@@ -59,30 +47,24 @@ protected:
 	Inherits and implements the observer class, used for the phases
 */
 class PhaseObserver : public Observer {
-
-private:
-	int currentPlayer;
-
-
+	Player* player;
 public:
-
-	void update(Player* player, string phase) ;
-
+	void update();
+	void update(string message);
+	PhaseObserver(Player* player);
+	~PhaseObserver();
 };
 
 class StatsObserver : public Observer {
-
+	int sizeOfMap;
 public:
-	StatsObserver(Player* p, Map* map);
+	StatsObserver(int sizeofMap);
+	StatsObserver();
 	~StatsObserver();
-	void updatePercentage(Map* map);
+	double updatePercentage(Player* player);
 	void update();
+	void update(string message);
 	void updatePhase();
-
-
-private:
-	Player* player;
-	float occupiedPercentage;
-	
+	void setSizeOfMap(int sizeofMap);
 };
 

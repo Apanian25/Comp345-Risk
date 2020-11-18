@@ -1,19 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="CardsDriver.cpp" />
-    <ClCompile Include="Cards.cpp" />
-    <ClCompile Include="GameDriver.cpp" />
-    <ClCompile Include="GameEngine.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MapDriver.cpp" />
-    <ClCompile Include="MapLoader.cpp" />
-    <ClCompile Include="MapLoaderDriver.cpp" />
-    <ClCompile Include="Orders.cpp" />
-    <ClCompile Include="OrdersDriver.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerDriver.cpp" />
-    <ClCompile Include="GameEngineDriver.cpp" />
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -90,8 +77,5 @@
     <ClInclude Include="GameObserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="artic.map" />
   </ItemGroup>
 </Project>

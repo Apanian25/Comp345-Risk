@@ -241,13 +241,13 @@ void Airlift::execute() {
 
 				if (randomizer >= 1 && randomizer <= 6)
 				{
-					cout << "defending army destroyed" << endl;
+					//cout << "defending army destroyed" << endl;
 					defendingArmiesCount--;
 					defendingArmiesdestroyed++;
 				}
 				else
 				{
-					cout << "defending army survived" << endl;
+					//cout << "defending army survived" << endl;
 				}
 			}
 
@@ -258,14 +258,14 @@ void Airlift::execute() {
 
 				if (randomizer >= 1 && randomizer <= 7)
 				{
-					cout << "attacking army destroyed" << endl;
+					//cout << "attacking army destroyed" << endl;
 					attackingArmiesCount--;
 					attackingArmiesdestroyed++;
 
 				}
 				else
 				{
-					cout << "attacking army survived" << endl;
+					//cout << "attacking army survived" << endl;
 				}
 			}
 			
@@ -293,6 +293,8 @@ void Airlift::execute() {
 				source->numberOfArmies -= numOfArmies;
 
 				playerPtr->hasConqueredTerritory = true;
+				playerPtr->Notify();
+				//statsObserver->update();
 			}
 
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
@@ -359,7 +361,7 @@ bool Advance::validate() {// need to fix
 	if (source->ownedBy == playerPtr->id) {
 		if (playerPtr->hasNegotiatedWithId == adjacent->ownedBy) 
 		{
-			cout << " Can't attack under diplomacy act" << endl;
+			//cout << " Can't attack under diplomacy act" << endl;
 				return false;
 		}
 
@@ -399,34 +401,34 @@ void Advance::execute() {
 			for (int i = 0; i < numOfArmies; i++)
 			{
 				int randomizer = rand() % 10 + 1;
-				cout << randomizer;
+				//cout << randomizer;
 				if (randomizer >= 1 && randomizer <= 6)
 				{
-					cout << "defending army destroyed" << endl;
+					//cout << "defending army destroyed" << endl;
 					defendingArmiesCount--;
 					defendingArmiesdestroyed++;
 					
 				}
 				else
 				{
-					cout << "defending army survived" << endl;
+					//cout << "defending army survived" << endl;
 				}
 			}
 			for (int i = 0; i < adjacent->numberOfArmies; i++)
 			{
 				int randomizer = rand() % 10 + 1;
-				cout << randomizer;
+				//cout << randomizer;
 				if (randomizer >= 1 && randomizer <= 7)
 				{
 					
-					cout << "attacking army destroyed" << endl;
+					//cout << "attacking army destroyed" << endl;
 					attackingArmiesCount--;
 					attackingArmiesdestroyed++;
 					
 				}
 				else
 				{
-					cout << "attacking army survived" << endl;
+					//cout << "attacking army survived" << endl;
 				}
 			}
 
@@ -454,7 +456,8 @@ void Advance::execute() {
 				source->numberOfArmies -= numOfArmies;
 				
 				playerPtr->hasConqueredTerritory = true;
-				
+				playerPtr->Notify();
+				//statsObserver->update();
 			}
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
 			{
@@ -537,7 +540,8 @@ void Blockade::execute() {
 
 		playerPtr->territories.erase(std::remove(playerPtr->territories.begin(), playerPtr->territories.end(), target), playerPtr->territories.end());
 		target->ownedBy = -1;
-		
+		playerPtr->Notify();
+		//statsObserver->update();
 	}
 
 };

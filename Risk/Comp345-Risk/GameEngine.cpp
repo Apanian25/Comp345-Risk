@@ -18,7 +18,9 @@ GameEngine::GameEngine()
 
 extern Deck* deck = new Deck();
 extern vector<Player*> players = vector<Player*>();
-bool observerOn{ 0 };
+//extern StatsObserver* statsObserver = new StatsObserver();
+bool statsObserverOn{ 0 };
+bool phaseObserverOn{ 0 };
 
 //*********************************************************  PART1  *********************************************************
 
@@ -116,19 +118,22 @@ void GameEngine::setUp() {
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		cout << "The players are: " << endl;
-		cout << players[i] << endl;
+		cout << *players[i] << endl;
 	}
 
 	cout << "--- Initializing deck ---" << endl;
 	deck->initialize();
-	cout << deck << endl;
+	cout << *deck << endl;
 	cout << "--- Shuffling deck ---" << endl;
 	deck->shuffle();
-	cout << deck << endl;
+	cout << *deck << endl;
 
 
-	cout << "Please choose whether you'd like the observers to be On(1) or Off(0): " << endl;
-	cin >> observerOn;
+	cout << "Please choose whether you'd like the Statistics observer to be On(1) or Off(0): " << endl;
+	cin >> statsObserverOn;
+	
+	cout << "Please choose whether you'd like the Phase observer to be On(1) or Off(0): " << endl;
+	cin >> phaseObserverOn;
 
 	while (cin.fail()) {
 		cin.clear();
@@ -136,13 +141,16 @@ void GameEngine::setUp() {
 		cout << "You did not enter a valid input. Setting the observers off." << endl;
 	}
 
-	if (observerOn) {
+	if (statsObserverOn) {
+		statsObserver = new StatsObserver(map->getAllTerritories().size());
 		cout << "The observers are now on." << endl;
 	}
 	else {
 		cout << "The observers are off." << endl;
 	}
 
+
+	
 	startUpPhase();
 	mainGameLoop();
 }
@@ -224,8 +232,9 @@ void GameEngine::startUpPhase() {
 //*********************************************************  PART3  *********************************************************
 void GameEngine::mainGameLoop() {
 	int round = 1;
+	//statsObserver->update();
 	do {
-		cout << "STARTING ROUND" << round << endl;
+		//cout << "STARTING ROUND" << round << endl;
 		removePlayersWithoutTerritories();
 		reinforcementPhase();
 		issueOrderPhase();
@@ -261,22 +270,36 @@ void GameEngine::removePlayersWithoutTerritories() {
 }
 
 void GameEngine::issueOrderPhase() {
-	cout << "Executing Issue Order Phase" << endl;
 	for (Player* player : players) {
+		PhaseObserver* observer = NULL;
+		if (phaseObserverOn) {
+			observer = new PhaseObserver(player);
+			player->setPhase("Issue Order Phase");
+		}
 		while (true) {
 			Order* order = player->issueOrder();
 			if (order == NULL)
 				break;
 		}
+		if (phaseObserverOn && observer) {
+			delete observer;
+			observer = NULL;
+
+		}
 	}
 }
 
 void GameEngine::reinforcementPhase() {
-	cout << "Executing Reinforcement Phase" << endl;
+	//cout << "Executing Reinforcement Phase" << endl;
 	std::map<int, std::vector<Territory*>> continentTerritories = map->getContinentTerritories();
 	std::map<int, Continent*> continents = map->getContinents();
 
 	for (Player* player : players) {
+			PhaseObserver* observer = NULL;
+		if (phaseObserverOn) {
+			observer = new PhaseObserver(player);
+			player->setPhase("Reinforcement Phase");
+		}
 		int numberOfTerritorys = player->getTerritories().size();
 		int bonusArmies{ numberOfTerritorys <= 9 ? 3 : numberOfTerritorys / 3 };
 
@@ -293,14 +316,26 @@ void GameEngine::reinforcementPhase() {
 				bonusArmies += continents[continent.first]->numberOfArmies;
 			}
 		}
+		player->Notify("Player was given armies");
 		player->giveArmies(bonusArmies);
+
+		if (phaseObserverOn && observer) {
+			delete observer;
+			observer = NULL;
+		}
 	}
 }
 
 void GameEngine::ordersExecutionPhase() {
-	cout << "Executing Orders Phase" << endl;
+	//cout << "Executing Orders Phase" << endl;
 	//Deploy orders execute first
 	for (Player* player : players) {
+
+		PhaseObserver* observer = NULL;
+		if (phaseObserverOn) {
+			observer = new PhaseObserver(player);
+			player->setPhase("Execute Deploy Orders Phase");
+		}
 		vector<Order*> deploys;
 		for (Order* order : player->orders) {
 			if (dynamic_cast<Deploy*>(order)) {
@@ -313,10 +348,20 @@ void GameEngine::ordersExecutionPhase() {
 			player->orders.erase(std::remove(player->orders.begin(), player->orders.end(), order));
 			delete order;
 		}
+		if (phaseObserverOn && observer) {
+			delete observer;
+			observer = NULL;
+		}
 	}
 
 	//Other orders execute second.
 	for (Player* player : players) {
+		PhaseObserver* observer = NULL;
+		if (phaseObserverOn) {
+			observer = new PhaseObserver(player);
+			player->setPhase("Execute Other Orders Phase");
+		}
+
 		for (Order* order : player->orders) {
 			order->execute();
 			delete order;
@@ -325,6 +370,10 @@ void GameEngine::ordersExecutionPhase() {
 		player->orders.clear();
 		if (player->hasConqueredTerritory) {
 			player->hand->draw(*deck);
+		}
+		if (phaseObserverOn && observer) {
+			delete observer;
+			observer = NULL;
 		}
 	}
 }
@@ -336,29 +385,5 @@ bool GameEngine::hasWinner() {
 		if (territory.second->ownedBy != point)
 			return false;
 	}
-
-	Player* winner = NULL;
-	for (Player* player : players) {
-		if (player->id == point)
-			winner = player;
-	}
-
-	//winner will not be null
-	cout << "WINNER: " << *winner << endl;
 	return true;
-}
-
-
-
-
-/// <summary>
-/// Method to turn the observers on/off during the game start phase
-/// </summary>
-void turnObserversOnOff() {
-	if (observerOn) {
-		observerOn = 0;
-	}
-	else {
-		observerOn = 1;
-	}
 }

@@ -12,7 +12,7 @@ namespace PlayerDriver {
 }
 class Player : public Subject {
 private:
-	
+	string phase;
 public:
 	string player_name;
 	int numOfArmies;
@@ -23,6 +23,7 @@ public:
 	Hand* hand;
 	bool hasConqueredTerritory;
 	int hasNegotiatedWithId;
+	
 
 
 	/*
@@ -45,7 +46,8 @@ public:
 	Order* issueOrder(); //Gives order to the player and adds it to the other list
 	vector<Territory*> getTerritories();//the territories that the player owns
 	vector<string> getViewBuffer();
-	bool* getNewPhase();
+	void setPhase(string phase);
+	string getPhase();
 
 	/*
 	   Assignment and insertion operators

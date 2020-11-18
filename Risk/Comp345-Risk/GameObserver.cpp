@@ -8,17 +8,8 @@
 #include <vector>
 
 
-Observer::Observer() {
-
-}
-
-
-
-Observer::~Observer() {
-
-}
-
-
+Observer::Observer() {}
+Observer::~Observer() {}
 
 Subject::Subject() {
 
@@ -41,51 +32,87 @@ void Subject::Detach(Observer* ob) {
 }
 
 void Subject::Notify() {
-
 	if (obs->size() > 0) {
+		//system("CLS");
+		//cout << flush;
 		vector<Observer*>::iterator i = obs->begin();
 		for (; i != obs->end(); ++i) {
-			(*i)->updatePhase();
-
+			(*i)->update();
 		}
 	}
 }
-void PhaseObserver::update(Player* player, string phase)
-{
-	cout << "Player " << player->player_name << ":" << phase << endl;
+
+void Subject::Notify(string update) {
+	if (obs->size() > 0) {
+		//system("CLS");
+		//cout << flush;
+		vector<Observer*>::iterator i = obs->begin();
+		for (; i != obs->end(); ++i) {
+			(*i)->update(update);
+		}
+	}
 }
 
-StatsObserver::StatsObserver(Player* p, Map* map) {
-	
-	player = p;
-	player->Attach(this);
-	updatePercentage(map);
- }
 
-StatsObserver::~StatsObserver() {
-	
+void PhaseObserver::update()
+{
+	cout << "Player " << player->player_name << ":" << player->getPhase() << endl;
+}
+
+void PhaseObserver::update(string update)
+{
+	this->update();
+	cout << update << endl;
+}
+
+
+PhaseObserver::PhaseObserver(Player* player) : player(player) {
+	player->Attach(this);
+}
+
+PhaseObserver::~PhaseObserver(){
 	player->Detach(this);
 }
 
-void StatsObserver::updatePercentage(Map* map) {
-this->occupiedPercentage = (float)(player->territories.size()) / map->getAllTerritories().size() * 100;
+StatsObserver::StatsObserver(int sizeOfMap) : sizeOfMap(sizeOfMap) {
+	for (Player* player : players) {
+		player->Attach(this);
+	}
+ }
+
+StatsObserver::~StatsObserver() {
+	for (Player* player : players) {
+		player->Detach(this);
+	}
+}
+
+double StatsObserver::updatePercentage(Player* player) {
+	return (double)(player->territories.size()) /sizeOfMap * 100;
 }
 
 
 void StatsObserver::update() {
+	cout << endl;
+	for (Player* player : players) {
+		double occupiedPercentage = updatePercentage(player);
+		if (occupiedPercentage == double(0)) {
 
-	if (occupiedPercentage == float(0)) {
+			cout << (player->player_name) << " controls 0.0% of the world. Player "<<player->player_name <<" is ejected from the game" << endl;
+			player->Detach(this);
+		}
 
-		cout << (player->player_name) << " controls 0.0% of the world. Player "<<player->player_name <<" is ejected from the game" << endl;
-		this->player->Detach(this);
-	}
-
-	else if (occupiedPercentage == float(100)) {
-		cout << (player->player_name) << " controls " << occupiedPercentage << "%  of the word. won the game!" << endl;
+		else if (occupiedPercentage == double(100)) {
+			cout << (player->player_name) << " controls " << occupiedPercentage << "%  of the world. won the game!" << endl;
 	
+		}
+		else
+			cout << (player->player_name) << " controls " << occupiedPercentage << "%  of the world." << endl;
 	}
-	else
-		cout << (player->player_name) << " controls " << occupiedPercentage << "%  of the word." << endl;
+	cout << endl;
+}
+
+void StatsObserver::update(string update) {
+	this->update();
 }
 
 void StatsObserver::updatePhase()
@@ -93,5 +120,18 @@ void StatsObserver::updatePhase()
 
 }
 
+StatsObserver::StatsObserver() : sizeOfMap(0)
+{
+	for (Player* player : players) {
+		player->Attach(this);
+	}
+}
+void StatsObserver::setSizeOfMap(int sizeOfMap)
+{
+	this->sizeOfMap = sizeOfMap;
+}
 
 
+void display() {
+	
+}

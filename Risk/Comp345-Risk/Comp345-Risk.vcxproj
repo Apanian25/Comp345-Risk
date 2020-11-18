@@ -163,9 +163,6 @@
     <ClInclude Include="Orders.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="artic.map" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
