@@ -4,20 +4,22 @@
 #include "Map.h"	
 #include "Cards.h"	
 #include "Orders.h"	
+#include "GameObserver.h"
 #include <vector>	
 using namespace std;
 namespace PlayerDriver {
 	int main();
 }
-class Player {
+class Player : public Subject {
 private:
-	string player_name;
 	
 public:
+	string player_name;
 	int numOfArmies;
 	int id;
 	vector<Territory*> territories;
 	vector<Order*> orders;
+	vector<string> viewBuffer;
 	Hand* hand;
 	bool hasConqueredTerritory;
 	int hasNegotiatedWithId;
@@ -42,6 +44,8 @@ public:
 	void giveArmies(int numOfArmies); //Gives armies to the player
 	Order* issueOrder(); //Gives order to the player and adds it to the other list
 	vector<Territory*> getTerritories();//the territories that the player owns
+	vector<string> getViewBuffer();
+	bool* getNewPhase();
 
 	/*
 	   Assignment and insertion operators

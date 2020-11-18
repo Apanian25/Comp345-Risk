@@ -144,6 +144,7 @@
     <ClCompile Include="GameDriver.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameEngineDriver.cpp" />
+    <ClCompile Include="GameObserver.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapDriver.cpp" />
     <ClCompile Include="MapLoader.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="Cards.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GameObserver.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="Orders.h" />

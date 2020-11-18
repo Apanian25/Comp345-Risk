@@ -21,7 +21,7 @@ int main() {
 	//Assignment2
 
 	//Part 4
-	OrdersDriver::main(2);
-	//GameEngine* theEngineThatCould = new GameEngine();
-	//theEngineThatCould->setUp();
+	//OrdersDriver::main(2);
+	GameEngine* theEngineThatCould = new GameEngine();
+	theEngineThatCould->setUp();
 }

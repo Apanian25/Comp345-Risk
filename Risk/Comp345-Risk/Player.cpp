@@ -361,3 +361,8 @@ ostream& operator<<(ostream& strm, Player& player)
 
 	return strm;
 }
+
+vector<string> Player::getViewBuffer()
+{
+	return viewBuffer;
+}
