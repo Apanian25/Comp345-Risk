@@ -39,7 +39,7 @@ public:
 	~Subject();
 
 protected:
-	vector<Observer*> *obs;
+	vector<Observer*> obs;
 };
 
 

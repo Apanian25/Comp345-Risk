@@ -13,38 +13,35 @@ Observer::~Observer() {}
 
 Subject::Subject() {
 
-	obs = new vector<Observer*>();
+	obs = vector<Observer*>(0);
 }
 
 Subject::~Subject() {
-	delete obs;
+	
 }
 
 
 void Subject::Attach(Observer* ob) {
-	
-	obs->push_back(ob);
+	obs.push_back(ob);
 }
 
 void Subject::Detach(Observer* ob) {
 
-	obs->erase(remove(obs->begin(), obs->end(), ob), obs->end());
+	obs.erase(remove(obs.begin(), obs.end(), ob), obs.end());
 }
 
 void Subject::Notify() {
-	if (obs->size() > 0) {
-		vector<Observer*>::iterator i = obs->begin();
-		for (; i != obs->end(); ++i) {
-			(*i)->update();
+	if (obs.size() > 0) {
+		for (Observer* observer : obs) {
+			observer->update();
 		}
 	}
 }
 
 void Subject::Notify(string update) {
-	if (obs->size() > 0) {
-		vector<Observer*>::iterator i = obs->begin();
-		for (; i != obs->end(); ++i) {
-			(*i)->update(update);
+	if (obs.size() > 0) {
+		for (Observer* observer : obs) {
+			observer->update(update);
 		}
 	}
 }
