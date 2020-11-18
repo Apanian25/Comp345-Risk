@@ -22,7 +22,7 @@ public:
 	vector<string> viewBuffer;
 	Hand* hand;
 	bool hasConqueredTerritory;
-	int hasNegotiatedWithId;
+	vector <int> hasNegotiatedWithIds;
 	
 
 

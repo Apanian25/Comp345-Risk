@@ -30,7 +30,7 @@ Player::Player() {
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithId = -500;
+	this->hasNegotiatedWithIds.push_back(-500);
 
 }
 
@@ -42,7 +42,7 @@ Player::Player(int id, string n)
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithId = -500;
+	this->hasNegotiatedWithIds.push_back(-500);
 
 
 }
@@ -59,7 +59,7 @@ Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o
 	this->territories = t;
 	this->orders = o;
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithId = -500;
+	this->hasNegotiatedWithIds.push_back(-500);
 }
 
 
@@ -176,7 +176,7 @@ Order* Player::issueOrder()
 							for (Order* order : this->orders) {
 								Advance* advance = dynamic_cast<Advance*>(order);
 								if (advance != NULL) {
-									if (target->id == advance->adjacent->id && territory->id == advance->source->id) {
+									if (target->id == advance->target->id && territory->id == advance->source->id) {
 										foundDuplicateAttack = true;
 									}
 								}
@@ -249,7 +249,7 @@ Order* Player::issueOrder()
 							for (Order* order : this->orders) {
 								Advance* advance = dynamic_cast<Advance*>(order);
 								if (advance != NULL) {
-									if (adj->id == advance->adjacent->id) {
+									if (adj->id == advance->target->id) {
 										//Dont want to defend the same territory multiple times.
 										foundDuplicateDefend = true;
 									}
@@ -307,7 +307,7 @@ Player& Player::operator=(const Player& p)
 {
 	// copy orders
 	this->orders = p.orders;
-	this->hasNegotiatedWithId = p.hasNegotiatedWithId;
+	this->hasNegotiatedWithIds = p.hasNegotiatedWithIds;
 	this->hasConqueredTerritory = p.hasConqueredTerritory;
 
 	// copy territories
@@ -331,7 +331,7 @@ Player::Player(const Player& play) {
 	this->numOfArmies = play.numOfArmies;
 	this->id = play.id;
 	this->hasConqueredTerritory = play.hasConqueredTerritory;
-	this->hasNegotiatedWithId = play.hasNegotiatedWithId;
+	this->hasNegotiatedWithIds = play.hasNegotiatedWithIds;
 
 	this->hand = new Hand(*play.hand);
 

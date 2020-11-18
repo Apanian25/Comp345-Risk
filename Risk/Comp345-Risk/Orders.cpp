@@ -204,8 +204,11 @@ string Airlift::getName() const {
 /// </summary>
 /// <returns>true</returns>
 bool Airlift::validate() {
-	if (playerPtr->hasNegotiatedWithId == target->ownedBy)
-		return false;
+	for (int id: playerPtr->hasNegotiatedWithIds)
+	{
+		if (id == target->ownedBy)
+			return false;
+	}
 	bool playerOwnsSrcTerritory = source->ownedBy == playerPtr->id;
 	option = !playerOwnsSrcTerritory ? -1 : target->ownedBy == playerPtr->id ? 1 : 2;
 	return playerOwnsSrcTerritory;
@@ -357,19 +360,22 @@ string Advance::getName() const {
 /// This method validates an order, since there is no game implementation yet, just return true
 /// </summary>
 /// <returns>true</returns>
-bool Advance::validate() {// need to fix
+bool Advance::validate() {
+
+	
 	if (source->ownedBy == playerPtr->id) {
-		if (playerPtr->hasNegotiatedWithId == adjacent->ownedBy) 
+		for (int id : playerPtr->hasNegotiatedWithIds)
 		{
-			//cout << " Can't attack under diplomacy act" << endl;
+			if (id == target->ownedBy)
+				//cout << " Can't attack under diplomacy act" << endl;
 				return false;
 		}
 
 		
 			
 		for (Territory* t : source->adjacentTerritoriesTo) {
-			if (t->id == adjacent->id) {
-				option = adjacent->ownedBy == playerPtr->id ? 1 : 2;
+			if (t->id == target->id) {
+				option = target->ownedBy == playerPtr->id ? 1 : 2;
 				return true;
 			}
 		}
@@ -387,7 +393,7 @@ void Advance::execute() {
 	{
 		if (option == 1)
 		{
-			adjacent->addArmies(numOfArmies);
+			target->addArmies(numOfArmies);
 			source->removeArmies(numOfArmies);
 			
 		}
@@ -395,7 +401,7 @@ void Advance::execute() {
 		{
 			int attackingArmiesCount = numOfArmies;
 			int defendingArmiesdestroyed = 0;
-			int defendingArmiesCount = adjacent->numberOfArmies;
+			int defendingArmiesCount = target->numberOfArmies;
 			int attackingArmiesdestroyed = 0;
 			//int randomizer = rand() % 10 + 1;
 			for (int i = 0; i < numOfArmies; i++)
@@ -414,7 +420,7 @@ void Advance::execute() {
 					//cout << "defending army survived" << endl;
 				}
 			}
-			for (int i = 0; i < adjacent->numberOfArmies; i++)
+			for (int i = 0; i < target->numberOfArmies; i++)
 			{
 				int randomizer = rand() % 10 + 1;
 				//cout << randomizer;
@@ -445,14 +451,14 @@ void Advance::execute() {
 			{
 				for (Player * p : players)
 				{
-					if (p->id == adjacent->ownedBy) {
-						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), adjacent), p->territories.end());
+					if (p->id == target->ownedBy) {
+						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
 					}
 				}
 
-				playerPtr->territories.push_back(adjacent);
-				adjacent->numberOfArmies = attackingArmiesCount;
-				adjacent->ownedBy = playerPtr->id;
+				playerPtr->territories.push_back(target);
+				target->numberOfArmies = attackingArmiesCount;
+				target->ownedBy = playerPtr->id;
 				source->numberOfArmies -= numOfArmies;
 				
 				playerPtr->hasConqueredTerritory = true;
@@ -462,7 +468,7 @@ void Advance::execute() {
 			else if ((attackingArmiesCount == 0 && defendingArmiesCount != 0) || (attackingArmiesCount != 0 && defendingArmiesCount != 0) || (attackingArmiesCount == 0 && defendingArmiesCount == 0))
 			{
 				source->numberOfArmies -= attackingArmiesdestroyed > source->numberOfArmies? source->numberOfArmies : attackingArmiesCount;
-				adjacent->numberOfArmies -= defendingArmiesdestroyed > adjacent->numberOfArmies? adjacent->numberOfArmies : defendingArmiesdestroyed;
+				target->numberOfArmies -= defendingArmiesdestroyed > target->numberOfArmies? target->numberOfArmies : defendingArmiesdestroyed;
 			}
 		} 
 	}
@@ -474,7 +480,7 @@ Advance::Advance() {
 	this->option = -1;
 	this->playerPtr = NULL;
 	this->source = NULL;
-	this->adjacent = NULL;
+	this->target = NULL;
 	this->numOfArmies = -1;
 };
 
@@ -483,7 +489,7 @@ Advance::Advance(Player* p, Territory* source, Territory* target, int numOfArmie
 	this->option = -1;
 	this->playerPtr = p;
 	this->source = source;
-	this->adjacent = target;
+	this->target = target;
 	this->numOfArmies = numOfArmies;
 }
 
@@ -608,8 +614,9 @@ void Diplomacy::execute() {
 	isExecuted = validate();
 	if (isExecuted)
 	{
-		player1->hasNegotiatedWithId = player2->id;
-		player2->hasNegotiatedWithId = player1->id;
+		player1->hasNegotiatedWithIds.push_back(player2->id);
+		player2->hasNegotiatedWithIds.push_back(player1->id);
+
 	}
 };
 /// <summary>

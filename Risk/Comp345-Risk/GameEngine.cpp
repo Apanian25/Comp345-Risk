@@ -242,7 +242,7 @@ void GameEngine::mainGameLoop() {
 
 		for (Player* player : players) {
 			player->hasConqueredTerritory = false;
-			player->hasNegotiatedWithId = -500;
+			player->hasNegotiatedWithIds .push_back(-500);
 		}
 		for (pair<int, Territory*> territory : map->getAllTerritories()) {
 			territory.second->commitedNumberOfArmies = 0;

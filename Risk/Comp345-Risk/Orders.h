@@ -41,7 +41,7 @@ class Advance : public Order {
 public:
 	Player* playerPtr;
 	Territory* source;
-	Territory* adjacent;
+	Territory* target;
 	int numOfArmies;
 	int option;
 
@@ -49,7 +49,7 @@ public:
 	bool validate();
 	void execute();
 	Advance();
-	Advance(Player* p, Territory* source, Territory* adjacent, int numOfArmies);
+	Advance(Player* p, Territory* source, Territory* target, int numOfArmies);
 	Advance(const Advance& d);
 	~Advance();
 	Advance& operator = (const Advance& a);
