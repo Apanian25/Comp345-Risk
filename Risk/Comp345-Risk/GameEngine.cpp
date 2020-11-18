@@ -27,7 +27,6 @@ bool phaseObserverOn{ 0 };
 void GameEngine::setUp() {
 
 	Cards* card = new Cards();
-	Deck* deck = new Deck();
 	deck->initialize();
 
 	string path = "Maps";
@@ -242,7 +241,7 @@ void GameEngine::mainGameLoop() {
 
 		for (Player* player : players) {
 			player->hasConqueredTerritory = false;
-			player->hasNegotiatedWithIds .push_back(-500);
+			player->hasNegotiatedWithIds.clear();
 		}
 		for (pair<int, Territory*> territory : map->getAllTerritories()) {
 			territory.second->commitedNumberOfArmies = 0;
@@ -257,10 +256,10 @@ void GameEngine::removePlayersWithoutTerritories() {
 	for (Player* player : players) {
 		if (player->getTerritories().size() == 0) {
 			playersToRemove.push_back(player);
-		}
-		while (player->hand->hand.size() > 0) {
-			deck->cards_list.push_back(player->hand->hand.at(0));
-			player->hand->hand.erase(std::remove(player->hand->hand.begin(), player->hand->hand.end(), player->hand->hand.at(0)));
+			while (player->hand->hand.size() > 0) {
+				deck->cards_list.push_back(player->hand->hand.at(0));
+				player->hand->hand.erase(std::remove(player->hand->hand.begin(), player->hand->hand.end(), player->hand->hand.at(0)));
+			}
 		}
 	}
 
