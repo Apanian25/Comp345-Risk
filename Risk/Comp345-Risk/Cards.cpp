@@ -139,7 +139,7 @@ ostream& operator << (ostream& output, const Deck& deck)
 /// </summary>
 Hand::Hand() // hand default constuructor 
 {
-
+	hand = vector<Cards*>(0);
 }
 
 /// <summary>

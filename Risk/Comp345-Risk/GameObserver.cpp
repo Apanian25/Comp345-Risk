@@ -12,13 +12,17 @@ Observer::Observer() {}
 Observer::~Observer() {}
 
 Subject::Subject() {
-
 	obs = vector<Observer*>(0);
 }
 
-Subject::~Subject() {
-	
+Subject::Subject(const Subject& subj)
+{
+
 }
+
+Subject& Subject::operator=(const Subject& observer) { return *this; }
+
+Subject::~Subject() { }
 
 
 void Subject::Attach(Observer* ob) {
@@ -61,6 +65,23 @@ void PhaseObserver::update(string update)
 
 PhaseObserver::PhaseObserver(Player* player) : player(player) {
 	player->Attach(this);
+}
+
+/// <summary>
+/// Copy constructor
+/// </summary>
+/// <param name="observer"></param>
+PhaseObserver::PhaseObserver(const PhaseObserver& observer)
+{
+	this->player = observer.player;
+}
+
+PhaseObserver& PhaseObserver::operator=(const PhaseObserver& observer)
+{
+	if (this != &observer) {
+		this->player = observer.player;
+	}
+	return *this;
 }
 
 PhaseObserver::~PhaseObserver(){
@@ -119,9 +140,44 @@ StatsObserver::StatsObserver() : sizeOfMap(0)
 		player->Attach(this);
 	}
 }
+
+/// <summary>
+/// Copy constructor
+/// </summary>
+/// <param name="observer"></param>
+StatsObserver::StatsObserver(const StatsObserver& observer)
+{
+	this->sizeOfMap = observer.sizeOfMap;
+}
+
+StatsObserver& StatsObserver::operator=(const StatsObserver& observer)
+{
+	if(this != &observer)
+		this->sizeOfMap = observer.sizeOfMap;
+	return *this;
+}
+
 void StatsObserver::setSizeOfMap(int sizeOfMap)
 {
 	this->sizeOfMap = sizeOfMap;
+}
+
+ostream& operator<<(ostream& out, const Subject& observer)
+{
+	out << "Subject";
+	return out;
+}
+
+ostream& operator<<(ostream& out, const PhaseObserver& observer)
+{
+	out << "Phase observer for player: " << *observer.player;
+	return out;
+}
+
+ostream& operator<<(ostream& out, const StatsObserver& observer)
+{
+	out << "Stats Observer";
+	return out;
 }
 
 

@@ -36,7 +36,14 @@ public:
 	void Notify();
 	void Notify(string update);
 	Subject();
+
+	Subject(const Subject& subj);
+	friend ostream& operator << (ostream& out, const Subject& observer);
+	Subject& operator = (const Subject& observer);
+
 	~Subject();
+
+
 
 protected:
 	vector<Observer*> obs;
@@ -52,6 +59,11 @@ public:
 	void update();
 	void update(string message);
 	PhaseObserver(Player* player);
+
+	PhaseObserver(const PhaseObserver& observer);
+	friend ostream& operator << (ostream& out, const PhaseObserver& observer);
+	PhaseObserver& operator = (const PhaseObserver& observer);
+
 	~PhaseObserver();
 };
 
@@ -60,6 +72,11 @@ class StatsObserver : public Observer {
 public:
 	StatsObserver(int sizeofMap);
 	StatsObserver();
+
+	StatsObserver(const StatsObserver& observer);
+	friend ostream& operator << (ostream& out, const StatsObserver& observer);
+	StatsObserver& operator = (const StatsObserver& observer);
+
 	~StatsObserver();
 	double updatePercentage(Player* player);
 	void update();

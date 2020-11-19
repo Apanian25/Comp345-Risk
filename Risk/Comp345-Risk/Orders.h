@@ -12,7 +12,7 @@ class Order {
 public:
 	bool isExecuted;
 	Order();
-	~Order();
+	virtual ~Order();
 	Order(const Order& a);
 	virtual void execute() = 0; //added this virtual method, so that the subclasses can override it
 	virtual string getName() const;  // getName is used for the << operator to display the description of the order
@@ -32,7 +32,7 @@ public:
 	Deploy();  //no parameter  constructor  
 	Deploy(Player* p, Territory* t, int numOfArmies);
 	Deploy(const Deploy& d);      // copy constructor
-	~Deploy();
+	virtual ~Deploy();
 	Deploy& operator=(const Deploy& d);  //assignment operator
 
 };
@@ -51,7 +51,7 @@ public:
 	Advance();
 	Advance(Player* p, Territory* source, Territory* target, int numOfArmies);
 	Advance(const Advance& d);
-	~Advance();
+	virtual ~Advance();
 	Advance& operator = (const Advance& a);
 };
 
@@ -67,7 +67,7 @@ public:
 	Bomb();
 	Bomb(Player* p1, Territory* target);
 	Bomb(const Bomb& d);
-	~Bomb();
+	virtual ~Bomb();
 	Bomb& operator = (const Bomb& a);
 };
 
@@ -85,7 +85,7 @@ public:
 	Airlift();
 	Airlift(Player* p, Territory* s, Territory* t, int numOfArmies);
 	Airlift(const Airlift& d);
-	~Airlift();
+	virtual ~Airlift();
 	Airlift& operator = (const Airlift& a);
 };
 
@@ -100,7 +100,7 @@ public:
 	Blockade();
 	Blockade(Player* p, Territory* t);
 	Blockade(const Blockade& d);
-	~Blockade();
+	virtual ~Blockade();
 	Blockade& operator = (const Blockade& a);
 };
 
@@ -115,7 +115,7 @@ public:
 	Diplomacy();
 	Diplomacy(Player* p1, Player* p2);
 	Diplomacy(const Diplomacy& d);
-	~Diplomacy();
+	virtual ~Diplomacy();
 	Diplomacy& operator = (const Diplomacy& a);
 };
 
@@ -123,7 +123,7 @@ class Reinforcement : public Order {
 public:
 	Reinforcement();
 	Reinforcement(const Reinforcement& r);
-	~Reinforcement();
+	virtual ~Reinforcement();
 	void execute();
 	string getName() const;
 	Reinforcement& operator = (const Reinforcement& a);
