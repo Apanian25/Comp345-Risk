@@ -24,7 +24,8 @@ MapLoader::MapLoader(std::string mapName) {
 /// </summary>
 MapLoader::~MapLoader() {
 	//call delete on map pointer created
-	delete parsedMap;
+	if(parsedMap != NULL)
+		delete parsedMap;
 	parsedMap = NULL;
 }
 
@@ -34,7 +35,7 @@ MapLoader::~MapLoader() {
 /// <param name="in"></param>
 /// <param name="m"></param>
 /// <returns></returns>
-ostream & operator << (ostream& output, MapLoader& m)
+ostream& operator << (ostream& output, MapLoader& m)
 {
 	output << "The map name is ..." << m.mapName << endl;
 	return output;
@@ -45,7 +46,7 @@ ostream & operator << (ostream& output, MapLoader& m)
 /// Copy Constructor
 /// </summary>
 /// <param name="map">Map pointer</param>
-MapLoader::MapLoader(const MapLoader &map){
+MapLoader::MapLoader(const MapLoader& map) {
 
 	cout << "Copy constructor is being called...\n" << endl;
 	this->mapName = map.mapName;
@@ -76,7 +77,7 @@ MapLoader& MapLoader::operator=(const MapLoader& mapLoader)
 /// <returns></returns>
 Map* MapLoader::loadMap(std::string mapFilePath) {
 
-	cout << "Verifying map before loading...\n" << endl; 
+	cout << "Verifying map before loading...\n" << endl;
 
 	parsedMap = readMap(mapFilePath);
 
@@ -125,7 +126,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 
 						if (words.size() != NUM_ENTRIES_CONTINENT) {
 							cout << "The file has invalid continent information.\n" << endl;
-							exit(1);
+							return NULL;
 						}
 
 						int numberOfArmies = std::stoi(words[1]);
@@ -136,12 +137,12 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 						cout << "Adding continent number " << continentId << "\n" << endl;
 						cout << "Continent name: " << words[0] << "\n" << endl;
 						cout << "Number of bonus armies: " << numberOfArmies << "\n" << endl;
-					} 
+					}
 					else {
 						cout << "Finished adding continents.\n" << endl;
 						break;
 					}
-				} 
+				}
 			}
 
 
@@ -188,7 +189,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 						std::vector<int> borders;
 						int countryId = std::stoi(words[0]);
 
-						for (int i = 1; i < words.size() - 1; ++i) {
+						for (int i = 1; i < words.size(); ++i) {  
 
 							borders.push_back(std::stoi(words[i]));
 						}
@@ -204,7 +205,7 @@ Map* MapLoader::readMap(std::string mapFilePath) {
 					}
 				}
 			}
-			
+
 		}
 	}
 
@@ -233,5 +234,9 @@ std::vector<string> MapLoader::split(string s, string delim) {
 		s.erase(0, pos + delim.length());
 	}
 
+	if (!s.empty()) {
+		words.push_back(s);
+	}
+	
 	return words;
 }

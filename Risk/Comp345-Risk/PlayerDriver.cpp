@@ -14,7 +14,7 @@ namespace PlayerDriver {
 		*/
 		vector<Order*> order;
 		vector<Territory*> terr;
-		vector<Cards*> hand;
+		Hand* hand = new Hand();
 
 		Territory* t1 = new Territory("England", 14, 4);
 		Territory* t2 = new Territory("Zimbabwe", 12, 3);
@@ -38,28 +38,28 @@ namespace PlayerDriver {
 		Cards* car3 = new Cards();
 
 
-		hand.push_back(car1);
-		hand.push_back(car2);
-		hand.push_back(car3);
+		hand->hand.push_back(car1);
+		hand->hand.push_back(car2);
+		hand->hand.push_back(car3);
 
 		/*
 			Adding orders in the order vector
 		*/
 
-		Order* or1 = new Order();
-		Order* or2 = new Order();
+	/*	Order* or1;
+		Order* or2;*/
 
 
-		order.push_back(or1);
+		//order.push_back(or1);
 
 
-		/*
-			Here we created new players and push objects to some of the methods
-		*/
+			/*
+				Here we created new players and push objects to some of the methods
+			*/
 
 		Player* Player1 = new Player();
-		Player* Player2 = new Player("Jason", hand, terr, order);
-		Player* Player3 = new Player("Mark");
+		Player* Player2 = new Player(1, "Jason", hand, terr, order);
+		Player* Player3 = new Player(2, "Mark");
 
 
 
@@ -75,7 +75,7 @@ namespace PlayerDriver {
 		cout << *Player2 << endl;
 		cout << endl;
 
-		Player2->issueOrder(or2);
+		Player2->issueOrder();
 		cout << endl;
 
 
@@ -113,7 +113,7 @@ namespace PlayerDriver {
 		Player2 = NULL;
 		delete Player3;
 		Player3 = NULL;
-		
+
 
 		/*
 		* Player 4 pointed to the same memory location as Player 2, no need to delete it
@@ -127,14 +127,16 @@ namespace PlayerDriver {
 		delete car2;
 		car2 = NULL;
 
-		delete or1;
+		/*delete or1;
 		or1 = NULL;
 		delete or2;
-		or2 = NULL;
+		or2 = NULL;*/
+
+		delete hand;
+		hand = NULL;
 
 
 		return 0;
 
 	}
 }
-

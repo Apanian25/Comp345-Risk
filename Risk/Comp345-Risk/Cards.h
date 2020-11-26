@@ -40,8 +40,8 @@ class  Deck
 public:
 	vector<Cards*> cards_list;
 	int deck_multiplier = 5;
-	void initialize(Deck& deck, Cards& card);
-	void shuffle(Deck&);
+	void initialize();
+	void shuffle();
 	Deck();
 	~Deck();
 	Deck(const Deck& orig);
@@ -59,8 +59,9 @@ class Hand
 {
 public:
 	vector<Cards*> hand; 
-	void draw(Deck&, Hand&);
+	void draw(Deck&);
 	void play(Hand& h, OrderList& ol, Deck& d);
+	Order* play(Player* player);
 	Hand();
 	~Hand();
 	Hand(const Hand& orig);

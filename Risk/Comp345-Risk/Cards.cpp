@@ -1,5 +1,7 @@
 #include "Cards.h"
 #include "Orders.h"
+#include "Player.h"
+#include "GameEngine.h"
 #include <iostream>
 #include <cstdlib>
 #include <time.h> 
@@ -58,7 +60,7 @@ Deck::Deck() // deck Class constructor
 ///  iterates through the card_list vector and creates a pointer to a new Card in the paramter's deck
 /// </summary>
 /// <param name="orig"> takes a constant Deck object by reference</param>
-Deck::Deck(const Deck& orig) : cards_list(orig.cards_list.size()) 
+Deck::Deck(const Deck& orig) : cards_list(orig.cards_list.size())
 {
 	for (int i = 0; i < orig.cards_list.size(); ++i)
 		cards_list[i] = new Cards(*orig.cards_list[i]);
@@ -68,7 +70,7 @@ Deck::Deck(const Deck& orig) : cards_list(orig.cards_list.size())
 /// Deck class destructor: 
 /// iterates through the vector card_list and deletes each slot and then makes the pointer point to null
 /// </summary>
-Deck :: ~Deck() 
+Deck :: ~Deck()
 {
 	for (int i = 0; i < cards_list.size(); i++)
 	{
@@ -85,7 +87,7 @@ Deck :: ~Deck()
 /// <returns></returns>
 Deck& Deck::operator= (const Deck& deck)
 {
-	
+
 	cards_list = deck.cards_list;
 	deck_multiplier = deck.deck_multiplier;
 	return *this;
@@ -137,7 +139,7 @@ ostream& operator << (ostream& output, const Deck& deck)
 /// </summary>
 Hand::Hand() // hand default constuructor 
 {
-
+	hand = vector<Cards*>(0);
 }
 
 /// <summary>
@@ -203,15 +205,15 @@ ostream& operator << (ostream& output, const Hand& hand)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="card">takes a constant Card object by reference</param>
-void Deck::initialize(Deck& deck, Cards& card) 
+void Deck::initialize()
 {
-	for (int i = 0; i < deck.deck_multiplier; ++i) 
+	for (int i = 0; i < this->deck_multiplier; ++i)
 	{
-		for (int j = 0; j < card.num_of_types; ++j) 
+		for (int j = 0; j < 5; ++j)
 		{
 			Cards* card = new Cards();
 			card->type = Type(j);
-			deck.cards_list.push_back(card);
+			this->cards_list.push_back(card);
 		}
 	}
 
@@ -225,21 +227,21 @@ void Deck::initialize(Deck& deck, Cards& card)
 /// once the shuffled vector is full and card_list is empty each card pushed back into the Card_list in the randomized orderr
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
-void Deck::shuffle(Deck& deck)   
+void Deck::shuffle()
 {
 	// initialize random seed: this is done so that the rand object generates different random numbers on each run 
 	srand(time(NULL));
 
 	vector <Cards*> shuffled_Deck;
-	while (!deck.cards_list.empty())
+	while (!this->cards_list.empty())
 	{
-		int randomizer = rand() % deck.cards_list.size();
-		shuffled_Deck.push_back(deck.cards_list[randomizer]);
-		deck.cards_list.erase(deck.cards_list.begin() + randomizer);
+		int randomizer = rand() % this->cards_list.size();
+		shuffled_Deck.push_back(this->cards_list[randomizer]);
+		this->cards_list.erase(this->cards_list.begin() + randomizer);
 	}
 	for (Cards* card : shuffled_Deck)
 	{
-		deck.cards_list.push_back(card);
+		this->cards_list.push_back(card);
 	}
 
 }
@@ -252,10 +254,12 @@ void Deck::shuffle(Deck& deck)
 /// </summary>
 /// <param name="deck">takes a constant Deck object by reference</param>
 /// <param name="h">takes a constant Hand object by reference</param>
-void Hand::draw(Deck& deck, Hand& h) 
+void Hand::draw(Deck& deck) 
 {
-	h.hand.push_back(deck.cards_list[0]);
-	deck.cards_list.erase(deck.cards_list.begin());
+	if (deck.cards_list.size() > 0) {
+		hand.push_back(deck.cards_list[0]);
+		deck.cards_list.erase(deck.cards_list.begin());
+	}
 }
 
 
@@ -273,11 +277,11 @@ void Hand::draw(Deck& deck, Hand& h)
 /// <param name="d">takes a constant deck object by reference</param>
 void Hand::play(Hand& h, OrderList& ol, Deck& d)
 {
-	
+
 	bool isValidCard = false;
 	while (!isValidCard) {
 
-		std::cout << "This is Your Hand" << std::endl  << h << " which card would you like to play?" << std::endl;
+		std::cout << "This is Your Hand" << std::endl << h << " which card would you like to play?" << std::endl;
 		std::string name;
 		std::cin >> name;
 		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -288,15 +292,15 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 			int initialHandSize = h.hand.size();
 			for (Cards* c : h.hand)
 			{
-			
+
 				if (c->type == Type(0))
 				{
 					d.cards_list.push_back(c);
-					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end());\
-					std::cout << "Bomb Card has been selected" << std::endl;
+					h.hand.erase(std::remove(hand.begin(), hand.end(), c), hand.end()); \
+						std::cout << "Bomb Card has been selected" << std::endl;
 					isValidCard = true;
 					break;
-				}		
+				}
 				counter++;
 			}
 
@@ -305,7 +309,7 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
 				return;
 			}
-	 
+
 			Bomb* b = new Bomb();
 			ol.list.push_back(b);
 			std::cout << "Bomb has been Placed in the Order List" << std::endl;
@@ -356,7 +360,7 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
 				return;
 			}
-	
+
 			Blockade* bl = new Blockade();
 			ol.list.push_back(bl);
 			std::cout << "Blockade has been Placed in the Order List" << std::endl;
@@ -377,7 +381,7 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 				}
 				counter++;
 			}
-	
+
 			if (counter == initialHandSize)
 			{
 				std::cout << "sorry your Hand doesnt contain this card" << std::endl;
@@ -418,9 +422,80 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 }
 
 
+Order* Hand::play(Player* player) {
+
+	if (player != NULL && player->hand->hand.size() != 0) {
+
+		Cards* card = player->hand->hand.at(0);
+		player->hand->hand.erase(player->hand->hand.begin());
+		deck->cards_list.push_back(card);
+
+		switch (card->type) {
+		case 0:
+		{
+			vector<Territory*> toAttk = player->toAttack();
+			int index = rand() % toAttk.size(); // from 0 - (size - 1)
+			Territory* terr = toAttk.at(index);
+			player->Notify("Added Bomb order");
+			return new Bomb(player, terr);
+		}
+		break;
+		case 1:
+			//reinforcement
+			player->giveArmies(5);
+			return new Reinforcement();
+			player->Notify("Added Reinforcement order");
+			break;
+		case 2:
+		{
+			vector<Territory*> toDefend = player->toDefend();
+			//0 - (size-1) random territory owned by user
+			player->Notify("Added Blockade order");
+			return new Blockade(player, toDefend.at(rand() % toDefend.size()));
+		}
+		break;
+		case 3:
+		{
+			vector<Territory*> toDefend = player->toDefend();
+			int defendingIndex = rand() % toDefend.size(); // from 0 - (size - 1)
+			Territory* source = toDefend.at(toDefend.size() - 1);
+			int availableArmies = source->numberOfArmies - source->commitedNumberOfArmies;
+			if (availableArmies < 1)
+				return NULL; //player cannot use the airlift card, as they have no armies on any of their territories
+
+			Territory* target = source;
+
+			//choose a territory other than the source territory
+			while (target == source) {
+				int playerIndex = rand() % players.size();
+				vector<Territory*> targets = players.at(playerIndex)->toDefend();
+				target = targets.at(rand() % targets.size());
+			}
+
+			int armiesToDeploy = 1 + (rand() % source->numberOfArmies - source->commitedNumberOfArmies);
+			source->commitedNumberOfArmies += armiesToDeploy;
+			player->Notify("Added Airlift order");
+			return new Airlift(player, source, target, armiesToDeploy); // from 1 - numOfArmies
+		}
+		break;
+		case 4:
+			vector<Player*> otherPlayers;
+			for (Player* player2 : players) {
+				if (player->id != player2->id)
+					otherPlayers.push_back(player2);
+			}
 
 
+			if (otherPlayers.size() == 0)
+				return NULL;
+			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
+			player->Notify("Added Diplomacy order");
+			return new Diplomacy(player, declarePeaceWith);
+			break;
+		}
 
+	}
 
+	return NULL;
 
-
+}

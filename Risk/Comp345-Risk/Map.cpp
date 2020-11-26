@@ -19,7 +19,7 @@ Continent::Continent() : id(-1), numberOfArmies(-1), name("") {}
 /// <param name="name">the name of the continent</param>
 /// <param name="id">the id of the continent</param>
 /// <param name="numberOfArmies">The bonus number of armies that you get for conquering a continent</param>
-Continent::Continent(std::string name, int id, int numberOfArmies): name(name), id(id), numberOfArmies(numberOfArmies) {}
+Continent::Continent(std::string name, int id, int numberOfArmies) : name(name), id(id), numberOfArmies(numberOfArmies) {}
 
 /// <summary>
 /// Destructor
@@ -30,7 +30,7 @@ Continent::~Continent() { }
 /// Copy constructor 
 /// </summary>
 /// <param name="continent"></param>
-Continent::Continent(const Continent& continent): id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
+Continent::Continent(const Continent& continent) : id(continent.id), numberOfArmies(continent.numberOfArmies), name(continent.name) {}
 
 /// <summary>
 /// Overload of the assignment operator
@@ -51,7 +51,7 @@ Continent& Continent::operator= (const Continent& continent) {
 /// <param name="output"></param>
 /// <param name="continent"></param>
 /// <returns></returns>
-std::ostream & operator << (std::ostream & output, const Continent& continent) {
+std::ostream& operator << (std::ostream& output, const Continent& continent) {
 	output << "ID: " << continent.id << std::endl
 		<< "NAME: " << continent.name << std::endl
 		<< "NUMBER OF ARMIES(BONUS): " << continent.numberOfArmies << std::endl;
@@ -65,7 +65,7 @@ std::ostream & operator << (std::ostream & output, const Continent& continent) {
 /// <summary>
 /// Territory no-param constructor
 /// </summary>
-Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0), country(""){ }
+Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0), commitedNumberOfArmies(0), country(""){ }
 
 /// <summary>
 /// Constructor that sets the territory name, id, continent id
@@ -73,7 +73,7 @@ Territory::Territory(): id(-1), ownedBy(-1), continentId(-1), numberOfArmies(0),
 /// <param name="country">the name of the country/territory</param>
 /// <param name="id">the territory's id</param>
 /// <param name="continentId">the id of the continent the territory belongs to</param>
-Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), numberOfArmies(0), ownedBy(-1) { }
+Territory::Territory(std::string country, int id, int continentId): id(id), continentId(continentId), country(country), numberOfArmies(0), commitedNumberOfArmies(0), ownedBy(-1) { }
 
 /// <summary>
 /// Destructor 
@@ -84,9 +84,13 @@ Territory::~Territory() {};
 /// Copy Contructor 
 /// </summary>
 /// <param name="territory"></param>
-Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), numberOfArmies(0), country(territory.country) {
+Territory::Territory(const Territory& territory): id(territory.id), continentId(territory.continentId), numberOfArmies(0), commitedNumberOfArmies(0), country(territory.country) {
 	this->adjacentTerritoriesFrom = territory.adjacentTerritoriesFrom;
 	this->adjacentTerritoriesTo = territory.adjacentTerritoriesTo;
+}
+
+void Territory::setOwner(int id) {
+	ownedBy = id;
 }
 
 /// <summary>
@@ -139,7 +143,7 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 		<< "CAN ATTACK:" << std::endl;
 
 	for (Territory* to : territory.adjacentTerritoriesTo) {
-		output << "\t" << to->country <<std::endl;
+		output << "\t" << to->country << std::endl;
 	}
 
 	output << "CAN BE ATTACKED BY:" << std::endl;
@@ -156,7 +160,7 @@ std::ostream& operator << (std::ostream& output, const Territory& territory) {
 /// <summary>
 /// Map no-param constructor
 /// </summary>
-Map::Map() { 
+Map::Map() {
 	this->territories = std::map<int, Territory*>();
 	this->continents = std::map<int, Continent*>();
 	this->continentTerritories = std::map<int, std::vector<Territory*>>();
@@ -202,6 +206,26 @@ Map::~Map() {
 	}
 }
 
+std::map<int, std::vector<Territory*>> Map::getContinentTerritories() {
+	return continentTerritories;
+}
+
+std::map<int, Territory*> Map::getAllTerritories() {
+	return territories;
+}
+
+std::map<int, Continent*> Map::getContinents() {
+	return continents;
+}
+
+/// <summary>
+/// returns total number of territories
+/// </summary>
+/// <returns>total number of territories</returns>
+int Map::getSize() {
+	return this->territories.size();
+}
+
 /// <summary>
 /// Overload of the assignment operator
 /// </summary>
@@ -223,7 +247,7 @@ Map& Map::operator= (const Map& map) {
 std::ostream& operator << (std::ostream& output, const Map& map) {
 
 	for (std::pair<int, std::vector<Territory*>> continent : map.continentTerritories) {
-			output << "Continent: " << map.continents.at(continent.first)->name << std::endl;
+		output << "Continent: " << map.continents.at(continent.first)->name << std::endl;
 		for (Territory* territory : continent.second) {
 			output << *territory;
 		}
@@ -249,6 +273,9 @@ Territory* Map::getTerritory(int id) {
 Territory* Map::addTerritory(std::string country, int id, int continentId) {
 	Territory* territory = new Territory(country, id, continentId);
 	territories[id] = territory;
+	if (id > 100) {
+		std::cout << "something" << std::endl;
+	}
 	continentTerritories[continentId].push_back(territory);
 	return territory;
 }
@@ -261,7 +288,7 @@ Territory* Map::addTerritory(std::string country, int id, int continentId) {
 /// <param name="numberOfArmies">the bonus number of armies you get for conquering the entire continent</param>
 /// <returns></returns>
 Continent* Map::addContinent(std::string continent, int continentId, int numberOfArmies) {
-	Continent *newContinent = new Continent(continent, continentId, numberOfArmies);
+	Continent* newContinent = new Continent(continent, continentId, numberOfArmies);
 	continents[continentId] = newContinent;
 
 	return newContinent;
@@ -303,7 +330,10 @@ void Map::addEdge(int src, int dest) {
 /// <returns>boolean true if the Map is a conencted graph, false otherwise</returns>
 bool Map::validate() {
 	std::vector<int> visited;
-	std::queue<Territory*> queue;
+	std::queue<Territory*> queue = std::queue<Territory*>();
+	if (territories.size() < 1) {
+		return false;
+	}
 	queue.push(territories.begin()->second);
 
 	while (!queue.empty()) {
