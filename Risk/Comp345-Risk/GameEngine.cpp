@@ -130,6 +130,7 @@ void GameEngine::setUp() {
 
 	for (size_t i = 0; i < numOfPlayers; i++)
 	{
+		//ask for strategy of the player
 		string playerName{ "Player " + to_string(i) };
 		Player* player = new Player(i, playerName);
 		players.push_back(player);
@@ -270,7 +271,11 @@ void GameEngine::mainGameLoop() {
 			territory.second->commitedNumberOfArmies = 0;
 		}
 		++round;
+		if (round == 3000)
+			break;
 	} while (!hasWinner());
+	if (!hasWinner())
+		cout << "The game was a Draw, after 3000 rounds, no 1 player was Victorious" << endl;
 	cout << "Game lasted " << --round << " rounds" << endl;
 }
 

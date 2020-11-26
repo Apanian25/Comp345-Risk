@@ -5,13 +5,16 @@
 #include "Cards.h"	
 #include "Orders.h"	
 #include "GameObserver.h"
+#include "PlayerStrategies.h"
 #include <vector>	
+
 using namespace std;
 namespace PlayerDriver {
 	int main();
 }
 class Player : public Subject {
 private:
+	PlayerStrategy* strategy;
 	string phase;
 public:
 	string player_name;
@@ -31,6 +34,7 @@ public:
 	*/
 	Player(); //default constructor
 	Player(int id, string n); //constructor which creates a player with only it's name and id
+	Player(int id, string n, PlayerStrategy* strategy); //constructor which creates a player with it's name, id, and custom strategy
 	Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o); //Constructtor which creates a player with a id, name, order, hand, and territory
 	Player(const Player& p); //Copy constructor
 	~Player(); //Destructor
@@ -41,6 +45,7 @@ public:
 	int getNumOfArmies();
 	void addTerritory(Territory* terr);
 	vector<Territory*> toAttack(); //Allows territories to attack
+	vector<Territory*> toAttackUnSorted();
 	vector<Territory*> toDefend(); //Allows territories to defend
 	void giveArmies(int numOfArmies); //Gives armies to the player
 	Order* issueOrder(); //Gives order to the player and adds it to the other list
@@ -48,6 +53,7 @@ public:
 	vector<string> getViewBuffer();
 	void setPhase(string phase);
 	string getPhase();
+	void setStrategy(PlayerStrategy* strategy);
 
 	/*
 	   Assignment and insertion operators
