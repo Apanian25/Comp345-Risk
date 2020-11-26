@@ -30,8 +30,7 @@ Player::Player() {
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithIds.push_back(-500);
-
+	this->hasNegotiatedWithIds = vector<int>(0);
 }
 
 Player::Player(int id, string n)
@@ -42,7 +41,7 @@ Player::Player(int id, string n)
 	this->orders = vector<Order*>(0);
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithIds.push_back(-500);
+	this->hasNegotiatedWithIds = vector<int>(0);
 
 
 }
@@ -59,7 +58,7 @@ Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o
 	this->territories = t;
 	this->orders = o;
 	this->hasConqueredTerritory = false;
-	this->hasNegotiatedWithIds.push_back(-500);
+	this->hasNegotiatedWithIds = vector<int>(0);
 }
 
 
