@@ -4,14 +4,17 @@
 #include "Cards.h"
 #include "Player.h"
 #include <vector>
-
+#include <iostream>
+using namespace std;
 
 
 class StatsObserver;
 
 using namespace std;
 
-int main();
+namespace GameEngineDriver {
+    int main();
+}
 
 extern std::vector<Player*> players;
 extern std::vector<int> playerorder;
@@ -24,12 +27,15 @@ public:
     Map* map;
     MapLoader* mapLoader;
     int numOfPlayers;
-    bool validMap;
     StatsObserver* statsObserver;
 
-    Cards* card = new Cards();
-
     GameEngine();
+    ~GameEngine();
+
+
+    GameEngine(const GameEngine& engine);
+    friend ostream& operator << (ostream& out, const GameEngine& engine);
+    GameEngine& operator = (const GameEngine& engine);
 
     void setUp();
     void mainGameLoop();

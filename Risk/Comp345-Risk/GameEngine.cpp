@@ -12,23 +12,45 @@ GameEngine::GameEngine()
 	map = NULL;
 	mapLoader = NULL;
 	numOfPlayers = 0;
-	validMap = false;
-
+	statsObserver = NULL;
 };
+
+GameEngine::~GameEngine() {
+	for (Player* p : players) {
+		delete p;
+		p = nullptr;
+	}
+	delete map;
+	map = nullptr;
+}
+
+/// <summary>
+/// Copy constructor
+/// </summary>
+/// <param name="engine"></param>
+GameEngine::GameEngine(const GameEngine& engine) : selectedMap(engine.selectedMap), map(engine.map), mapLoader(engine.mapLoader), 
+												   numOfPlayers(engine.numOfPlayers), statsObserver(engine.statsObserver) { }
+
+GameEngine& GameEngine::operator=(const GameEngine& engine)
+{
+	this->selectedMap = engine.selectedMap;
+	this->map = engine.map;
+	this->mapLoader = engine.mapLoader;
+	this->numOfPlayers = engine.numOfPlayers;
+	this->statsObserver = engine.statsObserver;
+	return *this;
+}
 
 extern Deck* deck = new Deck();
 extern vector<Player*> players = vector<Player*>();
-//extern StatsObserver* statsObserver = new StatsObserver();
 bool statsObserverOn{ 0 };
 bool phaseObserverOn{ 0 };
 
 //*********************************************************  PART1  *********************************************************
 
 void GameEngine::setUp() {
-
-	Cards* card = new Cards();
-	Deck* deck = new Deck();
 	deck->initialize();
+	bool validMap = false;
 
 	string path = "Maps";
 	string Maps[7]{
@@ -153,6 +175,8 @@ void GameEngine::setUp() {
 	
 	startUpPhase();
 	mainGameLoop();
+	delete deck;
+	deck = nullptr;
 }
 
 //*********************************************************  PART2  *********************************************************
@@ -232,9 +256,7 @@ void GameEngine::startUpPhase() {
 //*********************************************************  PART3  *********************************************************
 void GameEngine::mainGameLoop() {
 	int round = 1;
-	//statsObserver->update();
 	do {
-		//cout << "STARTING ROUND" << round << endl;
 		removePlayersWithoutTerritories();
 		reinforcementPhase();
 		issueOrderPhase();
@@ -257,10 +279,10 @@ void GameEngine::removePlayersWithoutTerritories() {
 	for (Player* player : players) {
 		if (player->getTerritories().size() == 0) {
 			playersToRemove.push_back(player);
-		}
-		while (player->hand->hand.size() > 0) {
-			deck->cards_list.push_back(player->hand->hand.at(0));
-			player->hand->hand.erase(std::remove(player->hand->hand.begin(), player->hand->hand.end(), player->hand->hand.at(0)));
+			while (player->hand->hand.size() > 0) {
+				deck->cards_list.push_back(player->hand->hand.at(0));
+				player->hand->hand.erase(std::remove(player->hand->hand.begin(), player->hand->hand.end(), player->hand->hand.at(0)));
+			}
 		}
 	}
 
@@ -386,4 +408,10 @@ bool GameEngine::hasWinner() {
 			return false;
 	}
 	return true;
+}
+
+ostream& operator<<(ostream& out, const GameEngine& engine)
+{
+	out << "Game has " << players.size() << " players playing";
+	return out;
 }

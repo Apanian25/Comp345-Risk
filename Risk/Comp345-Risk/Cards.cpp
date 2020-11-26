@@ -139,7 +139,7 @@ ostream& operator << (ostream& output, const Deck& deck)
 /// </summary>
 Hand::Hand() // hand default constuructor 
 {
-
+	hand = vector<Cards*>(0);
 }
 
 /// <summary>
@@ -458,17 +458,21 @@ Order* Hand::play(Player* player) {
 		{
 			vector<Territory*> toDefend = player->toDefend();
 			int defendingIndex = rand() % toDefend.size(); // from 0 - (size - 1)
-			Territory* source = toDefend.at(defendingIndex);
+			Territory* source = toDefend.at(toDefend.size() - 1);
+			int availableArmies = source->numberOfArmies - source->commitedNumberOfArmies;
+			if (availableArmies < 1)
+				return NULL; //player cannot use the airlift card, as they have no armies on any of their territories
+
 			Territory* target = source;
 
 			//choose a territory other than the source territory
 			while (target == source) {
-				int playerIndex = rand() % toDefend.size();
+				int playerIndex = rand() % players.size();
 				vector<Territory*> targets = players.at(playerIndex)->toDefend();
 				target = targets.at(rand() % targets.size());
 			}
 
-			int armiesToDeploy = 1 + (rand() % source->numberOfArmies);
+			int armiesToDeploy = 1 + (rand() % source->numberOfArmies - source->commitedNumberOfArmies);
 			source->commitedNumberOfArmies += armiesToDeploy;
 			player->Notify("Added Airlift order");
 			return new Airlift(player, source, target, armiesToDeploy); // from 1 - numOfArmies
@@ -476,10 +480,14 @@ Order* Hand::play(Player* player) {
 		break;
 		case 4:
 			vector<Player*> otherPlayers;
-			for (Player* player : players) {
-				if (player->id != player->id)
-					otherPlayers.push_back(player);
+			for (Player* player2 : players) {
+				if (player->id != player2->id)
+					otherPlayers.push_back(player2);
 			}
+
+
+			if (otherPlayers.size() == 0)
+				return NULL;
 			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
 			player->Notify("Added Diplomacy order");
 			return new Diplomacy(player, declarePeaceWith);

@@ -138,6 +138,8 @@ Order* Player::issueOrder()
 		//Playing cards, if the player has any
 		if (this->hand->hand.size() != 0) {
 			Order* order = hand->play(this);
+			if (order == NULL)
+				return NULL;
 			orders.push_back(order);
 			return order;
 		}
