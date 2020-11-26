@@ -80,7 +80,7 @@ Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o
 /// </summary>
 vector<Territory*> Player::toAttack()
 {
-	return this->strategy->toAttack();
+	return this->strategy->toAttack(this);
 }
 
 vector<Territory*> Player::toAttackUnSorted() {
@@ -110,7 +110,7 @@ vector<Territory*> Player::toAttackUnSorted() {
 ///</summary>
 vector<Territory*> Player::toDefend()
 {
-	this->strategy->toDefend();
+	return this->strategy->toDefend(this);
 }
 
 int Player::getNumOfArmies() {
@@ -127,7 +127,7 @@ void Player::addTerritory(Territory* terr)
 /// </summary>
 Order* Player::issueOrder()
 {
-	this->strategy->issueOrder();
+	return this->strategy->issueOrder(this);
 }
 
 

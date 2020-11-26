@@ -12,6 +12,9 @@ using namespace std;
 namespace PlayerDriver {
 	int main();
 }
+
+class PlayerStrategy;
+
 class Player : public Subject {
 private:
 	PlayerStrategy* strategy;

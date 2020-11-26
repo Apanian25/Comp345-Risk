@@ -1,68 +1,70 @@
 #include "PlayerStrategies.h"
+#include "Player.h"
+#include "Orders.h"
 
 // *********************** HUMAN PLAYER ***********************
-vector<Territory*> HumanPlayerStrategy::toAttack()
+vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
 	return vector<Territory*>();
 }
 
-vector<Territory*> HumanPlayerStrategy::toDefend()
+vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 {
 	return vector<Territory*>();
 }
 
-bool HumanPlayerStrategy::issueOrder()
+Order* HumanPlayerStrategy::issueOrder(Player* player)
 {
-	return false;
+	return nullptr;
 }
 
 // *********************** AGGRESSIVE PLAYER ***********************
 
-vector<Territory*> AggressivePlayerStrategy::toAttack()
+vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 {
 	return vector<Territory*>();
 }
 
-vector<Territory*> AggressivePlayerStrategy::toDefend()
+vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 {
 	return vector<Territory*>();
 }
 
-bool AggressivePlayerStrategy::issueOrder()
+Order* AggressivePlayerStrategy::issueOrder(Player* player)
 {
-	return false;
+	return nullptr;
 }
 
 // *********************** BENEVOLENT PLAYER ***********************
 
-vector<Territory*> BenevolentPlayerStrategy::toAttack()
+vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 {
 	return vector<Territory*>();
 }
 
-vector<Territory*> BenevolentPlayerStrategy::toDefend()
+vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 {
 	return vector<Territory*>();
 }
 
-bool BenevolentPlayerStrategy::issueOrder()
+Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 {
-	return false;
+	return nullptr;
 }
 
 // *********************** NEUTRAL PLAYER ***********************
 
-vector<Territory*> NeutralPlayerStrategy::toAttack()
+vector<Territory*> NeutralPlayerStrategy::toAttack(Player* player)
 {
-	return vector<Territory*>();
+	return player->toAttackUnSorted();
 }
 
-vector<Territory*> NeutralPlayerStrategy::toDefend()
+vector<Territory*> NeutralPlayerStrategy::toDefend(Player* player)
 {
-	return vector<Territory*>();
+	return player->getTerritories();
 }
 
-bool NeutralPlayerStrategy::issueOrder()
+Order* NeutralPlayerStrategy::issueOrder(Player* player)
 {
-	return false;
+	return nullptr;
 }
