@@ -19,6 +19,9 @@ namespace GameEngineDriver {
 extern std::vector<Player*> players;
 extern std::vector<int> playerorder;
 extern Deck* deck;
+extern Player* neutral;
+
+
 
 class GameEngine {
 public:

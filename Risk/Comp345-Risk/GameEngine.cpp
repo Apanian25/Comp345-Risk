@@ -41,6 +41,7 @@ GameEngine& GameEngine::operator=(const GameEngine& engine)
 	return *this;
 }
 
+extern Player* neutral = nullptr;
 extern Deck* deck = new Deck();
 extern vector<Player*> players = vector<Player*>();
 bool statsObserverOn{ 0 };
