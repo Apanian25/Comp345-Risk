@@ -246,7 +246,7 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 	if (player->getNumOfArmies() > 0) {
 		//DEPLOY PHASE
 		Deploy* dep = new Deploy(player, toDefend(player)[0], player->getNumOfArmies());
-		player->orders.push_back(dep);
+		player->orders->list.push_back(dep);
 		player->numOfArmies = 0;
 		return dep;
 	}
@@ -258,7 +258,7 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 			Order* order = player->hand->play(player);
 			if (order != nullptr) {
 				canPlayACard = true;
-				player->orders.push_back(order);
+				player->orders->list.push_back(order);
 				player->Notify("Added Deploy order");
 			}
 		}
@@ -274,7 +274,7 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 					canReinforceWith->commitedNumberOfArmies = canReinforceWith->numberOfArmies;
 					Advance* reinf = new Advance(player, canReinforceWith, strongest, canReinforceWith->numberOfArmies);
 					player->Notify("Added defending advance order");
-					player->orders.push_back(reinf);
+					player->orders->list.push_back(reinf);
 				}
 			}
 			//ATTACK EVERYTHING WE CAN
@@ -284,7 +284,7 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 						canAttackWith->commitedNumberOfArmies = canAttackWith->numberOfArmies;
 						Advance* adv = new Advance(player, canAttackWith, territory, canAttackWith->numberOfArmies);
 						player->Notify("Added attacking advance order");
-						player->orders.push_back(adv);
+						player->orders->list.push_back(adv);
 					}
 				}
 			}
@@ -323,7 +323,7 @@ Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 		toDefend(player)[0];
 		Deploy* deploy = new Deploy(player, toDefend(player)[0], player->getNumOfArmies());
 		player->numOfArmies = 0;
-		player->orders.push_back(deploy);
+		player->orders->list.push_back(deploy);
 		return deploy;
 	}
 	else
@@ -342,7 +342,7 @@ Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 
 			for (Territory* canReinforceWith : weakest->adjacentTerritoriesFrom)
 			{
-				if (canReinforceWith->ownedBy = player->id && canReinforceWith->numberOfArmies > 0)
+				if (canReinforceWith->ownedBy == player->id && canReinforceWith->numberOfArmies > 0)
 				{
 					reinforcements.push_back(canReinforceWith);
 
@@ -358,7 +358,7 @@ Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 
 				Advance* advance = new Advance(player, reinforcements[0], weakest, reinforcements[0]->numberOfArmies / 2);
 				player->Notify("Added defending advance order");
-				player->orders.push_back(advance);
+				player->orders->list.push_back(advance);
 				
 			}
 		}

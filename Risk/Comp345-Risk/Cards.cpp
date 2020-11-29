@@ -504,8 +504,10 @@ Order* Hand::play(Player* player) {
 			return new Airlift(player, strongest, strongestTarget, strongest->numberOfArmies - strongest->commitedNumberOfArmies);
 		}
 		break;
+		
 		case 4:
 			//it is not in the aggressive players best interest to use the diplomacy card
+			break;
 		}
 
 	}
