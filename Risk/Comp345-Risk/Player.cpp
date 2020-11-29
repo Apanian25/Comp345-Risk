@@ -27,7 +27,7 @@ Player::Player() {
 	this->id = -2;
 	this->player_name = "";
 	this->hand = new Hand();
-	this->orders = vector<Order*>(0);
+	this->orders = new OrderList();
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
 	this->hasNegotiatedWithIds = vector<int>(0);
@@ -38,7 +38,7 @@ Player::Player(int id, string n)
 	this->id = id;
 	this->player_name = n;
 	this->hand = new Hand();
-	this->orders = vector<Order*>(0);
+	this->orders = new OrderList();
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
 	this->hasNegotiatedWithIds = vector<int>(0);
@@ -52,7 +52,7 @@ Player::Player(int id, string n, PlayerStrategy* strategy)
 	this->id = id;
 	this->player_name = n;
 	this->hand = new Hand();
-	this->orders = vector<Order*>(0);
+	this->orders = new OrderList();
 	this->territories = vector<Territory*>(0);
 	this->hasConqueredTerritory = false;
 	this->hasNegotiatedWithIds.push_back(-500);
@@ -63,7 +63,7 @@ Player::Player(int id, string n, PlayerStrategy* strategy)
 /// Parametrised constructor where we create a player with his own hand, territory, and order
 /// </summary>
 
-Player::Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o)
+Player::Player(int id, string n, Hand* h, vector<Territory*> t, OrderList* o)
 {
 	this->id = id;
 	this->player_name = n;
@@ -177,9 +177,9 @@ Player::Player(const Player& play) {
 
 	this->hand = new Hand(*play.hand);
 
-	for (int i = 0; i < play.orders.size(); i++) {
-		Order* order = play.orders.at(i);
-		this->orders.push_back(order);
+	for (int i = 0; i < play.orders->list.size(); i++) {
+		Order* order = play.orders->list.at(i);
+		this->orders->list.push_back(order);
 	}
 
 	for (int i = 0; play.territories.size(); i++) {
@@ -192,6 +192,7 @@ Player::Player(const Player& play) {
 ///Destructor for the player
 /// </summary>
 Player::~Player() {
+	delete orders;
 	delete strategy;
 }
 
@@ -202,7 +203,7 @@ Player::~Player() {
 ostream& operator<<(ostream& strm, Player& player)
 {
 	strm <<"Player's name is " <<player.player_name << endl << player.player_name << " has " << player.territories.size() << " territories at their disposal." << endl << "He has "
-		<< player.hand->hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders.size() << " orders that he can use.";
+		<< player.hand->hand.size() << " number of cards in his hand." << endl << "And, he has " << player.orders->list.size() << " orders that he can use.";
 
 	return strm;
 }

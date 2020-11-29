@@ -12,7 +12,7 @@ namespace PlayerDriver {
 		/*
 			Creating vectors and putting objects in that vector
 		*/
-		vector<Order*> order;
+		OrderList* order = nullptr;
 		vector<Territory*> terr;
 		Hand* hand = new Hand();
 

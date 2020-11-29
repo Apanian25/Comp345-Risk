@@ -265,7 +265,7 @@ void Hand::draw(Deck& deck)
 
 
 /// <summary>
-/// play fuynction allows a player to play a card from their hand 
+/// play function allows a player to play a card from their hand 
 /// ask the player which card they would like to play and loops through their hand to find it
 /// if found, the card is pushed back to the bottom of the deck and erased from the players hand
 /// and order is also made for that card and is placed into the order list
@@ -280,6 +280,11 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 
 	bool isValidCard = false;
 	while (!isValidCard) {
+
+		if (h.hand.size() == 0) {
+			cout << "You don't have any cards in your hand yet. Please try another option!" << endl;
+			break;
+		}
 
 		std::cout << "This is Your Hand" << std::endl << h << " which card would you like to play?" << std::endl;
 		std::string name;
@@ -392,6 +397,7 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 			ol.list.push_back(a);
 			std::cout << "Airlift has been Placed in the Order List" << std::endl;
 		}
+
 		else if (name == "diplomacy")
 		{
 			int counter = 0;
@@ -417,6 +423,13 @@ void Hand::play(Hand& h, OrderList& ol, Deck& d)
 			Diplomacy* dp = new Diplomacy();
 			ol.list.push_back(dp);
 			std::cout << "Diplomacy has been Placed in the Order List" << std::endl;
+		}
+
+		else if (name == "done") 
+		{
+			cout << "Done using cards" << endl;
+			break;
+
 		}
 	}
 }

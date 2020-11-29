@@ -24,7 +24,7 @@ public:
 	int numOfArmies;
 	int id;
 	vector<Territory*> territories;
-	vector<Order*> orders;
+	OrderList* orders;
 	vector<string> viewBuffer;
 	Hand* hand;
 	bool hasConqueredTerritory;
@@ -38,7 +38,7 @@ public:
 	Player(); //default constructor
 	Player(int id, string n); //constructor which creates a player with only it's name and id
 	Player(int id, string n, PlayerStrategy* strategy); //constructor which creates a player with it's name, id, and custom strategy
-	Player(int id, string n, Hand* h, vector<Territory*> t, vector<Order*> o); //Constructtor which creates a player with a id, name, order, hand, and territory
+	Player(int id, string n, Hand* h, vector<Territory*> t, OrderList* o); //Constructtor which creates a player with a id, name, order, hand, and territory
 	Player(const Player& p); //Copy constructor
 	~Player(); //Destructor
 

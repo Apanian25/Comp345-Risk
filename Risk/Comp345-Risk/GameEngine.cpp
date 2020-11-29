@@ -130,9 +130,31 @@ void GameEngine::setUp() {
 
 	for (size_t i = 0; i < numOfPlayers; i++)
 	{
+		int strategyChoice = 0;
 		//ask for strategy of the player
+		cout << "Please select the strategy for player " << i << endl;
+		cout << "0 - Aggressive bot Player" << endl;
+		cout << "1 - Benevolent bot Player" << endl;
+		cout << "2 - Neutral bot Player" << endl;
+		cout << "3 - Human Player" << endl;
+		cout << "" << endl;
+		cin >> strategyChoice;
 		string playerName{ "Player " + to_string(i) };
 		Player* player = new Player(i, playerName);
+		switch (strategyChoice)
+		{
+		case 0:
+			player->setStrategy(new AggressivePlayerStrategy());
+		case 1:
+			player->setStrategy(new BenevolentPlayerStrategy());
+		case 2:
+			player->setStrategy(new NeutralPlayerStrategy());
+		case 3:
+			player->setStrategy(new HumanPlayerStrategy());
+		default:
+			break;
+		}
+		
 		players.push_back(player);
 	}
 		
@@ -364,7 +386,7 @@ void GameEngine::ordersExecutionPhase() {
 			player->setPhase("Execute Deploy Orders Phase");
 		}
 		vector<Order*> deploys;
-		for (Order* order : player->orders) {
+		for (Order* order : player->orders->list) {
 			if (dynamic_cast<Deploy*>(order)) {
 				deploys.push_back(order);
 			}
@@ -372,7 +394,7 @@ void GameEngine::ordersExecutionPhase() {
 
 		for (Order* order : deploys) {
 			order->execute();
-			player->orders.erase(std::remove(player->orders.begin(), player->orders.end(), order));
+			player->orders->list.erase(std::remove(player->orders->list.begin(), player->orders->list.end(), order));
 			delete order;
 		}
 		if (phaseObserverOn && observer) {
@@ -389,12 +411,12 @@ void GameEngine::ordersExecutionPhase() {
 			player->setPhase("Execute Other Orders Phase");
 		}
 
-		for (Order* order : player->orders) {
+		for (Order* order : player->orders->list) {
 			order->execute();
 			delete order;
 		}
 
-		player->orders.clear();
+		player->orders->list.clear();
 		if (player->hasConqueredTerritory) {
 			player->hand->draw(*deck);
 		}
