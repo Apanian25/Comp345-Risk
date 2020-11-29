@@ -41,6 +41,12 @@ ostream& operator << (ostream& output, MapLoader& m)
 	return output;
 }
 
+ostream& operator<<(ostream& output, ConquestFileReader& cq)
+{
+	output << "The map name is " << cq.mapName << endl;
+	return output;
+}
+
 
 /// <summary>
 /// Copy Constructor
@@ -256,6 +262,26 @@ ConquestFileReader::~ConquestFileReader() {
 	parsedMap = NULL;
 }
 
+//ConquestFileReader::ConquestFileReader(const ConquestFileReader& map)
+//{
+//	cout << "Copy constructor is being called...\n" << endl;
+//	this->mapName = map.mapName;
+//	this->parsedMap = map.parsedMap;
+//}
+
+//ConquestFileReader& ConquestFileReader::operator=(const ConquestFileReader fileReader)
+//{
+//	//check for self-assignment
+//	if (this == &fileReader)
+//		return *this;
+//
+//	//copying
+//	mapName = fileReader.mapName;
+//
+//	return *this;
+//}
+
+
 Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 {
 	parsedMap = new Map();
@@ -273,6 +299,8 @@ Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 	}
 
 	cout << "Parsing map file...\n" << endl;
+	cout << "Name of the file: " << mapFilePath << endl;
+	cout << endl;
 	if (openFile.is_open()) {
 		while (getline(openFile, line)) {
 			if (line.find("[Continents]") == 0) {

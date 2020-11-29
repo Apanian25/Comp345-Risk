@@ -55,7 +55,14 @@ public:
 	ConquestFileReader();
 	ConquestFileReader(std::string mapName);
 	~ConquestFileReader();
+	//ConquestFileReader(const ConquestFileReader& map);
+	//ConquestFileReader& operator=(const ConquestFileReader fileReader);
+
 	std::string mapName;
+	//friend ostream& operator << (ostream& output, ConquestFileReader& cq);
+
+
+
 	Map* readConquestMap(std::string mapFilePath);
 	Map* loadConquestMap(std::string mapFilePath);
 private:

@@ -1,3 +1,10 @@
-﻿  MapLoaderDriver.cpp
+﻿  MapLoader.cpp
+  MapLoaderDriver.cpp
   The contents of <filesystem> are available only with C++17 or later.
+  Player.cpp
+C:\Users\Ali\Desktop\Comp345-Risk-staging\Risk\Comp345-Risk\Player.cpp(124,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Ali\Desktop\Comp345-Risk-staging\Risk\Comp345-Risk\Player.cpp(225,26): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Ali\Desktop\Comp345-Risk-staging\Risk\Comp345-Risk\Player.cpp(238,9): warning C4101: 'src': unreferenced local variable
+C:\Users\Ali\Desktop\Comp345-Risk-staging\Risk\Comp345-Risk\Player.cpp(238,14): warning C4101: 'targ': unreferenced local variable
+  Generating Code...
   Comp345-Risk.vcxproj -> C:\Users\Ali\Desktop\Comp345-Risk-staging\Risk\x64\Debug\Comp345-Risk.exe

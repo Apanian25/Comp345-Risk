@@ -18,6 +18,7 @@ namespace MapLoaderDriver {
 		std::cout << "Please select if you want to use MapLoader (press 0), or if you want to use FileReader (press 1) " << std::endl;
 
 		std::cin >> choice;
+		std::cout << std::endl;
 
 		if (choice == 0) {
 
@@ -34,6 +35,8 @@ namespace MapLoaderDriver {
 		}
 
 		else if (choice == 1) {
+
+			std::cout << "Using the ConquestFileReader....\n"<<std::endl;
 
 			ConquestFileReader* loader = new ConquestFileReader("World");
 			ConquestFileReaderAdapter* adapter = new ConquestFileReaderAdapter(*loader);
