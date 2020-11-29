@@ -245,6 +245,26 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0) {
 		//DEPLOY PHASE
+		vector<Territory*> toDef = toDefend(player);
+		Territory* strongest = nullptr;
+		if (toDef[0]->numberOfArmies == 0) {
+			//this is the first turn.
+			for (Territory* def: toDef) {
+				for (Territory* canAttack : def->adjacentTerritoriesTo) {
+					if (canAttack->ownedBy != player->id) {
+						strongest = canAttack;
+					}
+					if (strongest != nullptr)
+						break;
+				}
+				if (strongest != nullptr)
+					break;
+			}
+		}
+		else {
+			strongest = toDef[0];
+		}
+
 		Deploy* dep = new Deploy(player, toDefend(player)[0], player->getNumOfArmies());
 		player->orders->list.push_back(dep);
 		player->numOfArmies = 0;
