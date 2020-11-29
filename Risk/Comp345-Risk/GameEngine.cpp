@@ -146,12 +146,16 @@ void GameEngine::setUp() {
 		{
 		case 0:
 			player->setStrategy(new AggressivePlayerStrategy());
+			break;
 		case 1:
 			player->setStrategy(new BenevolentPlayerStrategy());
+			break;
 		case 2:
 			player->setStrategy(new NeutralPlayerStrategy());
+			break;
 		case 3:
 			player->setStrategy(new HumanPlayerStrategy());
+			break;
 		default:
 			break;
 		}
