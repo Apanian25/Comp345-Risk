@@ -283,11 +283,18 @@ void Airlift::execute() {
 			
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
+				bool belongsToNeutral = true;
 				for (Player* p : players)
 				{
 					if (p->id == target->ownedBy) {
+						belongsToNeutral = false;
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
 					}
+				}
+
+				if (belongsToNeutral)
+				{
+					neutral->territories.erase(std::remove(neutral->territories.begin(), neutral->territories.end(), target), neutral->territories.end());
 				}
 
 				playerPtr->territories.push_back(target);
@@ -449,11 +456,19 @@ void Advance::execute() {
 			
 			if (defendingArmiesCount == 0 && attackingArmiesCount > 0)
 			{
+				bool belongsToNeutral = true;
+
 				for (Player * p : players)
 				{
 					if (p->id == target->ownedBy) {
+						belongsToNeutral = false;
 						p->territories.erase(std::remove(p->territories.begin(), p->territories.end(), target), p->territories.end());
 					}
+				}
+
+				if (belongsToNeutral)
+				{
+					neutral->territories.erase(std::remove(neutral->territories.begin(), neutral->territories.end(), target), neutral->territories.end());
 				}
 
 				playerPtr->territories.push_back(target);
@@ -542,10 +557,16 @@ void Blockade::execute() {
 	isExecuted = validate();
 	if (isExecuted)
 	{
+		if (neutral == nullptr)
+		{
+			neutral = new Player(-1, "Game Neutral", new NeutralPlayerStrategy());
+		}
+
 		target->addArmies(target->numberOfArmies);
 
 		playerPtr->territories.erase(std::remove(playerPtr->territories.begin(), playerPtr->territories.end(), target), playerPtr->territories.end());
 		target->ownedBy = -1;
+		neutral->addTerritory(target);
 		playerPtr->Notify();
 		//statsObserver->update();
 	}

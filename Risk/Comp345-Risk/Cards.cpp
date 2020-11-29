@@ -446,11 +446,25 @@ Order* Hand::play(Player* player) {
 		switch (card->type) {
 		case 0:
 		{
-			vector<Territory*> toAttk = player->toAttack();
-			int index = rand() % toAttk.size(); // from 0 - (size - 1)
-			Territory* terr = toAttk.at(index);
+			//the territory at position 0 has the most number of armies
+			Territory* toAttk = player->toAttack()[0];
+			Territory* strongestTarget = nullptr;
+
+			for (Player* otherPlayer : players) {
+				if (otherPlayer->id != player->id) {
+					for (Territory* territory : otherPlayer->toDefend()) {
+						if (strongestTarget == nullptr)
+							strongestTarget = territory;
+						else if (territory->numberOfArmies > strongestTarget->numberOfArmies)
+							strongestTarget = territory;
+					}
+				}
+			}
+			if (strongestTarget == nullptr)
+				return nullptr;
+
 			player->Notify("Added Bomb order");
-			return new Bomb(player, terr);
+			return new Bomb(player, strongestTarget);
 		}
 		break;
 		case 1:
@@ -461,50 +475,37 @@ Order* Hand::play(Player* player) {
 			break;
 		case 2:
 		{
-			vector<Territory*> toDefend = player->toDefend();
-			//0 - (size-1) random territory owned by user
-			player->Notify("Added Blockade order");
-			return new Blockade(player, toDefend.at(rand() % toDefend.size()));
+			//do nothing, aggressive player would not play blockade
 		}
 		break;
 		case 3:
 		{
 			vector<Territory*> toDefend = player->toDefend();
-			int defendingIndex = rand() % toDefend.size(); // from 0 - (size - 1)
-			Territory* source = toDefend.at(toDefend.size() - 1);
-			int availableArmies = source->numberOfArmies - source->commitedNumberOfArmies;
-			if (availableArmies < 1)
-				return NULL; //player cannot use the airlift card, as they have no armies on any of their territories
+			Territory* strongest = toDefend[0];
+			Territory* strongestTarget = nullptr;
 
-			Territory* target = source;
-
-			//choose a territory other than the source territory
-			while (target == source) {
-				int playerIndex = rand() % players.size();
-				vector<Territory*> targets = players.at(playerIndex)->toDefend();
-				target = targets.at(rand() % targets.size());
+			if (strongest->commitedNumberOfArmies > 0)
+				return nullptr;
+			
+			for (Player* otherPlayer : players) {
+				if (otherPlayer->id != player->id) {
+					for (Territory* territory : otherPlayer->toDefend()) {
+						if (strongestTarget == nullptr)
+							strongestTarget = territory;
+						else if (territory->numberOfArmies > strongestTarget->numberOfArmies)
+							strongestTarget = territory;
+					}
+				}
 			}
 
-			int armiesToDeploy = 1 + (rand() % source->numberOfArmies - source->commitedNumberOfArmies);
-			source->commitedNumberOfArmies += armiesToDeploy;
+
+			strongest->commitedNumberOfArmies = strongest->numberOfArmies;
 			player->Notify("Added Airlift order");
-			return new Airlift(player, source, target, armiesToDeploy); // from 1 - numOfArmies
+			return new Airlift(player, strongest, strongestTarget, strongest->numberOfArmies - strongest->commitedNumberOfArmies);
 		}
 		break;
 		case 4:
-			vector<Player*> otherPlayers;
-			for (Player* player2 : players) {
-				if (player->id != player2->id)
-					otherPlayers.push_back(player2);
-			}
-
-
-			if (otherPlayers.size() == 0)
-				return NULL;
-			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
-			player->Notify("Added Diplomacy order");
-			return new Diplomacy(player, declarePeaceWith);
-			break;
+			//it is not in the aggressive players best interest to use the diplomacy card
 		}
 
 	}
