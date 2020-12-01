@@ -4,29 +4,45 @@ Map* initMap();
 bool p3test1(GameEngine* game);
 bool p3test2(GameEngine* game);
 bool p3test3(GameEngine* game);
+bool a3p2test1();
+bool a3p1test(GameEngine* game);
+
+void testInvalid(MapLoader* loader);
+void testValid(MapLoader* loader);
+
+void testA2(GameEngine* game) {
+	Map* map = initMap();
+	if (map != NULL) {
+		game = new GameEngine();
+		game->map = map;
+		cout << "Test1 valid: " << p3test1(game) << endl << endl;
+		cout << "Test3 valid: " << p3test3(game) << endl << endl;
+		delete game->map;
+		for (Player* p : players) {
+			delete p;
+			p = NULL;
+		}
+		players.clear();
+		cout << "Test2 valid: " << p3test2(game) << endl << endl;
+	}
+
+	if (map != NULL && game != NULL) {
+		delete game;
+		game = NULL;
+	}
+}
+
 
 namespace GameEngineDriver {
 	int main() {
-		Map* map = initMap();
-		GameEngine* game = NULL;
-		if (map != NULL) {
-			game = new GameEngine();
-			game->map = map;
-			cout << "Test1 valid: " << p3test1(game) << endl << endl;
-			cout << "Test3 valid: " << p3test3(game) << endl << endl;
-			delete game->map;
-			for (Player* p : players) {
-				delete p;
-				p = NULL;
-			}
-			players.clear();
-			cout << "Test2 valid: " << p3test2(game) << endl << endl;
-		}
+		GameEngine* game = new GameEngine();
 
-		if (map != NULL && game != NULL) {
-			delete game;
-			game = NULL;
-		}
+		//testA2(game);
+		//we call this twice so that the user can test both types of readers
+		a3p2test1();
+		a3p2test1();
+		a3p1test(game);
+		
 		return 0;
 	}
 }
@@ -64,7 +80,7 @@ Map* initMap() {
 /// </summary>
 /// <returns></returns>
 bool p3test1(GameEngine* game) {
-	Player* player = new Player(1, "Nicholas");
+	Player* player = new Player(1, "Nicholas", new NeutralPlayerStrategy());
 	players.push_back(player);
 	for (std::pair<int,Territory*> terr : game->map->getAllTerritories()) {
 		player->territories.push_back(terr.second);
@@ -98,5 +114,58 @@ bool p3test2(GameEngine* game) {
 /// <returns></returns>
 bool p3test3(GameEngine* game) {
 	game->mainGameLoop();
+	return true;
+}
+
+
+
+bool a3p2test1()
+{
+	int choice{ 0 };
+
+	std::cout << "Please select if you want to use Domination MapLoader (press 0), or if you want to use Conquest FileReader (press 1) " << std::endl;
+
+	std::cin >> choice;
+	std::cout << std::endl;
+
+	if (choice == 0) {
+
+		std::cout << "MapLoaderDriver\n" << std::endl;
+		std::cout << "Loading Domination Map" << std::endl;
+
+		MapLoader* loader = new MapLoader("solar");
+
+		std::cout << "Successfully loaded domination map: \"solar.map\"" << std::endl;
+
+		delete loader;
+		loader = NULL;
+
+	}
+
+	else if (choice == 1) {
+
+		std::cout << "Using the ConquestFileReader....\n" << std::endl;
+		std::cout << "Loading Conquest Map" << std::endl;
+
+		ConquestFileReader* loader = new ConquestFileReader("ConquestWorld");
+		ConquestFileReaderAdapter* adapter = new ConquestFileReaderAdapter(loader);
+		Map* map = adapter->loadMap("Maps\\ConquestWorld.map");
+
+		std::cout << "Successfully loaded conquest map: \"ConquestWorld.map\"" << std::endl;
+
+		//map gets deleted inside of loader which gets delete inside of adapter, so do not need to explicitly delete them here
+		if (adapter != nullptr) {
+			delete adapter;
+			adapter = nullptr;
+		}
+	}
+
+	return 0;
+}
+
+bool a3p1test(GameEngine* game)
+{
+	cout << "Testing the Different strategies for the different players playing the game" << endl;
+	game->setUp();
 	return true;
 }

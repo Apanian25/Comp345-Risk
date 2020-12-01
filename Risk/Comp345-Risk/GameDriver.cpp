@@ -24,7 +24,7 @@ int main() {
 	//OrdersDriver::main(2);
 
 	//Part 1,2,3, 5
-	//GameEngineDriver::main();
-	GameEngine* theEngineThatCould = new GameEngine();
-	theEngineThatCould->setUp();
+	GameEngineDriver::main();
+	//GameEngine* theEngineThatCould = new GameEngine();
+	//theEngineThatCould->setUp();
 }

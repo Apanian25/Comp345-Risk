@@ -49,7 +49,12 @@ bool phaseObserverOn{ 0 };
 
 //*********************************************************  PART1  *********************************************************
 
+/// <summary>
+/// Sets up the game by asking the user to input the configuration for the game
+/// </summary>
 void GameEngine::setUp() {
+	if(deck == nullptr)
+		deck = new Deck();
 	deck->initialize();
 	bool validMap = false;
 
@@ -73,6 +78,7 @@ void GameEngine::setUp() {
 			
 		cin >> selectedMap;
 
+		//if invalid input
 		if (cin.fail()) {
 			cin.clear();
 			cin.ignore(512, '\n');
@@ -97,7 +103,7 @@ void GameEngine::setUp() {
 			}
 
 			mapLoader = new MapLoader();
-
+			//loads the map
 			map = mapLoader->loadMap("Maps\\" + Maps[selectedMap]);
 
 			if (map != NULL) {
@@ -112,7 +118,8 @@ void GameEngine::setUp() {
 	}
 		
 	cout << "--- Congratulations, the map is valid! ---" << endl;
-		
+
+	//until user enters proper input, keep asking for number of players	
 	while (numOfPlayers < 2 || numOfPlayers >5) {
 			
 		cout << "Please enter the number of players (2-5): " << endl;
@@ -142,6 +149,7 @@ void GameEngine::setUp() {
 		cin >> strategyChoice;
 		string playerName{ "Player " + to_string(i) };
 		Player* player = new Player(i, playerName);
+		//asssign the strategies
 		switch (strategyChoice)
 		{
 		case 0:
@@ -198,8 +206,6 @@ void GameEngine::setUp() {
 	else {
 		cout << "The observers are off." << endl;
 	}
-
-
 	
 	startUpPhase();
 	mainGameLoop();
@@ -208,6 +214,11 @@ void GameEngine::setUp() {
 }
 
 //*********************************************************  PART2  *********************************************************
+
+/// <summary>
+/// Randomizes player order and assigns the initial amount of territories each player receives in a round robin fashion 
+/// and also the initial number of armies each player receives
+/// </summary>
 void GameEngine::startUpPhase() {
 
 	cout << "The order of the players are as follows: " << endl;
@@ -253,6 +264,7 @@ void GameEngine::startUpPhase() {
 	cout << players[0]->getNumOfArmies() << endl;
 	int A;
 
+	//number of armies to give based on the amount of players playing the game
 	switch (players.size()) {
 	case 2:
 		A = 40;
@@ -271,6 +283,7 @@ void GameEngine::startUpPhase() {
 		players[i]->giveArmies(A);
 	}
 
+	//Re-order the players according to the random order placed above.
 	vector<Player*> orderedPlayers;
 	for (int i = 0; i < players.size(); ++i) {
 		orderedPlayers.push_back(players.at(playerorder.at(i)));
@@ -282,6 +295,14 @@ void GameEngine::startUpPhase() {
 
 
 //*********************************************************  PART3  *********************************************************
+
+/// <summary>
+/// The main game loop which removes players from the game if they do not own anymore territories after the turn.
+/// Gives the player a certain amount of armies per turn based on the amount of territories they own and whether or not they own a continent
+/// Allows players to give reinforcements to their territories by giving Deploy orders
+/// Then the player is allowed to issue any advance orders/any orders pertaining to the cards they own
+/// Finally the orders are executed. and the "turn state" is restored
+/// </summary>
 void GameEngine::mainGameLoop() {
 	int round = 1;
 	do {
@@ -290,6 +311,7 @@ void GameEngine::mainGameLoop() {
 		issueOrderPhase();
 		ordersExecutionPhase();
 
+		//restoring "turn state"
 		for (Player* player : players) {
 			player->hasConqueredTerritory = false;
 			player->hasNegotiatedWithIds.clear();
@@ -306,6 +328,10 @@ void GameEngine::mainGameLoop() {
 	cout << "Game lasted " << round << " rounds" << endl;
 }
 
+
+/// <summary>
+/// Removes any players which own no territories
+/// </summary>
 void GameEngine::removePlayersWithoutTerritories() {
 	vector<Player*> playersToRemove;
 	for (Player* player : players) {
@@ -323,6 +349,9 @@ void GameEngine::removePlayersWithoutTerritories() {
 	}
 }
 
+/// <summary>
+/// Prompts the user to issue any orders until they cannot do so anymore or decide not to
+/// </summary>
 void GameEngine::issueOrderPhase() {
 	for (Player* player : players) {
 		PhaseObserver* observer = NULL;
@@ -343,6 +372,10 @@ void GameEngine::issueOrderPhase() {
 	}
 }
 
+/// <summary>
+/// Decides and gives the players a certain amount of armies per turn based on the number of territories they own
+/// and based on the amount of continents they own if they own any
+/// </summary>
 void GameEngine::reinforcementPhase() {
 	//cout << "Executing Reinforcement Phase" << endl;
 	std::map<int, std::vector<Territory*>> continentTerritories = map->getContinentTerritories();
@@ -380,6 +413,10 @@ void GameEngine::reinforcementPhase() {
 	}
 }
 
+/// <summary>
+/// Executes the orders, Deploy orders get executed first, and then the other orders places by the players are executed
+/// in a round robin fashion
+/// </summary>
 void GameEngine::ordersExecutionPhase() {
 	//cout << "Executing Orders Phase" << endl;
 	//Deploy orders execute first
@@ -432,6 +469,11 @@ void GameEngine::ordersExecutionPhase() {
 	}
 }
 
+/// <summary>
+/// Checks to see if there is a winner for the game
+/// </summary>
+/// <returns>true, if there is a winner</returns>
+/// <returns>false, if there is NO winner</returns>
 bool GameEngine::hasWinner() {
 	std::map<int, Territory*> territories = map->getAllTerritories();
 	int point = territories.begin()->second->ownedBy;

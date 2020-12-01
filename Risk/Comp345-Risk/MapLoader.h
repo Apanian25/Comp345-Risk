@@ -50,3 +50,40 @@ private:
 	Map* readMap(std::string mapFilePath);
 
 };
+class ConquestFileReader {
+public:
+	ConquestFileReader();
+	ConquestFileReader(std::string mapName);
+	~ConquestFileReader();
+	ConquestFileReader(const ConquestFileReader& map);
+	ConquestFileReader& operator=(const ConquestFileReader fileReader);
+
+	std::string mapName;
+	friend ostream& operator << (ostream& output, ConquestFileReader& cq);
+
+	Map* readConquestMap(std::string mapFilePath);
+	Map* loadConquestMap(std::string mapFilePath);
+private:
+	std::vector<string> split(string s, string delim);
+	static const int NUM_ENTRIES_CONTINENT = 2;
+	static const int NUM_ENTRIES_TERRITORIES = 4;
+	Map* parsedMap;
+};
+
+
+
+class ConquestFileReaderAdapter :public MapLoader {
+private:
+	ConquestFileReader* reader;
+public:
+	ConquestFileReaderAdapter();
+	ConquestFileReaderAdapter(ConquestFileReader* rd);
+	~ConquestFileReaderAdapter();
+	ConquestFileReaderAdapter(const ConquestFileReaderAdapter& adapter);
+
+	ConquestFileReaderAdapter& operator=(const ConquestFileReaderAdapter fileAdapter);
+	friend ostream& operator << (ostream& output, ConquestFileReaderAdapter& cq);
+
+	Map* readMap(std::string mapFilePath);
+	Map* loadMap(std::string mapFilePath);
+};
