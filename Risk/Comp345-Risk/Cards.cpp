@@ -446,8 +446,9 @@ Order* Hand::play(Player* player) {
 		switch (card->type) {
 		case 0:
 		{
+			vector<Territory*> toAttkList = player->toAttack();
 			//the territory at position 0 has the most number of armies
-			Territory* toAttk = player->toAttack()[0];
+			Territory* toAttk = toAttkList[0];
 			Territory* strongestTarget = nullptr;
 
 			for (Player* otherPlayer : players) {
@@ -475,7 +476,10 @@ Order* Hand::play(Player* player) {
 			break;
 		case 2:
 		{
-			//do nothing, aggressive player would not play blockade
+			vector<Territory*> toDefend = player->toDefend();
+			//0 - (size-1) random territory owned by user
+			player->Notify("Added Blockade order");
+			return new Blockade(player, toDefend.at(rand() % toDefend.size()));
 		}
 		break;
 		case 3:
@@ -506,7 +510,18 @@ Order* Hand::play(Player* player) {
 		break;
 		
 		case 4:
-			//it is not in the aggressive players best interest to use the diplomacy card
+			vector<Player*> otherPlayers;
+			for (Player* player2 : players) {
+				if (player->id != player2->id)
+					otherPlayers.push_back(player2);
+			}
+
+
+			if (otherPlayers.size() == 0)
+				return NULL;
+			Player* declarePeaceWith = otherPlayers.at(rand() % otherPlayers.size()); // 0 - size -1 
+			player->Notify("Added Diplomacy order");
+			return new Diplomacy(player, declarePeaceWith);
 			break;
 		}
 

@@ -297,13 +297,13 @@ void GameEngine::mainGameLoop() {
 		for (pair<int, Territory*> territory : map->getAllTerritories()) {
 			territory.second->commitedNumberOfArmies = 0;
 		}
-		++round;
 		if (round == 3000)
 			break;
+		++round;
 	} while (!hasWinner());
 	if (!hasWinner())
 		cout << "The game was a Draw, after 3000 rounds, no 1 player was Victorious" << endl;
-	cout << "Game lasted " << --round << " rounds" << endl;
+	cout << "Game lasted " << round << " rounds" << endl;
 }
 
 void GameEngine::removePlayersWithoutTerritories() {
