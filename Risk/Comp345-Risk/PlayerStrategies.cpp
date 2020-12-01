@@ -9,6 +9,8 @@
 
 using namespace std;
 
+HumanPlayerStrategy::HumanPlayerStrategy(){}
+
 // *********************** HUMAN PLAYER ***********************
 vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
@@ -216,7 +218,15 @@ Order* HumanPlayerStrategy::issueOrder(Player* player)
 	return nullptr;
 }
 
+HumanPlayerStrategy::HumanPlayerStrategy(const HumanPlayerStrategy& copy) {};
+
+HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& x){return *this;}
+
+HumanPlayerStrategy::~HumanPlayerStrategy(){}
+
 // *********************** AGGRESSIVE PLAYER ***********************
+
+AggressivePlayerStrategy::AggressivePlayerStrategy(){}
 
 vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 {
@@ -313,7 +323,15 @@ Order* AggressivePlayerStrategy::issueOrder(Player* player)
 	return nullptr;
 }
 
+AggressivePlayerStrategy::AggressivePlayerStrategy(const AggressivePlayerStrategy& copy){}
+
+AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& x){return *this;}
+
+AggressivePlayerStrategy::~AggressivePlayerStrategy(){}
+
 // *********************** BENEVOLENT PLAYER ***********************
+
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(){}
 
 vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 {
@@ -387,8 +405,16 @@ Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 	return nullptr;
 }
 
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(const BenevolentPlayerStrategy& copy){}
+
+BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& x){return *this;}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy(){}
+
 
 // *********************** NEUTRAL PLAYER ***********************
+
+NeutralPlayerStrategy::NeutralPlayerStrategy(){}
 
 vector<Territory*> NeutralPlayerStrategy::toAttack(Player* player)
 {
@@ -404,3 +430,51 @@ Order* NeutralPlayerStrategy::issueOrder(Player* player)
 {
 	return nullptr;
 }
+
+NeutralPlayerStrategy::NeutralPlayerStrategy(const NeutralPlayerStrategy& copy){}
+
+NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& x){return *this;}
+
+NeutralPlayerStrategy::~NeutralPlayerStrategy(){}
+
+ostream& operator<<(ostream& out, const PlayerStrategy& x)
+{
+	out << "Player Strategy" << endl;
+	return out;
+}
+
+ostream& operator<<(ostream& out, const HumanPlayerStrategy& x)
+{
+	out << "Human Player Strategy " << endl;
+	return out;
+}
+
+ostream& operator<<(ostream& out, const AggressivePlayerStrategy& x)
+{
+	out << "Aggressive Player Strategy " << endl;
+	return out;
+}
+
+ostream& operator<<(ostream& out, const BenevolentPlayerStrategy& x)
+{
+	out << "Benevolent Player Strategy " << endl;
+	return out;
+}
+
+ostream& operator<<(ostream& out, const NeutralPlayerStrategy& x)
+{
+	out << "Neutral Player Strategy " << endl;
+	return out;
+}
+
+PlayerStrategy::PlayerStrategy()
+{
+}
+
+PlayerStrategy::~PlayerStrategy(){}
+
+PlayerStrategy::PlayerStrategy(const PlayerStrategy& copy)
+{
+}
+
+PlayerStrategy& PlayerStrategy::operator=(const PlayerStrategy& x){return *this;}
