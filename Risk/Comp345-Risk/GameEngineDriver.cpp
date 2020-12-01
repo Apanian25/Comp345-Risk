@@ -39,8 +39,8 @@ namespace GameEngineDriver {
 
 		//testA2(game);
 		//we call this twice so that the user can test both types of readers
-		a3p2test1();
-		a3p2test1();
+		//a3p2test1();
+		//a3p2test1();
 		a3p1test(game);
 		
 		return 0;

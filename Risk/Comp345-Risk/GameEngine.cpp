@@ -22,6 +22,10 @@ GameEngine::~GameEngine() {
 	}
 	delete map;
 	map = nullptr;
+	delete mapLoader;
+	mapLoader = nullptr;
+	delete statsObserver;
+	statsObserver = nullptr;
 }
 
 /// <summary>
@@ -65,15 +69,28 @@ void GameEngine::setUp() {
 		"sw_baltic.map", "invalidMapTest.map",
 		"invalidSolarDisconnected.map" };
 
+	string ConquestMaps[3]{
+		"ConquestAfrica.map", "ConquestCanada.map", "ConquestWorld.map" };
+
+	string AllMaps[10]{
+		"artic.map", "canada.map",
+		"europe.map", "solar.map",
+		"sw_baltic.map", "invalidMapTest.map",
+		"invalidSolarDisconnected.map","ConquestAfrica.map", 
+		"ConquestCanada.map", "ConquestWorld.map"
+	};
+
+
+
 	cout << "--- GameEngine Driver Starting... ---\n" << std::endl;
 		
 	while (map == NULL || !validMap) {
 
 		cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
-		for (size_t i = 0; i < 7; i++)
+		for (size_t i = 0; i < 10; i++)
 		{
-			cout << i << ": " << Maps[i] << std::endl;
+			cout << i << ": " << AllMaps[i] << std::endl;
 		}
 			
 		cin >> selectedMap;
@@ -87,12 +104,12 @@ void GameEngine::setUp() {
 			selectedMap = -1;
 		}
 
-		if (selectedMap < 0 && selectedMap != -1 || selectedMap >6) {
+		if (selectedMap < 0 && selectedMap != -1 || selectedMap >9) {
 			cout << " --- You've selected an invalid map number ---" << endl;
 			cout << "" << endl;
 		}
 
-		if (selectedMap >= 0 && selectedMap < 7) {
+		if (selectedMap >= 0 && selectedMap < 10) {
 
 			cout << "--- You've selected map number " << selectedMap << ". ---" << endl;
 			cout << "--- Verifying validity of map file... ---" << endl;
@@ -102,9 +119,19 @@ void GameEngine::setUp() {
 				mapLoader = NULL;
 			}
 
-			mapLoader = new MapLoader();
+			//should we keep this here?
+			ConquestFileReader* conquestLoader = new ConquestFileReader();
+
+
 			//loads the map
-			map = mapLoader->loadMap("Maps\\" + Maps[selectedMap]);
+			if (selectedMap < 7) {
+				mapLoader = new MapLoader();
+				map = mapLoader->loadMap("Maps\\" + AllMaps[selectedMap]);
+			}
+			else {
+				mapLoader = new ConquestFileReaderAdapter(conquestLoader);
+				map = mapLoader->loadMap("Maps\\" + AllMaps[selectedMap]);
+			}
 
 			if (map != NULL) {
 				cout << "--- Map file exists. Verifying if it is a connected graph... ---" << endl;
@@ -211,6 +238,7 @@ void GameEngine::setUp() {
 	mainGameLoop();
 	delete deck;
 	deck = nullptr;
+
 }
 
 //*********************************************************  PART2  *********************************************************
