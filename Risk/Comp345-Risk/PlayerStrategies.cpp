@@ -77,14 +77,14 @@ Order* HumanPlayerStrategy::issueOrder(Player* player)
 		{
 			vector<Territory*> territories = toAttack(player);
 			for (Territory* territory : territories)
-				cout << territory;
+				cout << *territory << endl;
 		}
 			break;
 		case 1:
 		{
 			vector<Territory*> territories = toDefend(player);
 			for (Territory* territory : territories)
-				cout << territory;
+				cout << *territory << endl;
 		}
 			break;
 		case 2:

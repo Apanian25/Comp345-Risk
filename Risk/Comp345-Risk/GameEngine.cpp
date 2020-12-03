@@ -72,8 +72,8 @@ void GameEngine::setUp() {
 	string ConquestMaps[3]{
 		"ConquestAfrica.map", "ConquestCanada.map", "ConquestWorld.map" };
 
-	string AllMaps[10]{
-		"artic.map", "canada.map",
+	string AllMaps[11]{
+		"testMap.map", "artic.map", "canada.map",
 		"europe.map", "solar.map",
 		"sw_baltic.map", "invalidMapTest.map",
 		"invalidSolarDisconnected.map","ConquestAfrica.map", 
@@ -88,7 +88,7 @@ void GameEngine::setUp() {
 
 		cout << "Please select a map by entering its number from the following list:\n" << std::endl;
 
-		for (size_t i = 0; i < 10; i++)
+		for (size_t i = 0; i < 11; i++)
 		{
 			cout << i << ": " << AllMaps[i] << std::endl;
 		}
@@ -104,12 +104,12 @@ void GameEngine::setUp() {
 			selectedMap = -1;
 		}
 
-		if (selectedMap < 0 && selectedMap != -1 || selectedMap >9) {
+		if (selectedMap < 0 && selectedMap != -1 || selectedMap >10) {
 			cout << " --- You've selected an invalid map number ---" << endl;
 			cout << "" << endl;
 		}
 
-		if (selectedMap >= 0 && selectedMap < 10) {
+		if (selectedMap >= 0 && selectedMap < 11) {
 
 			cout << "--- You've selected map number " << selectedMap << ". ---" << endl;
 			cout << "--- Verifying validity of map file... ---" << endl;
@@ -123,7 +123,7 @@ void GameEngine::setUp() {
 
 
 			//loads the map
-			if (selectedMap < 7) {
+			if (selectedMap < 8) {
 				mapLoader = new MapLoader();
 				map = mapLoader->loadMap("Maps\\" + AllMaps[selectedMap]);
 			}

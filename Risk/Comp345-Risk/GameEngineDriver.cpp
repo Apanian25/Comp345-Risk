@@ -148,8 +148,11 @@ bool a3p2test1()
 
 		MapLoader* loader = new MapLoader("solar");
 
+		Map* map = loader->loadMap("Maps\\solar.map");
+
 		std::cout << "Successfully loaded domination map: \"solar.map\"" << std::endl;
 
+		//deleting loader is enough, map gets deleted inside the destructor in mapLoader.
 		delete loader;
 		loader = NULL;
 

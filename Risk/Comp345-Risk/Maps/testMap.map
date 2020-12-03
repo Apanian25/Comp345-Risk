@@ -1,0 +1,14 @@
+[continents]
+Artic 5 white
+Canada 5 green
+Russia 8 yellow
+
+[countries]
+1 Whitehorse 1 108 66
+2 Dawson 2 148 77
+3 Watson_Lake 3 74 83
+
+[borders]
+1 2 3
+2 1 3
+3 1 2
