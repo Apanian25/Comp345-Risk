@@ -30,8 +30,8 @@ void Subject::Attach(Observer* ob) {
 }
 
 void Subject::Detach(Observer* ob) {
-
-	obs.erase(remove(obs.begin(), obs.end(), ob), obs.end());
+	if(obs.size() > 0)
+		obs.erase(remove(obs.begin(), obs.end(), ob), obs.end());
 }
 
 void Subject::Notify() {

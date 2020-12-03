@@ -47,7 +47,6 @@ namespace GameEngineDriver {
 		a3p2test1();
 		a3p1test(game);
 		
-
 		delete game;
 		return 0;
 	}

@@ -20,11 +20,11 @@ GameEngine::~GameEngine() {
 		delete p;
 		p = nullptr;
 	}
-	delete map;
-	map = nullptr;
+	//map loader will delete the map
 	delete mapLoader;
 	mapLoader = nullptr;
-	delete statsObserver;
+	if(statsObserver != nullptr)
+		delete statsObserver;
 	statsObserver = nullptr;
 }
 

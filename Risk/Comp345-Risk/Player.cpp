@@ -89,7 +89,7 @@ vector<Territory*> Player::toAttackUnSorted() {
 	//build a unique list of the territories that the player can attack
 	for (Territory* territory : this->territories) {
 		for (Territory* canAttk : territory->adjacentTerritoriesTo) {
-			if (terrToAtk.count(canAttk->id) == 0) {
+			if (canAttk->ownedBy != this->id && terrToAtk.count(canAttk->id) == 0) {
 				//not already in the map
 				terrToAtk[canAttk->id] = canAttk;
 			}
