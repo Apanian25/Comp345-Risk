@@ -438,6 +438,7 @@ Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 	openFile.close();
 	return parsedMap;
 }
+
 Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 
 	cout << "Verifying map before loading...\n" << endl;
@@ -452,6 +453,7 @@ Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 	}
 	return parsedMap;
 }
+
 std::vector<string> ConquestFileReader::split(string s, string delim)
 {
 	vector<string> words;
@@ -486,7 +488,9 @@ ConquestFileReaderAdapter::ConquestFileReaderAdapter(ConquestFileReader* rd)
 
 ConquestFileReaderAdapter::~ConquestFileReaderAdapter()
 {
-	delete reader;
+	if(reader != nullptr)
+		delete reader;
+	reader = nullptr;
 }
 
 ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReaderAdapter& adapter)
@@ -506,6 +510,7 @@ Map* ConquestFileReaderAdapter::readMap(std::string mapFilePath)
 {
 	return reader->readConquestMap(mapFilePath);
 }
+
 Map* ConquestFileReaderAdapter::loadMap(std::string mapFilePath)
 {
 	return reader->loadConquestMap(mapFilePath);

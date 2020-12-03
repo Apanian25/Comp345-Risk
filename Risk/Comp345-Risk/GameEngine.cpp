@@ -119,7 +119,6 @@ void GameEngine::setUp() {
 				mapLoader = NULL;
 			}
 
-			//should we keep this here?
 			ConquestFileReader* conquestLoader = new ConquestFileReader();
 
 
@@ -405,7 +404,6 @@ void GameEngine::issueOrderPhase() {
 /// and based on the amount of continents they own if they own any
 /// </summary>
 void GameEngine::reinforcementPhase() {
-	//cout << "Executing Reinforcement Phase" << endl;
 	std::map<int, std::vector<Territory*>> continentTerritories = map->getContinentTerritories();
 	std::map<int, Continent*> continents = map->getContinents();
 
@@ -446,7 +444,6 @@ void GameEngine::reinforcementPhase() {
 /// in a round robin fashion
 /// </summary>
 void GameEngine::ordersExecutionPhase() {
-	//cout << "Executing Orders Phase" << endl;
 	//Deploy orders execute first
 	for (Player* player : players) {
 

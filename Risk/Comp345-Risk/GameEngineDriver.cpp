@@ -10,6 +10,10 @@ bool a3p1test(GameEngine* game);
 void testInvalid(MapLoader* loader);
 void testValid(MapLoader* loader);
 
+/// <summary>
+/// Tests the functionality of Assignment 2
+/// </summary>
+/// <param name="game"></param>
 void testA2(GameEngine* game) {
 	Map* map = initMap();
 	if (map != NULL) {
@@ -39,14 +43,20 @@ namespace GameEngineDriver {
 
 		//testA2(game);
 		//we call this twice so that the user can test both types of readers
-		//a3p2test1();
-		//a3p2test1();
+		a3p2test1();
+		a3p2test1();
 		a3p1test(game);
 		
+
+		delete game;
 		return 0;
 	}
 }
 
+/// <summary>
+/// initialize a rando m map to test with
+/// </summary>
+/// <returns></returns>
 Map* initMap() {
 	Map* map = new Map();
 	map->addContinent("Canada", 2, 20);
@@ -118,7 +128,10 @@ bool p3test3(GameEngine* game) {
 }
 
 
-
+/// <summary>
+/// Tests the functionality of Assignment 3 part 2
+/// </summary>
+/// <returns></returns>
 bool a3p2test1()
 {
 	int choice{ 0 };

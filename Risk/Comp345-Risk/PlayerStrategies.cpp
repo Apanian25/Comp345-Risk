@@ -12,6 +12,12 @@ using namespace std;
 HumanPlayerStrategy::HumanPlayerStrategy(){}
 
 // *********************** HUMAN PLAYER ***********************
+
+/// <summary>
+/// Returns the Territories that the Human player can attack
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -36,14 +42,10 @@ vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 		//smallest number of armies is first
 		return t1->numberOfArmies < t2->numberOfArmies;
 		});
-
-		//for (int i = 0; i < vecToDef.size(); i++)
-		//{
-		//	cout << *vecToDef[i] << endl;
-		//}
 	
 	return vecToDef;
 }
+
 
 Order* HumanPlayerStrategy::issueOrder(Player* player)
 {
@@ -467,14 +469,10 @@ ostream& operator<<(ostream& out, const NeutralPlayerStrategy& x)
 	return out;
 }
 
-PlayerStrategy::PlayerStrategy()
-{
-}
+PlayerStrategy::PlayerStrategy(){}
 
 PlayerStrategy::~PlayerStrategy(){}
 
-PlayerStrategy::PlayerStrategy(const PlayerStrategy& copy)
-{
-}
+PlayerStrategy::PlayerStrategy(const PlayerStrategy& copy){}
 
 PlayerStrategy& PlayerStrategy::operator=(const PlayerStrategy& x){return *this;}

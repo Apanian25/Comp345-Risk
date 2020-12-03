@@ -62,8 +62,7 @@ public:
 	friend ostream& operator << (ostream& output, ConquestFileReader& cq);
 
 	Map* readConquestMap(std::string mapFilePath);
-	//Had to put virtual to make it work, should we not?
-	virtual Map* loadConquestMap(std::string mapFilePath);
+	Map* loadConquestMap(std::string mapFilePath);
 private:
 	std::vector<string> split(string s, string delim);
 	static const int NUM_ENTRIES_CONTINENT = 2;
