@@ -16,8 +16,8 @@ HumanPlayerStrategy::HumanPlayerStrategy(){}
 /// <summary>
 /// Returns the Territories that the Human player can attack
 /// </summary>
-/// <param name="player">The human player</param>
-/// <returns>Vector of territories that can be attacked</returns>
+/// <param name="player">The current player</param>
+/// <returns>Territories that can be attacked</returns>
 vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -25,12 +25,7 @@ vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 	std::sort(vecToAtk.begin(), vecToAtk.end(), [](Territory* t1, Territory* t2) {
 		//largest number of armies is first
 		return t1->numberOfArmies > t2->numberOfArmies;
-		});
-
-	for (int i = 0; i < vecToAtk.size(); i++)
-	{
-		cout << *vecToAtk[i] << endl;
-	}
+	});
 
 	return vecToAtk;
 }
@@ -38,7 +33,7 @@ vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 /// <summary>
 /// Returns the Territories that the Human Player can defend
 /// </summary>
-/// <param name="player">The human player</param>
+/// <param name="player">The current player</param>
 /// <returns>Vector of territories that can be defended</returns>
 vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 {
@@ -46,7 +41,7 @@ vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 	std::sort(vecToDef.begin(), vecToDef.end(), [](Territory* t1, Territory* t2) {
 		//smallest number of armies is first
 		return t1->numberOfArmies < t2->numberOfArmies;
-		});
+	});
 	
 	return vecToDef;
 }
@@ -79,10 +74,18 @@ Order* HumanPlayerStrategy::issueOrder(Player* player)
 		switch (move)
 		{
 		case 0:
-			toAttack(player);
+		{
+			vector<Territory*> territories = toAttack(player);
+			for (Territory* territory : territories)
+				cout << territory;
+		}
 			break;
 		case 1:
-			toDefend(player);
+		{
+			vector<Territory*> territories = toDefend(player);
+			for (Territory* territory : territories)
+				cout << territory;
+		}
 			break;
 		case 2:
 			player->hand->play(*player->hand, *player->orders, *deck);
@@ -239,6 +242,12 @@ HumanPlayerStrategy::~HumanPlayerStrategy(){}
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(){}
 
+/// <summary>
+/// Returns the Territories that the Aggressive player is allowed to attack,
+/// The territores are sorted such that the territory with the largest number of armies is first.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -251,6 +260,12 @@ vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 	return vecToAtk;
 }
 
+/// <summary>
+/// Returns the Territories that the Aggressive player is allowed to defend,
+/// The territores are sorted such that the territory with the largest number of armies is first.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 {
 	vector<Territory*> vecToDef = player->getTerritories();
@@ -262,6 +277,15 @@ vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 	return vecToDef;
 }
 
+/// <summary>
+/// This issues the orders that the Aggressive Player will decide to play.
+/// The first type of orders that the player decides to play are Deploy orders.
+/// Once the player cannot deploy any more armies on its territories then it decides attack
+/// the strongest target(the one with the most armies) with all of its armies(from its territory with the most armies).
+/// The Aggressive player also has access to play any cards that it wishes to play.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 Order* AggressivePlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0) {
@@ -362,10 +386,10 @@ vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 
 
 /// <summary>
-/// todefend creates an vector thats is sorted from weakest to to strongest terrritories owned 
-/// since reinforces weakest territories owned
+/// todefend creates a vector that is sorted from weakest to strongest terrritories based on 
+/// the number of armies they own since it reinforces its weakest territories
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 {
@@ -384,9 +408,10 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 /// <summary>
 /// issue order function for the benevolent player 
 /// calls deploy on weakest owned territory 
-/// also calls advannce to weakest territory owned, will never attack
+/// also calls advannce to weakest territory owned, will never attack.
+/// The Benevolent player does not play any cards, as it will not conquer any emeny territories
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 {
@@ -453,9 +478,9 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy(){}
 NeutralPlayerStrategy::NeutralPlayerStrategy(){}
 
 /// <summary>
-/// toAttack returns unsorted vector of territories attackable by the neutral player 
+/// toAttack returns an unsorted vector of territories attackable by the neutral player 
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 vector<Territory*> NeutralPlayerStrategy::toAttack(Player* player)
 {
@@ -463,9 +488,9 @@ vector<Territory*> NeutralPlayerStrategy::toAttack(Player* player)
 }
 
 /// <summary>
-/// toDefend returns vector of territories owned by the neutral player 
+/// toDefend returns a vector of territories owned by the neutral player 
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 vector<Territory*> NeutralPlayerStrategy::toDefend(Player* player)
 {
@@ -476,7 +501,7 @@ vector<Territory*> NeutralPlayerStrategy::toDefend(Player* player)
 /// does nothing because neutral player cannot issue any orders 
 /// returns nullptr
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 Order* NeutralPlayerStrategy::issueOrder(Player* player)
 {
