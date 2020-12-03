@@ -16,7 +16,7 @@ HumanPlayerStrategy::HumanPlayerStrategy(){}
 /// <summary>
 /// Returns the Territories that the Human player can attack
 /// </summary>
-/// <param name="player"></param>
+/// <param name="player">The current player</param>
 /// <returns></returns>
 vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
