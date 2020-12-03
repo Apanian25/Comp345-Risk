@@ -309,9 +309,9 @@ ConquestFileReader& ConquestFileReader::operator=(const ConquestFileReader fileR
 }
 
 /// <summary>
-/// Method used to read a Conquest FileReaderMap
+/// Method used to read a Conquest Map
 /// </summary>
-/// <param name="mapFilePath"></param>
+/// <param name="mapFilePath">path to local file</param>
 /// <returns></returns>
 Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 {
@@ -466,7 +466,7 @@ Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 /// <summary>
 /// Loads a passed ConquestMap file
 /// </summary>
-/// <param name="mapFilePath">path to a map file</param>
+/// <param name="mapFilePath">path to a local map file</param>
 /// <returns></returns>
 Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 
@@ -486,7 +486,7 @@ Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 /// <summary>
 /// Method to split string lines and vectors to return words.
 /// </summary>
-/// <param name="s"></param>
+/// <param name="s">The string to split</param>
 /// <param name="delim">delimiter to seperate string s</param>
 /// <returns></returns>
 std::vector<string> ConquestFileReader::split(string s, string delim)
@@ -550,7 +550,7 @@ ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReaderAda
 /// <summary>
 /// Assignment operator for the adapter
 /// </summary>
-/// <param name="fileAdapter"></param>
+/// <param name="fileAdapter">The adapter</param>
 /// <returns></returns>
 ConquestFileReaderAdapter& ConquestFileReaderAdapter::operator=(const ConquestFileReaderAdapter fileAdapter)
 {
@@ -573,7 +573,7 @@ Map* ConquestFileReaderAdapter::readMap(std::string mapFilePath)
 /// <summary>
 /// Load map method for the adapter
 /// </summary>
-/// <param name="mapFilePath">path to a map file</param>
+/// <param name="mapFilePath">path to a local map file</param>
 /// <returns></returns>
 Map* ConquestFileReaderAdapter::loadMap(std::string mapFilePath)
 {
