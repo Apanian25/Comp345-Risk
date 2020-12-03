@@ -484,7 +484,7 @@ Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 }
 
 /// <summary>
-/// Method to split string lines and vectors to return words
+/// Method to split string lines and vectors to return words.
 /// </summary>
 /// <param name="s"></param>
 /// <param name="delim">delimiter to seperate string s</param>
