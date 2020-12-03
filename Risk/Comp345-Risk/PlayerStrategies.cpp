@@ -230,6 +230,12 @@ HumanPlayerStrategy::~HumanPlayerStrategy(){}
 
 AggressivePlayerStrategy::AggressivePlayerStrategy(){}
 
+/// <summary>
+/// Returns the Territories that the Aggressive player is allowed to attack,
+/// The territores are sorted such that the territory with the largest number of armies is first.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -242,6 +248,12 @@ vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 	return vecToAtk;
 }
 
+/// <summary>
+/// Returns the Territories that the Aggressive player is allowed to defend,
+/// The territores are sorted such that the territory with the largest number of armies is first.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 {
 	vector<Territory*> vecToDef = player->getTerritories();
@@ -253,6 +265,15 @@ vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 	return vecToDef;
 }
 
+/// <summary>
+/// This issues the orders that the Aggressive Player will decide to play.
+/// The first type of orders that the player decides to play are Deploy orders.
+/// Once the player cannot deploy any more armies on its territories then it decides attack
+/// the strongest target(the one with the most armies) with all of its armies(from its territory with the most armies).
+/// The Aggressive player also has access to play any cards that it wishes to play.
+/// </summary>
+/// <param name="player">The current player</param>
+/// <returns></returns>
 Order* AggressivePlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0) {
