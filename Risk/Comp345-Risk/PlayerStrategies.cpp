@@ -247,7 +247,7 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(){}
 /// The territores are sorted such that the territory with the largest number of armies is first.
 /// </summary>
 /// <param name="player">The current player</param>
-/// <returns></returns>
+/// <returns>Vector of territories</returns>
 vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -265,7 +265,7 @@ vector<Territory*> AggressivePlayerStrategy::toAttack(Player* player)
 /// The territores are sorted such that the territory with the largest number of armies is first.
 /// </summary>
 /// <param name="player">The current player</param>
-/// <returns></returns>
+/// <returns>Vector of territories</returns>
 vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 {
 	vector<Territory*> vecToDef = player->getTerritories();
@@ -285,7 +285,7 @@ vector<Territory*> AggressivePlayerStrategy::toDefend(Player* player)
 /// The Aggressive player also has access to play any cards that it wishes to play.
 /// </summary>
 /// <param name="player">The current player</param>
-/// <returns></returns>
+/// <returns>The order to issue or null</returns>
 Order* AggressivePlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0) {
@@ -375,7 +375,7 @@ BenevolentPlayerStrategy::BenevolentPlayerStrategy(){}
 /// order doesnt matter since benevolent player cant attack
 /// </summary>
 /// <param name="player"></param>
-/// <returns></returns>
+/// <returns>Vector of territories</returns>
 vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vectToAtk = player->toAttackUnSorted();
@@ -390,7 +390,7 @@ vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 /// the number of armies they own since it reinforces its weakest territories
 /// </summary>
 /// <param name="player">The current player</param>
-/// <returns></returns>
+/// <returns>Vector of territories</returns>
 vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 {
 	 vector<Territory*> vecToDef = player->getTerritories();
@@ -412,7 +412,7 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 /// The Benevolent player does not play any cards, as it will not conquer any emeny territories
 /// </summary>
 /// <param name="player">The current player</param>
-/// <returns></returns>
+/// <returns>Ther order to issue, or null</returns>
 Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0)
