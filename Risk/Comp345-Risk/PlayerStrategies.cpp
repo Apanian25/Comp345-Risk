@@ -16,8 +16,8 @@ HumanPlayerStrategy::HumanPlayerStrategy(){}
 /// <summary>
 /// Returns the Territories that the Human player can attack
 /// </summary>
-/// <param name="player"></param>
-/// <returns></returns>
+/// <param name="player">The human player</param>
+/// <returns>Vector of territories that can be attacked</returns>
 vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vecToAtk = player->toAttackUnSorted();
@@ -35,6 +35,11 @@ vector<Territory*> HumanPlayerStrategy::toAttack(Player* player)
 	return vecToAtk;
 }
 
+/// <summary>
+/// Returns the Territories that the Human Player can defend
+/// </summary>
+/// <param name="player">The human player</param>
+/// <returns>Vector of territories that can be defended</returns>
 vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 {
 	vector<Territory*> vecToDef = player->getTerritories();
@@ -46,7 +51,11 @@ vector<Territory*> HumanPlayerStrategy::toDefend(Player* player)
 	return vecToDef;
 }
 
-
+/// <summary>
+/// Method that helps the human player chooses and issues their orders
+/// </summary>
+/// <param name="player">The human player</param>
+/// <returns>Order placed by player</returns>
 Order* HumanPlayerStrategy::issueOrder(Player* player)
 {
 	int move = -1;
