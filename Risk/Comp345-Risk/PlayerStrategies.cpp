@@ -354,8 +354,16 @@ AggressivePlayerStrategy::~AggressivePlayerStrategy(){}
 
 // *********************** BENEVOLENT PLAYER ***********************
 
+
 BenevolentPlayerStrategy::BenevolentPlayerStrategy(){}
 
+/// <summary>
+/// to attack method for benevolent player 
+/// creates and unsorted vector of territiories it could attack
+/// order doesnt matter since benevolent player cant attack
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 {
 	vector<Territory*> vectToAtk = player->toAttackUnSorted();
@@ -365,10 +373,17 @@ vector<Territory*> BenevolentPlayerStrategy::toAttack(Player* player)
 }
 
 
+/// <summary>
+/// todefend creates an vector thats is sorted from weakest to to strongest terrritories owned 
+/// since reinforces weakest territories owned
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 {
 	 vector<Territory*> vecToDef = player->getTerritories();
 
+	 // sorting
 	 std::sort(vecToDef.begin(), vecToDef.end(), [](Territory* t1, Territory* t2)
 		 {
 			 return t1->numberOfArmies < t2->numberOfArmies;
@@ -377,10 +392,19 @@ vector<Territory*> BenevolentPlayerStrategy::toDefend(Player* player)
 	 return vecToDef;
 }
 
+
+/// <summary>
+/// issue order function for the benevolent player 
+/// calls deploy on weakest owned territory 
+/// also calls advannce to weakest territory owned, will never attack
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 {
 	if (player->getNumOfArmies() > 0)
 	{
+		//deploy
 		toDefend(player)[0];
 		Deploy* deploy = new Deploy(player, toDefend(player)[0], player->getNumOfArmies());
 		player->numOfArmies = 0;
@@ -397,6 +421,7 @@ Order* BenevolentPlayerStrategy::issueOrder(Player* player)
 
 		else
 		{
+			//advance 
 			vector<Territory*> toDef = toDefend(player);
 			Territory* weakest = toDef[0];
 			vector<Territory*> reinforcements = vector<Territory*>();
@@ -439,16 +464,32 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy(){}
 
 NeutralPlayerStrategy::NeutralPlayerStrategy(){}
 
+/// <summary>
+/// toAttack returns unsorted vector of territories attackable by the neutral player 
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 vector<Territory*> NeutralPlayerStrategy::toAttack(Player* player)
 {
 	return player->toAttackUnSorted();
 }
 
+/// <summary>
+/// toDefend returns vector of territories owned by the neutral player 
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 vector<Territory*> NeutralPlayerStrategy::toDefend(Player* player)
 {
 	return player->getTerritories();
 }
 
+/// <summary>
+/// does nothing because neutral player cannot issue any orders 
+/// returns nullptr
+/// </summary>
+/// <param name="player"></param>
+/// <returns></returns>
 Order* NeutralPlayerStrategy::issueOrder(Player* player)
 {
 	return nullptr;
