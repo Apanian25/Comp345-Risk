@@ -253,21 +253,36 @@ std::vector<string> MapLoader::split(string s, string delim) {
 	return words;
 }
 
+/// <summary>
+/// Default constructor for the ConquestFileReader
+/// </summary>
 ConquestFileReader::ConquestFileReader() {
 	mapName = "";
 	parsedMap = new Map();
 }
 
+/// <summary>
+/// Parametrised constructor for the ConquestFileReader
+/// </summary>
+/// <param name="mapName">Name of the map file passed </param>
 ConquestFileReader::ConquestFileReader(std::string mapName) {
 	this->mapName = mapName;
 	parsedMap = new Map();
 }
+
+/// <summary>
+/// Destructor for the ConquestFileReader
+/// </summary>
 ConquestFileReader::~ConquestFileReader() {
 	if (parsedMap != NULL)
 		delete parsedMap;
 	parsedMap = NULL;
 }
 
+/// <summary>
+/// Copy constructor for the ConquestFileReader
+/// </summary>
+/// <param name="map">Passed map that allows the copy to happen</param>
 ConquestFileReader::ConquestFileReader(const ConquestFileReader& map)
 {
 	cout << "Copy constructor is being called...\n" << endl;
@@ -275,6 +290,11 @@ ConquestFileReader::ConquestFileReader(const ConquestFileReader& map)
 	this->parsedMap = map.parsedMap;
 }
 
+/// <summary>
+/// Assignment operator for the ConquestFileReader class
+/// </summary>
+/// <param name="fileReader">A fileReader object</param>
+/// <returns></returns>
 ConquestFileReader& ConquestFileReader::operator=(const ConquestFileReader fileReader)
 {
 	//check for self-assignment
@@ -288,7 +308,11 @@ ConquestFileReader& ConquestFileReader::operator=(const ConquestFileReader fileR
 	return *this;
 }
 
-
+/// <summary>
+/// Method used to read a Conquest FileReaderMap
+/// </summary>
+/// <param name="mapFilePath"></param>
+/// <returns></returns>
 Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 {
 	parsedMap = new Map();
@@ -439,6 +463,11 @@ Map* ConquestFileReader::readConquestMap(std::string mapFilePath)
 	return parsedMap;
 }
 
+/// <summary>
+/// Loads a passed ConquestMap file
+/// </summary>
+/// <param name="mapFilePath">path to a map file</param>
+/// <returns></returns>
 Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 
 	cout << "Verifying map before loading...\n" << endl;
@@ -454,6 +483,12 @@ Map* ConquestFileReader::loadConquestMap(std::string mapFilePath) {
 	return parsedMap;
 }
 
+/// <summary>
+/// Method to split string lines and vectors to return words
+/// </summary>
+/// <param name="s"></param>
+/// <param name="delim">delimiter to seperate string s</param>
+/// <returns></returns>
 std::vector<string> ConquestFileReader::split(string s, string delim)
 {
 	vector<string> words;
@@ -476,16 +511,26 @@ std::vector<string> ConquestFileReader::split(string s, string delim)
 	return words;
 }
 
+/// <summary>
+/// Default constructor for the adpater
+/// </summary>
 ConquestFileReaderAdapter::ConquestFileReaderAdapter()
 {
 	reader = nullptr;
 }
 
+/// <summary>
+/// Parametrised constructor for the adapter
+/// </summary>
+/// <param name="rd">passed reader object</param>
 ConquestFileReaderAdapter::ConquestFileReaderAdapter(ConquestFileReader* rd)
 {
 	reader = rd;
 }
 
+/// <summary>
+/// Destructor for the adapter
+/// </summary>
 ConquestFileReaderAdapter::~ConquestFileReaderAdapter()
 {
 	if(reader != nullptr)
@@ -493,11 +538,20 @@ ConquestFileReaderAdapter::~ConquestFileReaderAdapter()
 	reader = nullptr;
 }
 
+/// <summary>
+/// Copy constructor for the adapter 
+/// </summary>
+/// <param name="adapter">object which is used to copy</param>
 ConquestFileReaderAdapter::ConquestFileReaderAdapter(const ConquestFileReaderAdapter& adapter)
 {
 	reader = adapter.reader;
 }
 
+/// <summary>
+/// Assignment operator for the adapter
+/// </summary>
+/// <param name="fileAdapter"></param>
+/// <returns></returns>
 ConquestFileReaderAdapter& ConquestFileReaderAdapter::operator=(const ConquestFileReaderAdapter fileAdapter)
 {
 	if (&fileAdapter != this) 
@@ -506,11 +560,21 @@ ConquestFileReaderAdapter& ConquestFileReaderAdapter::operator=(const ConquestFi
 		return *this;
 }
 
+/// <summary>
+/// Read map method for an adapter
+/// </summary>
+/// <param name="mapFilePath">path to a map file</param>
+/// <returns></returns>
 Map* ConquestFileReaderAdapter::readMap(std::string mapFilePath)
 {
 	return reader->readConquestMap(mapFilePath);
 }
 
+/// <summary>
+/// Load map method for the adapter
+/// </summary>
+/// <param name="mapFilePath">path to a map file</param>
+/// <returns></returns>
 Map* ConquestFileReaderAdapter::loadMap(std::string mapFilePath)
 {
 	return reader->loadConquestMap(mapFilePath);
